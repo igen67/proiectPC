@@ -776,6 +776,8 @@ CMakeFiles/ppu_test.dir/solutions/memory.cpp.o
 CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o
  /home/alex/Downloads/proiectPC/solutions/ppu.cpp
  /home/alex/Downloads/proiectPC/solutions/headers/bus.h
+ /home/alex/Downloads/proiectPC/solutions/headers/cpu.h
+ /home/alex/Downloads/proiectPC/solutions/headers/instructions.h
  /home/alex/Downloads/proiectPC/solutions/headers/libraries.h
  /home/alex/Downloads/proiectPC/solutions/headers/mapper.h
  /home/alex/Downloads/proiectPC/solutions/headers/memory.h

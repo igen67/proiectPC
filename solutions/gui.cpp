@@ -177,8 +177,8 @@ void RunGUI(CPU& cpu, Bus& bus) {
             measureStart = now;
             // Console print no more than once per second
             if (std::chrono::duration<double>(now - lastConsolePrint).count() >= 1.0) {
-                printf("EMU (measured): %.0f cycles/s (%.1f%%) FPS: %.1f -- EMA: %.0f\n",
-                       cyclesPerSec, 100.0 * (cyclesPerSec / NES_CPU_FREQ), io.Framerate, smoothedCyclesPerSec);
+                //printf("EMU (measured): %.0f cycles/s (%.1f%%) FPS: %.1f -- EMA: %.0f\n",
+                       //cyclesPerSec, 100.0 * (cyclesPerSec / NES_CPU_FREQ), io.Framerate, smoothedCyclesPerSec);
                 lastConsolePrint = now;
             }
         }
@@ -201,30 +201,28 @@ void RunGUI(CPU& cpu, Bus& bus) {
         DrawMemoryView(bus, memBase);
 
         if (running) {
-            // Step CPU based on actual wall-clock elapsed time (stable independent of host FPS)
-            static auto lastStepTime = std::chrono::steady_clock::now();
-            auto nowStep = std::chrono::steady_clock::now();
-            double elapsedSec = std::chrono::duration<double>(nowStep - lastStepTime).count();
-            // Clamp large elapsed times to avoid spiralling when paused or stalled
-            if (elapsedSec > 0.25) elapsedSec = 0.25;
-            lastStepTime = nowStep;
+            // Throttle emulation to NES frame rate (60Hz)
+            static auto lastFrameTime = std::chrono::steady_clock::now();
+            auto nowFrame = std::chrono::steady_clock::now();
+            double elapsedSec = std::chrono::duration<double>(nowFrame - lastFrameTime).count();
+            if (elapsedSec < (1.0 / 60.0)) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
+            lastFrameTime = nowFrame;
 
-            uint32_t targetCycles = static_cast<uint32_t>(NES_CPU_FREQ * elapsedSec);
+            // Run enough cycles for one NES frame (about 29780 cycles)
+            uint32_t targetCycles = 29780;
             uint32_t executed = 0;
             while (executed < targetCycles && !glfwWindowShouldClose(window)) {
                 u32 before = cycles;
                 cpu.Step(cycles, bus);
                 executed += (cycles - before);
             }
-            // Small sleep/yield to reduce host CPU usage when running
-            std::this_thread::sleep_for(std::chrono::microseconds(200));
 
-            // Live render: consume produced PPU frames when available and update the texture
-            if (liveRender) {
-                if (ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
-                    glBindTexture(GL_TEXTURE_2D, ppuTex);
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
-                }
+            // Only render when a new frame is ready
+            if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
+                glBindTexture(GL_TEXTURE_2D, ppuTex);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
             }
         }
 

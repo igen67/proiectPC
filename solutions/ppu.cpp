@@ -37,32 +37,78 @@ void PPU::Reset() {
 
 // Advance PPU cycles; triggers a frame render when enough cycles collected
 void PPU::StepCycles(uint32_t cycles) {
-    if (cycles == 0) return;
-    const uint32_t CYCLES_PER_FRAME = 341u * 262u; // 89342
-    ppuCycleCounter += cycles;
-    if (ppuCycleCounter >= CYCLES_PER_FRAME) {
-        // Render and wrap counter (support multiple frames being advanced at once)
-        ppuCycleCounter %= CYCLES_PER_FRAME;
-        // Produce a frame into lastFrame
-        int w=0,h=0;
-        RenderFrame(lastFrame, w, h);
-        frameReady = true;
-        // set VBlank flag
-        bool wasVBlank = (PPUSTATUS & 0x80) != 0;
-        PPUSTATUS |= 0x80;
-        // Trigger NMI on entering VBlank if enabled in PPUCTRL bit 7
-        if (!wasVBlank && (PPUCTRL & 0x80) && bus.ppu /* placeholder to silence unused */) {
-            if (bus.cpu) {
+    for (uint32_t i = 0; i < cycles; i++) {
+        // Advance cycle
+        cycle++;
+        if (cycle > 340) {
+            cycle = 0;
+            scanline++;
+            if (scanline > 261) scanline = 0;
+        }
+
+        // --- VBlank start ---
+        if (scanline == 241 && cycle == 1) {
+            bool wasVBlank = (PPUSTATUS & 0x80) != 0;
+            PPUSTATUS |= 0x80; // Set VBlank flag
+            frameReady = true;  // optional: signal GUI/frame render
+
+            // Trigger NMI if enabled
+            if (!wasVBlank && (PPUCTRL & 0x80) && bus.cpu) {
                 bus.cpu->NMIRequested = true;
+                std::cout << "[PPU] VBlank start: NMIRequested set at scanline="
+                          << scanline << " cycle=" << cycle << std::endl;
             }
+        }
+
+        // --- VBlank end (pre-render scanline) ---
+        if (scanline == 261 && cycle == 1) {
+            PPUSTATUS &= ~0x80; // Clear VBlank
+        }
+
+        // Optional: render frame at end of pre-render scanline
+        if (scanline == 261 && cycle == 0) {
+            int w = 0, h = 0;
+            RenderFrame(lastFrame, w, h);
         }
     }
 }
+
+
+
 
 uint8_t PPU::ReadRegister(uint16_t reg) {
     switch (reg) {
         case 2: { // PPUSTATUS
             uint8_t val = PPUSTATUS;
+            // diagnostics: count reads to detect busy-wait loops polling $2002
+            static uint32_t statusReadCount = 0;
+            static uint32_t lastYieldAt = 0;
+            static bool g_pollYieldEnabled = true; // gate the heuristic
+
+            ++statusReadCount;
+            if ((statusReadCount % 1000) == 0) {
+                std::cout << "[PPU] PPUSTATUS read count=" << statusReadCount << " PPUSTATUS=0x" << std::hex << int(val) << std::dec << std::endl;
+                if (bus.cpu) {
+                    std::cout << "[PPU] PPUSTATUS read by CPU PC=0x" << std::hex << bus.cpu->PC << std::dec << std::endl;
+                }
+            }
+
+            // If the CPU is busy-polling $2002 for VBlank and VBlank is not yet set, yield occasionally
+            if (g_pollYieldEnabled) {
+                if ((val & 0x80) == 0) {
+                    // not in VBlank: if we've polled many times since last yield, sleep briefly
+                    const uint32_t POLL_YIELD_THRESHOLD = 5000;
+                    if ((statusReadCount - lastYieldAt) >= POLL_YIELD_THRESHOLD) {
+                        lastYieldAt = statusReadCount;
+                        std::cout << "[PPU] Polling busy-wait detected: yielding 1ms (count=" << statusReadCount << ")" << std::endl;
+                    }
+                } else {
+                    // VBlank reached: reset counters to avoid unnecessary yields
+                    statusReadCount = 0;
+                    lastYieldAt = 0;
+                }
+            }
+
             // reading PPUSTATUS clears VBlank flag and latch
             PPUSTATUS &= ~0x80u;
             vramLatch = false;
@@ -96,8 +142,15 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
 void PPU::WriteRegister(uint16_t reg, uint8_t val) {
     switch (reg) {
         case 0: // PPUCTRL
+        {
+            uint8_t old = PPUCTRL;
             PPUCTRL = val;
-            break;
+            if ((old & 0x80) != (PPUCTRL & 0x80)) {
+                if (PPUCTRL & 0x80) std::cout << "[PPU] PPUCTRL: NMI enabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;
+                else std::cout << "[PPU] PPUCTRL: NMI disabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;
+            }
+        }
+        break;
         case 1: // PPUMASK
             PPUMASK = val;
             break;
@@ -158,24 +211,39 @@ bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outH
     // We'll record background color indices so sprite priority (behind/background) can be respected
     std::vector<uint8_t> bgIndex(outWidth * outHeight, 0);
 
-    // Use nametable base at $2000 (NT0). We'll respect mirrorVertical from the bus when mapping other nametables.
-    uint16_t ntBase = 0x2000;
-
     // For each tile on the screen (32x30 tiles)
     for (int ty = 0; ty < 30; ++ty) {
         for (int tx = 0; tx < 32; ++tx) {
-            uint16_t tileIndex = vram[(ntBase - 0x2000) + ty * 32 + tx];
-            // attribute byte index computation
+            // Calculate nametable index with mirroring
+            int ntX = tx;
+            int ntY = ty;
+            int ntIndex = 0;
+            if (bus.mirrorVertical) {
+                // Vertical mirroring: NT0 ($2000) and NT1 ($2400) are unique, NT2/NT3 mirror NT0/NT1
+                if (ntX < 32) {
+                    ntIndex = ntY * 32 + ntX; // $2000
+                } else {
+                    ntIndex = ntY * 32 + (ntX - 32) + 0x400; // $2400
+                }
+            } else {
+                // Horizontal mirroring: NT0 ($2000) and NT2 ($2800) are unique, NT1/NT3 mirror NT0/NT2
+                if (ntY < 30) {
+                    ntIndex = ntY * 32 + ntX; // $2000
+                } else {
+                    ntIndex = (ntY - 30) * 32 + ntX + 0x800; // $2800
+                }
+            }
+            uint16_t tileIndex = vram[ntIndex];
+            // attribute table index
             int attrX = tx / 4;
             int attrY = ty / 4;
             uint8_t attr = vram[0x3C0 + attrY * 8 + attrX];
-            int localTx = (tx % 4) / 2; // 0 or 1
-            int localTy = (ty % 4) / 2; // 0 or 1
+            int localTx = (tx % 4) / 2;
+            int localTy = (ty % 4) / 2;
             int shift = (localTy * 2 + localTx) * 2;
             uint8_t paletteHighBits = (attr >> shift) & 0x3;
 
-            int tileBase = tileIndex * 16; // in CHR
-            // background pattern table: choose 0 or 1 from PPUCTRL bit 4
+            int tileBase = tileIndex * 16;
             int patternBase = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
             const uint8_t* chr = nullptr;
             if (!bus.chrRom.empty()) chr = bus.chrRom.data() + patternBase;
@@ -183,10 +251,9 @@ bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outH
             for (int row = 0; row < 8; ++row) {
                 uint16_t addrLow = patternBase + tileBase + row;
                 uint16_t addrHigh = patternBase + tileBase + row + 8;
-                uint8_t low = 0, high = 0;
-                // Notify mapper/Bus about PPU CHR reads so mappers (MMC3) can detect A12 rising
                 bus.NotifyPPUAddr(addrLow);
                 bus.NotifyPPUAddr(addrHigh);
+                uint8_t low = 0, high = 0;
                 if (bus.mapper) {
                     low = bus.mapper->CHRRead(addrLow);
                     high = bus.mapper->CHRRead(addrHigh);
@@ -199,14 +266,13 @@ bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outH
                     uint8_t lo = (low >> bit) & 1;
                     uint8_t hi = (high >> bit) & 1;
                     uint8_t colorIndex = lo | (hi << 1);
-                    // paletteRam index: 0x3F00 + paletteHighBits*4 + colorIndex
                     uint8_t palIndex = paletteRam[(paletteHighBits * 4) + colorIndex] & 0x3F;
                     uint32_t finalColor = NES_COLORS[palIndex % 64];
                     int px = tx * 8 + col;
                     int py = ty * 8 + row;
                     if (px < outWidth && py < outHeight) {
                         outPixels[py * outWidth + px] = finalColor | 0xFF000000u;
-                        bgIndex[py * outWidth + px] = colorIndex; // 0 means background transparent
+                        bgIndex[py * outWidth + px] = colorIndex;
                     }
                 }
             }

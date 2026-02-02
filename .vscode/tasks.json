@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run NES Emulator (Mario)",
+			"type": "shell",
+			"command": "./build/proiectPC",
+			"args": [
+				"gui",
+				"build/mario.nes"
+			],
+			"group": "test"
+		}
+	]
+}

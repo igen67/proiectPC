@@ -189,6 +189,8 @@ CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o: \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
  /home/alex/Downloads/proiectPC/solutions/headers/types.h \
+ /home/alex/Downloads/proiectPC/solutions/headers/cpu.h \
+ /home/alex/Downloads/proiectPC/solutions/headers/instructions.h \
  /home/alex/Downloads/proiectPC/solutions/headers/mapper.h \
  /usr/include/c++/15.2.1/cstring /usr/include/string.h \
  /usr/include/strings.h /usr/include/c++/15.2.1/algorithm \

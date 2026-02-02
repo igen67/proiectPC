@@ -1072,37 +1072,49 @@ struct InstructionHandlers
     static void JSR_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         // On entry, PC points to the low byte of the operand (FetchByte advanced PC)
         // JSR should push (address of return - 1) so that RTS pulling it and adding 1 returns to the byte after JSR.
-        Word returnAddress = cpu.PC + 1; // address of the last byte of the JSR instruction
+        Word returnAddress = cpu.PC + 2; // address of the last byte of the JSR instruction
         // push high then low bytes
-        cpu.SP--;
-        cpu.modifySP();
         bus.write(cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;
         cpu.modifySP();
         bus.write(cpu.SP, returnAddress & 0xFF);
+        cpu.SP--;
+        cpu.modifySP();
         cpu.PC = cpu.FetchWord(Cycles, bus);
         Cycles += 6;
     }
     // RTS: 6 cycles
     static void RTS_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.PC = cpu.PullWord(Cycles, bus) + 1;
+        cpu.SP++;
+        Byte lo = bus.read(0x0100 | cpu.SP);
+        cpu.SP++;
+        Byte hi = bus.read(0x0100 | cpu.SP);
         Cycles += 6;
     }
     // RTI: 6 cycles
     static void RTI_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Byte status = bus.read(cpu.SP);
         cpu.SP++;
-        cpu.modifySP();
+        Byte status = bus.read(0x0100 | cpu.SP);
 
-        cpu.C = (status & 0b00000001) != 0;
-        cpu.Z = (status & 0b00000010) != 0;
-        cpu.I = (status & 0b00000100) != 0;
-        cpu.D = (status & 0b00001000) != 0;
-        cpu.B = (status & 0b00010000) != 0;
-        cpu.V = (status & 0b01000000) != 0;
-        cpu.N = (status & 0b10000000) != 0;
-        cpu.PC = cpu.PullWord(Cycles, bus);
+        cpu.C = status & 0x01;
+        cpu.Z = status & 0x02;
+        cpu.I = status & 0x04;
+        cpu.D = status & 0x08;
+        // bit 4 ignored
+        // bit 5 ignored
+        cpu.V = status & 0x40;
+        cpu.N = status & 0x80;
+
+        cpu.SP++;
+        Byte lo = bus.read(0x0100 | cpu.SP);
+
+        cpu.SP++;
+        Byte hi = bus.read(0x0100 | cpu.SP);
+
+        cpu.PC = (hi << 8) | lo;
         Cycles += 6;
+        printf("STATUS=%02X I=%d\n", status, cpu.I);
+
     }
     // BRK: 7 cycles
     static void BRK_Handler(CPU& cpu, u32& Cycles, Bus& bus) {

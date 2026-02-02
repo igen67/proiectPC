@@ -66,6 +66,8 @@ private:
     // PPU cycle/frame counters
     uint32_t ppuCycleCounter = 0;
     bool frameReady = false;
+    int scanline = 0;
+    int cycle = 0;
 
     // Last rendered full frame (256x240) RGBA32
     std::vector<uint32_t> lastFrame;

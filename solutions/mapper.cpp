@@ -5,6 +5,9 @@
 #include <iostream>
 #include <cstdio>
 
+static bool g_mapperVerbose = false; // set true to enable detailed mapper logs
+static bool g_mapperIRQLog = true;    // set true to enable IRQ-specific logs
+
 // Minimal MMC3 (Mapper 4) implementation. This supports PRG/CHR bank switching and IRQ scanline counting
 // sufficiently for many games (including SMB) in a basic form.
 class Mapper4 : public Mapper {
@@ -57,12 +60,16 @@ public:
                 bankSelect = value & 0x07;
                 prgMode = (value & 0x40) != 0;
                 chrMode = (value & 0x80) != 0;
-                std::cout << "Mapper4: bank select=" << int(bankSelect)
+                if (g_mapperVerbose) std::cout << "Mapper4: bank select=" << int(bankSelect)
                           << " prgMode=" << prgMode << " chrMode=" << chrMode << std::endl;
             } else {
                 // bank data
-                bankRegs[bankSelect] = value;
-                std::cout << "Mapper4: bank data reg[" << int(bankSelect) << "] = " << int(value) << std::endl;
+                if (bankSelect < 8) {
+                    bankRegs[bankSelect] = value;
+                    if (g_mapperVerbose) std::cout << "Mapper4: bank data reg[" << int(bankSelect) << "] = " << int(value) << std::endl;
+                } else {
+                    std::cout << "Mapper4: bank data reg[" << int(bankSelect) << "] OUT OF RANGE!" << std::endl;
+                }
             }
             return;
         }
@@ -70,16 +77,20 @@ public:
             if ((addr & 1) == 0) {
                 // mirroring
                 bus->mirrorVertical = (value & 1) != 0;
+                if (g_mapperVerbose) std::cout << "Mapper4: mirroring set to " << (bus->mirrorVertical ? "vertical" : "horizontal") << std::endl;
             } else {
                 // PRG RAM protect - ignored for now
+                if (g_mapperVerbose) std::cout << "Mapper4: PRG RAM protect write ignored" << std::endl;
             }
             return;
         }
         if (addr >= 0xC000 && addr <= 0xDFFF) {
             if ((addr & 1) == 0) {
                 irqLatch = value;
+                if (g_mapperIRQLog) std::cout << "Mapper4: IRQ latch set to " << int(value) << std::endl;
             } else {
                 irqReload = true;
+                if (g_mapperIRQLog) std::cout << "Mapper4: IRQ reload triggered" << std::endl;
             }
             return;
         }
@@ -88,8 +99,10 @@ public:
                 // disable
                 irqEnable = false;
                 if (bus && bus->cpu) bus->cpu->Interrupt = false;
+                if (g_mapperIRQLog) std::cout << "Mapper4: IRQ disabled" << std::endl;
             } else {
                 irqEnable = true;
+                if (g_mapperIRQLog) std::cout << "Mapper4: IRQ enabled" << std::endl;
             }
             return;
         }
@@ -175,6 +188,12 @@ public:
             }
         }
 
+        // Bounds check for PRG bank
+        if (bank >= prgBankCount) {
+            std::cout << "Mapper4: PRG bank " << bank << " OUT OF RANGE! (max=" << prgBankCount-1 << ")" << std::endl;
+            bank = lastBank;
+        }
+
         uint32_t absAddr = bank * 0x2000 + inner;
         if (addr >= 0xFF00) {
             std::cout << "Mapper4: ReadPRG addr=0x" << std::hex << addr << " slot=" << std::dec << slot
@@ -203,8 +222,8 @@ public:
             } else {
                 --irqCounter;
             }
-            // Log sparingly: every 8 edges to avoid flooding
-            if ((a12EdgeCount & 7) == 0) {
+            // Log sparingly: focus on IRQ events
+            if ((a12EdgeCount & 31) == 0 && g_mapperVerbose) {
                 std::cout << "Mapper4: A12 rising edge #" << a12EdgeCount
                           << " irqCounter=" << int(irqCounter)
                           << " irqLatch=" << int(irqLatch)
@@ -214,7 +233,7 @@ public:
                 // Request IRQ on CPU
                 if (bus && bus->cpu) {
                     bus->cpu->Interrupt = true;
-                    std::cout << "Mapper4: IRQ asserted (edgeCount=" << a12EdgeCount << ")" << std::endl;
+                    if (g_mapperIRQLog) std::cout << "Mapper4: IRQ asserted (edgeCount=" << a12EdgeCount << ")" << std::endl;
                 }
             }
         }
