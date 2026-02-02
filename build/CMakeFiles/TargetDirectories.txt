@@ -1,0 +1,6 @@
+/home/alex/Downloads/proiectPC/build/CMakeFiles/imgui.dir
+/home/alex/Downloads/proiectPC/build/CMakeFiles/imgui_impl.dir
+/home/alex/Downloads/proiectPC/build/CMakeFiles/proiectPC.dir
+/home/alex/Downloads/proiectPC/build/CMakeFiles/ppu_test.dir
+/home/alex/Downloads/proiectPC/build/CMakeFiles/edit_cache.dir
+/home/alex/Downloads/proiectPC/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libimgui_impl.a "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o"
+/usr/bin/ranlib libimgui_impl.a
