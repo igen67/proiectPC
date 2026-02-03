@@ -63,7 +63,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
     // PPU + texture for pattern table/frame view
     PPU ppu(bus);
-    ppu.Reset();
+    //ppu.Reset();
     bus.AttachPPU(&ppu);
     // Attach CPU ptr to bus so mappers can request IRQs
     bus.AttachCPU(&cpu);

@@ -48,26 +48,30 @@ void PPU::StepCycles(uint32_t cycles) {
 
  // --- VBlank start ---
 if (scanline == 241 && cycle == 1) {
-    PPUSTATUS |= 0x80; 
+    frameReady = true;
     printf("PPU: ENTER VBLANK\n");
     printf("VBLANK: PPUCTRL=%02X\n", PPUCTRL);
-    //PPUCTRL |= 0x80; //debug
+    PPUSTATUS |= 0x80; //debug
     if (PPUCTRL & 0x80) {
    // ASSERT NMI
         bus.nmiLine = true;
         std::cout << "[PPU] VBlank start: NMI line asserted\n";
+
+            int w = 0, h = 0;
+            RenderFrame(lastFrame, w, h);
+
     }
+
 }
 
 // --- VBlank end ---
 if (scanline == 261 && cycle == 1) {
-    PPUSTATUS &= ~0x80;   // DEASSERT NMI
+    PPUSTATUS &= ~0xE0;   // DEASSERT NMI
 }
+        // End of frame
+        if (scanline == 240 && cycle == 340) {
 
-        // Optional: render frame at end of pre-render scanline
-        if (scanline == 261 && cycle == 0) {
-            int w = 0, h = 0;
-            RenderFrame(lastFrame, w, h);
+            // Reset for next frame
         }
     }
 }
@@ -76,37 +80,10 @@ if (scanline == 261 && cycle == 1) {
 
 
 uint8_t PPU::ReadRegister(uint16_t reg) {
+    if (bus.mapper) bus.mapper->OnPPUAddr(reg, 0);
     switch (reg) {
         case 2: { // PPUSTATUS
             uint8_t val = PPUSTATUS;
-            // diagnostics: count reads to detect busy-wait loops polling $2002
-            static uint32_t statusReadCount = 0;
-            static uint32_t lastYieldAt = 0;
-            static bool g_pollYieldEnabled = true; // gate the heuristic
-
-            ++statusReadCount;
-            if ((statusReadCount % 1000) == 0) {
-                std::cout << "[PPU] PPUSTATUS read count=" << statusReadCount << " PPUSTATUS=0x" << std::hex << int(val) << std::dec << std::endl;
-                if (bus.cpu) {
-                    std::cout << "[PPU] PPUSTATUS read by CPU PC=0x" << std::hex << bus.cpu->PC << std::dec << std::endl;
-                }
-            }
-
-            // If the CPU is busy-polling $2002 for VBlank and VBlank is not yet set, yield occasionally
-            if (g_pollYieldEnabled) {
-                if ((val & 0x80) == 0) {
-                    // not in VBlank: if we've polled many times since last yield, sleep briefly
-                    const uint32_t POLL_YIELD_THRESHOLD = 5000;
-                    if ((statusReadCount - lastYieldAt) >= POLL_YIELD_THRESHOLD) {
-                        lastYieldAt = statusReadCount;
-                        std::cout << "[PPU] Polling busy-wait detected: yielding 1ms (count=" << statusReadCount << ")" << std::endl;
-                    }
-                } else {
-                    // VBlank reached: reset counters to avoid unnecessary yields
-                    statusReadCount = 0;
-                    lastYieldAt = 0;
-                }
-            }
 
             // reading PPUSTATUS clears VBlank flag and latch
             PPUSTATUS &= ~0x80u;
@@ -204,6 +181,11 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
 
 // Render a full 256x240 frame into outPixels. Uses nametable at $2000 and list simplifications.
 bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeight) {
+    PPUMASK |= 0x18;
+    if ((PPUMASK & 0x08) == 0 && (PPUMASK & 0x10) == 0) {
+    return false;
+}
+
     outWidth = 256;
     outHeight = 240;
     outPixels.assign(outWidth * outHeight, 0xFF000000u);
@@ -218,7 +200,7 @@ bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outH
             int ntX = tx;
             int ntY = ty;
             int ntIndex = 0;
-            if (bus.mirrorVertical) {
+            /*if (bus.mirrorVertical) {
                 // Vertical mirroring: NT0 ($2000) and NT1 ($2400) are unique, NT2/NT3 mirror NT0/NT1
                 if (ntX < 32) {
                     ntIndex = ntY * 32 + ntX; // $2000
@@ -232,8 +214,10 @@ bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outH
                 } else {
                     ntIndex = (ntY - 30) * 32 + ntX + 0x800; // $2800
                 }
-            }
-            uint16_t tileIndex = vram[ntIndex];
+            }*/
+           Word ntBase = 0x2000;
+           Word ntAdress = ntBase + (ntY * 32) + ntX;
+            uint16_t tileIndex = vram[(ntAdress) & 0x3FF]; // mirrored to 0x800
             // attribute table index
             int attrX = tx / 4;
             int attrY = ty / 4;

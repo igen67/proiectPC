@@ -201,12 +201,13 @@ void InitializeInstructionTable() {
     // Other Instructions (NOP, BRK, RTI, RTS)
     CPU::instructionTable[0xEA] = &InstructionHandlers::NOP_Handler;      // NOP
     // unofficial single-byte NOPs sometimes used by assemblers/optimizers
-    CPU::instructionTable[0x1A] = &InstructionHandlers::NOP_Handler;      // NOP (0x1A)
-    CPU::instructionTable[0x19] = &InstructionHandlers::NOP_Handler;      // NOP (0x19)
-    CPU::instructionTable[0x1C] = &InstructionHandlers::NOP_Handler;      // NOP (0x1C)
-    CPU::instructionTable[0x1D] = &InstructionHandlers::NOP_Handler;      // NOP (0x1D)
-    CPU::instructionTable[0x1E] = &InstructionHandlers::NOP_Handler;      // NOP (0x1E)
-    CPU::instructionTable[0x1F] = &InstructionHandlers::NOP_Handler;      // NOP (0x1F)
+CPU::instructionTable[0x1C] = &InstructionHandlers::NOP_ABSX_Handler;
+CPU::instructionTable[0x1D] = &InstructionHandlers::NOP_ABSX_Handler;
+CPU::instructionTable[0x19] = &InstructionHandlers::NOP_ABSY_Handler;
+CPU::instructionTable[0x1E] = &InstructionHandlers::NOP_ABSX_Handler;
+CPU::instructionTable[0x1F] = &InstructionHandlers::NOP_ABSX_Handler;
+CPU::instructionTable[0x1A] = &InstructionHandlers::NOP_Handler; // real 1-byte NOP
+    // NOP (0x1F)
     CPU::instructionTable[0x00] = &InstructionHandlers::BRK_Handler;      // BRK
     CPU::instructionTable[0x40] = &InstructionHandlers::RTI_Handler;      // RTI
             // Patch: Treat all unknown opcodes as NOP to prevent crashes

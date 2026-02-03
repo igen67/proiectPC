@@ -390,29 +390,6 @@ void CPU::Step(u32& Cycles, Bus& bus) {
     // Loop detection & hotspot diagnostics for suspicious PC ranges (e.g., $FFF0-$FFFF, $F400-$F4FF)
     {
         uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-        if (g_loopDetect) {
-            uint16_t page = instrAddr & 0xFFF0;
-            if (page == g_loopLastPage) {
-                ++g_loopStreak;
-            } else {
-                g_loopLastPage = page;
-                g_loopStreak = 1;
-            }
-
-            // If we're in known suspicious ranges report occasionally and yield when extremely hot
-            if (instrAddr >= 0xFFF0 || (instrAddr >= 0xF400 && instrAddr < 0xF500)) {
-                if ((g_loopStreak % g_loopReportThreshold) == 0) {
-                    std::cout << "[LOOP] Hotspot page=0x" << std::hex << page << " PC=0x" << instrAddr << std::dec
-                              << " count=" << g_loopStreak << " I=" << int(I)
-                              << " Interrupt=" << (Interrupt?1:0) << " NMIRequested=" << (NMIRequested?1:0);
-                    if (bus.mapper) std::cout << " Mapper(" << bus.mapper->DebugString() << ")";
-                    std::cout << std::endl;
-                    std::cout << "[LOOP] bytes@0x" << std::hex << page << ":";
-                    for (int i = 0; i < 16; ++i) std::cout << " " << std::hex << int(bus.read(page + i));
-                    std::cout << std::dec << std::endl;
-                }
-            }
-        }
     }
 
     InvokeInstruction(opcode, Cycles, bus);
@@ -431,10 +408,11 @@ void CPU::Step(u32& Cycles, Bus& bus) {
 void CPU::Execute(u32& Cycles, Bus& bus) {
     while (true) {
         u32 before = Cycles;
-        if (bus.nmiLine && !prevNmiLine) {
+        if (bus.nmiLine) {
+            bus.nmiLine = false;
             HandleNMI(Cycles, bus);
         }       
-        prevNmiLine = bus.nmiLine;
+
 
         int Instruction = FetchByte(Cycles, bus);
 

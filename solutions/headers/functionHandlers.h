@@ -23,7 +23,9 @@ struct InstructionHandlers
     }
     // Zero Page,X: 4 cycles
     static void LDA_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.A = bus.read(cpu.FetchByte(Cycles, bus) + cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.A = bus.read(Address);
         cpu.LDASetStatus();
         Cycles += 4;
     }
@@ -77,9 +79,10 @@ struct InstructionHandlers
     }
     // Zero Page,X: 4 cycles
     static void STA_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Byte Address = cpu.FetchByte(Cycles, bus) + cpu.X;
-        bus.write(Address, cpu.A);
-        Cycles += 4;
+Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+bus.write(Address, cpu.A);
+Cycles += 4;
     }
     // Absolute: 4 cycles
     static void STA_ABS_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
@@ -118,7 +121,8 @@ struct InstructionHandlers
     }
     // Zero Page,Y: 4 cycles
     static void STX_ZPY_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Byte Address = cpu.FetchByte(Cycles, bus) + cpu.Y;
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.Y); // force wrap
         bus.write(Address, cpu.X);
         Cycles += 4;
     }
@@ -137,7 +141,8 @@ struct InstructionHandlers
     }
     // Zero Page,X: 4 cycles
     static void STY_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Byte Address = cpu.FetchByte(Cycles, bus) + cpu.X;
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
         bus.write(Address, cpu.Y);
         Cycles += 4;
     }
@@ -162,7 +167,9 @@ struct InstructionHandlers
     }
     // Zero Page,Y: 4 cycles
     static void LDX_ZPY_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.X = bus.read(cpu.FetchByte(Cycles, bus) + cpu.Y);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.Y); // force wrap
+        cpu.X = bus.read(Address);
         cpu.LDXSetStatus();
         Cycles += 4;
     }
@@ -195,7 +202,9 @@ struct InstructionHandlers
     }
     // Zero Page,X: 4 cycles
     static void LDY_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.Y = bus.read(cpu.FetchByte(Cycles, bus) + cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.Y = bus.read(Address);
         cpu.LDYSetStatus();
         Cycles += 4;
     }
@@ -277,7 +286,8 @@ struct InstructionHandlers
     }
     static void DEC_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte Address = cpu.FetchByte(Cycles, bus)+cpu.X;
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
         Byte val = bus.read(Address);
         val -= 1;
         bus.write(Address, val);
@@ -320,7 +330,8 @@ struct InstructionHandlers
     }
     static void INC_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte Address = cpu.FetchByte(Cycles, bus)+cpu.X;
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
         Byte val = bus.read(Address);
         val += 1;
         bus.write(Address, val);
@@ -377,7 +388,9 @@ struct InstructionHandlers
     }
     static void SBC_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
-        cpu.SBCSetStatus(bus.read(cpu.FetchByte(Cycles, bus)+cpu.X));
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.SBCSetStatus(bus.read(Address));
     }
     static void SBC_ABS_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
@@ -414,7 +427,9 @@ struct InstructionHandlers
     }
     static void AND_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
-        cpu.A = cpu.A & bus.read(cpu.FetchByte(Cycles, bus)+cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.A = cpu.A & bus.read(Address);
         cpu.AndSetStatus();
         Cycles += 4;
     }
@@ -463,7 +478,9 @@ struct InstructionHandlers
     }
     static void ORA_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
-        cpu.A = cpu.A | bus.read(cpu.FetchByte(Cycles, bus)+cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+        Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.A = cpu.A | bus.read(Address);
         cpu.AndSetStatus();
         Cycles += 4;
     }
@@ -512,7 +529,9 @@ struct InstructionHandlers
     }
     static void EOR_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
-        cpu.A = cpu.A ^ bus.read(cpu.FetchByte(Cycles, bus)+cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.A = cpu.A ^ bus.read(Address);
         cpu.AndSetStatus();
         Cycles += 4;
     }
@@ -572,7 +591,9 @@ struct InstructionHandlers
     }
     static void CMP_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte Value = bus.read(cpu.FetchByte(Cycles, bus)+cpu.X);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        Byte Value = bus.read(Address);
         Byte Temp = cpu.A - Value;
         cpu.C = (cpu.A >= Value);
         cpu.Z = (Temp == 0x00);
@@ -706,7 +727,9 @@ struct InstructionHandlers
     }
     static void ADC_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
-        cpu.ADCSetStatus(bus.read(cpu.FetchByte(Cycles, bus)+cpu.X));
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        cpu.ADCSetStatus(bus.read(Address));
         Cycles += 4;
     }
     static void ADC_ABS_Handler(CPU& cpu, u32& Cycles, Bus& bus)
@@ -750,10 +773,11 @@ struct InstructionHandlers
 
     static void ASL_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte addr = cpu.FetchByte(Cycles, bus)+cpu.X;
-        Byte val = bus.read(addr);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        Byte val = bus.read(Address);
         cpu.ASL(bus, val);
-        bus.write(addr, val);
+        bus.write(Address, val);
     }
 
     static void ASL_ABS_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
@@ -789,10 +813,11 @@ struct InstructionHandlers
 
     static void LSR_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte addr = cpu.FetchByte(Cycles, bus)+cpu.X;
-        Byte val = bus.read(addr);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        Byte val = bus.read(Address);
         cpu.LSR(bus, val);
-        bus.write(addr, val);
+        bus.write(Address, val);
         Cycles += 6;
     }
 
@@ -829,10 +854,11 @@ struct InstructionHandlers
 
     static void ROL_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte addr = cpu.FetchByte(Cycles, bus)+cpu.X;
-        Byte val = bus.read(addr);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        Byte val = bus.read(Address);
         cpu.ROL(bus, val);
-        bus.write(addr, val);
+        bus.write(Address, val);
         Cycles += 6;
     }
 
@@ -871,10 +897,11 @@ struct InstructionHandlers
 
     static void ROR_ZPX_Handler(CPU& cpu, u32& Cycles, Bus& bus) 
     {
-        Byte addr = cpu.FetchByte(Cycles, bus)+cpu.X;
-        Byte val = bus.read(addr);
+        Byte zp = cpu.FetchByte(Cycles, bus);
+Byte Address = Byte(zp + cpu.X); // force wrap
+        Byte val = bus.read(Address);
         cpu.ROR(bus, val);
-        bus.write(addr, val);
+        bus.write(Address, val);
         Cycles += 6;
     }
 
@@ -1145,6 +1172,15 @@ struct InstructionHandlers
         // Do nothing
         Cycles += 2;
     }
+    static void NOP_ABSX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
+        // Do nothing, but account for extra cycle
+        cpu.FetchWord(Cycles, bus);
+        Cycles += 4;
+    }
+    static void NOP_ABSY_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
+    cpu.FetchWord(Cycles, bus);
+    Cycles += 4;
+}
     //BIT INSTRUCTIONS
     // Zero Page: 3 cycles
     static void BIT_ZP_Handler(CPU& cpu, u32& Cycles, Bus& bus) {

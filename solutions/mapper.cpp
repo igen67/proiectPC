@@ -58,8 +58,10 @@ public:
             if ((addr & 1) == 0) {
                 // bank select
                 bankSelect = value & 0x07;
-                prgMode = (value & 0x40) != 0;
-                chrMode = (value & 0x80) != 0;
+prgMode = value & 0x40;
+chrMode = value & 0x80;
+
+
                 if (g_mapperVerbose) std::cout << "Mapper4: bank select=" << int(bankSelect)
                           << " prgMode=" << prgMode << " chrMode=" << chrMode << std::endl;
             } else {
@@ -119,13 +121,14 @@ public:
         if (!chrMode) {
             // Mode 0: r0/r1 are 2KB at $0000/$0800, r2..r5 1KB each at $1000..$1FFF
             if (a < 0x0800) {
-                bankIndex = bankRegs[0] & 0xFF;
-                offset = a & 0x7FF; // within 2KB
-                return ReadCHRBank(bankIndex, offset + ( (a & 0x0800) ? 0x000 : 0x000));
+                uint32_t bank = bankRegs[0] & 0xFE; // FORCE EVEN
+                uint32_t abs = bank * 0x400 + offset;
+                return bus->chrRom[abs];
+
             } else if (a < 0x1000) {
-                bankIndex = bankRegs[1] & 0xFF;
-                offset = a & 0x7FF;
-                return ReadCHRBank(bankIndex, offset);
+                uint32_t bank = bankRegs[1] & 0xFE;
+                uint32_t abs = bank * 0x400 + offset;
+                return bus->chrRom[abs];
             } else if (a < 0x1400) {
                 bankIndex = bankRegs[2] & 0xFF;
                 offset = a & 0x3FF;
@@ -202,13 +205,26 @@ public:
         if (absAddr < bus->prgRom.size()) return bus->prgRom[absAddr];
         return 0xFF;
     }
+    uint8_t ReadCHR1K(uint32_t bank, uint32_t offset) {
+    uint32_t abs = bank * 0x400 + offset;
+    if (abs < bus->chrRom.size()) return bus->chrRom[abs];
+    return 0;
+}
 
-    uint8_t ReadCHRBank(uint32_t bankIndex, uint32_t offset) {
-        // Bank index is in 1KB units for registers 2..5, but for 2KB regs the number refers to 1KB unit/2? We'll treat bankIndex as 1KB units.
-        uint32_t abs = (bankIndex * 0x400) + offset;
-        if (abs < bus->chrRom.size()) return bus->chrRom[abs];
-        return 0;
-    }
+uint8_t ReadCHR2K(uint32_t bank, uint32_t offset) {
+    uint32_t abs = bank * 0x800 + offset;
+    if (abs < bus->chrRom.size()) return bus->chrRom[abs];
+    return 0;
+}
+
+
+uint8_t ReadCHRBank(uint32_t bankIndex, uint32_t offset) {
+    uint32_t abs = bankIndex * 0x400 + offset;
+    if (abs < bus->chrRom.size())
+        return bus->chrRom[abs];
+    return 0;
+}
+
 
     void OnPPUAddr(uint16_t addr, uint32_t cycles) override {
         // detect rising edge of A12 (bit 12 of addr)

@@ -64,6 +64,13 @@ void Bus::NotifyPPUAddr(uint16_t addr) {
 }
 
 void Bus::write(uint16_t addr, uint8_t value) {
+   if (addr >= 0x2000 && addr <= 0x2007) {
+    std::cout << "CPU write to PPU reg addr=$"
+              << std::hex << addr
+              << " val=$" << int(value) << std::dec << "\n";
+}
+
+
     // RAM and mirrors
     if (addr <= 0x1FFF) {
         ram.Data[addr & RAM_MASK] = value;
@@ -80,14 +87,14 @@ void Bus::write(uint16_t addr, uint8_t value) {
             std::cout << "Bus: (further PPU writes suppressed)" << std::endl;
             ++ppuWriteLogCount;
         }
-        Word reg = (addr - 0x2000) & 0x7;
+        Word reg = addr & 0x7;
         ppu->WriteRegister(reg, value);
         return;
     }
 
     // Mapper-aware PRG area handling
     if (mapper) {
-        if (addr >= 0x6000) {
+        if (mapper && addr >= 0x6000) {
             mapper->CPUWrite(addr, value);
             return;
         }
