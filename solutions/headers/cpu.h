@@ -13,7 +13,7 @@ extern bool g_verboseCpu;
 struct CPU
 {
     Word PC; // program counter
-    Word SP; // stack pointer
+    Byte SP; // stack pointer
 
     Byte A, X, Y; // regs
 
@@ -29,8 +29,12 @@ struct CPU
     static InstructionHandler instructionTable[256];
 
     bool Interrupt = false;
+
+
     // NMI request (set by PPU on VBlank)
     bool NMIRequested = false;
+    bool prevNmiLine = false;
+
     // Tracing: when >0, CPU will print executed instructions and bus interactions for debugging
     int traceInstructionsRemaining = 0;
     void HandleNMI(u32& Cycles, Bus& bus);

@@ -16,6 +16,9 @@ class Bus {
 public:
     static constexpr uint32_t RAM_SIZE = 0x0800; // 2KB
     static constexpr uint32_t RAM_MASK = 0x07FF;
+    bool irqEnable;
+    bool nmiLine = false;
+
     Mem ram; // Internal RAM (2KB)
 
     // Cartridge PRG ROM (read-only)

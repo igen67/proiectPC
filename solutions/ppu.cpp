@@ -28,7 +28,7 @@ void PPU::Reset() {
     std::fill(vram.begin(), vram.end(), 0);
     std::fill(std::begin(paletteRam), std::end(paletteRam), 0);
     std::fill(std::begin(oam), std::end(oam), 0);
-    PPUCTRL = PPUMASK = PPUSTATUS = OAMADDR = 0;
+PPUMASK = PPUSTATUS = OAMADDR = 0;
     vramAddr = vramAddrTemp = 0;
     vramLatch = false;
     ppuCycleCounter = 0;
@@ -46,24 +46,23 @@ void PPU::StepCycles(uint32_t cycles) {
             if (scanline > 261) scanline = 0;
         }
 
-        // --- VBlank start ---
-        if (scanline == 241 && cycle == 1) {
-            bool wasVBlank = (PPUSTATUS & 0x80) != 0;
-            PPUSTATUS |= 0x80; // Set VBlank flag
-            frameReady = true;  // optional: signal GUI/frame render
+ // --- VBlank start ---
+if (scanline == 241 && cycle == 1) {
+    PPUSTATUS |= 0x80; 
+    printf("PPU: ENTER VBLANK\n");
+    printf("VBLANK: PPUCTRL=%02X\n", PPUCTRL);
+    //PPUCTRL |= 0x80; //debug
+    if (PPUCTRL & 0x80) {
+   // ASSERT NMI
+        bus.nmiLine = true;
+        std::cout << "[PPU] VBlank start: NMI line asserted\n";
+    }
+}
 
-            // Trigger NMI if enabled
-            if (!wasVBlank && (PPUCTRL & 0x80) && bus.cpu) {
-                bus.cpu->NMIRequested = true;
-                std::cout << "[PPU] VBlank start: NMIRequested set at scanline="
-                          << scanline << " cycle=" << cycle << std::endl;
-            }
-        }
-
-        // --- VBlank end (pre-render scanline) ---
-        if (scanline == 261 && cycle == 1) {
-            PPUSTATUS &= ~0x80; // Clear VBlank
-        }
+// --- VBlank end ---
+if (scanline == 261 && cycle == 1) {
+    PPUSTATUS &= ~0x80;   // DEASSERT NMI
+}
 
         // Optional: render frame at end of pre-render scanline
         if (scanline == 261 && cycle == 0) {
@@ -140,11 +139,12 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
 }
 
 void PPU::WriteRegister(uint16_t reg, uint8_t val) {
+    printf("PPU WRITE reg=%d val=%02X\n", reg, val);
     switch (reg) {
         case 0: // PPUCTRL
         {
             uint8_t old = PPUCTRL;
-            PPUCTRL = val;
+            PPUCTRL = val & 0xFF;
             if ((old & 0x80) != (PPUCTRL & 0x80)) {
                 if (PPUCTRL & 0x80) std::cout << "[PPU] PPUCTRL: NMI enabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;
                 else std::cout << "[PPU] PPUCTRL: NMI disabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;

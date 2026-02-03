@@ -21,7 +21,7 @@ public:
     uint8_t irqLatch = 0;
     uint8_t irqCounter = 0;
     bool irqReload = false;
-    bool irqEnable = false;
+
 
     // A12 tracking
     bool prevA12 = false;
@@ -97,11 +97,11 @@ public:
         if (addr >= 0xE000) {
             if ((addr & 1) == 0) {
                 // disable
-                irqEnable = false;
+                bus->irqEnable = false;
                 if (bus && bus->cpu) bus->cpu->Interrupt = false;
                 if (g_mapperIRQLog) std::cout << "Mapper4: IRQ disabled" << std::endl;
             } else {
-                irqEnable = true;
+                bus->irqEnable = true;
                 if (g_mapperIRQLog) std::cout << "Mapper4: IRQ enabled" << std::endl;
             }
             return;
@@ -227,9 +227,9 @@ public:
                 std::cout << "Mapper4: A12 rising edge #" << a12EdgeCount
                           << " irqCounter=" << int(irqCounter)
                           << " irqLatch=" << int(irqLatch)
-                          << " irqEnable=" << irqEnable << std::endl;
+                          << " irqEnable=" << bus->irqEnable << std::endl;
             }
-            if (irqCounter == 0 && irqEnable) {
+            if (irqCounter == 0 && bus->irqEnable) {
                 // Request IRQ on CPU
                 if (bus && bus->cpu) {
                     bus->cpu->Interrupt = true;
@@ -244,7 +244,7 @@ public:
     std::string DebugString() const override {
         char buf[256];
         snprintf(buf, sizeof(buf), "irqEnable=%d irqCounter=%d irqLatch=%d prgMode=%d chrMode=%d bank6=%u bank7=%u",
-                 irqEnable?1:0, irqCounter, irqLatch, prgMode?1:0, chrMode?1:0, bankRegs[6], bankRegs[7]);
+                 bus->irqEnable?1:0, irqCounter, irqLatch, prgMode?1:0, chrMode?1:0, bankRegs[6], bankRegs[7]);
         return std::string(buf);
     }
 };

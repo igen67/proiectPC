@@ -971,9 +971,9 @@ struct InstructionHandlers
     // PHA: 3 cycles
     static void PHA_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         // Push A onto the stack (stack is on page 1, wraps via modifySP)
+
+        bus.write(0x0100 | cpu.SP, cpu.A);
         cpu.SP--;
-        cpu.modifySP();
-        bus.write(cpu.SP, cpu.A);
         Cycles += 3;
     }
     // PLA: 4 cycles
@@ -982,15 +982,14 @@ struct InstructionHandlers
             std::cerr << "Stack overflow!" << std::endl;
             exit(1);
         }
-        cpu.A = bus.read(cpu.SP);
         cpu.SP++;
-        cpu.modifySP();
+        cpu.A = bus.read(0x0100 | cpu.SP);
+
         Cycles += 4;
     }
     // PHP: 3 cycles
     static void PHP_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.SP--;
-        cpu.modifySP();
+
         Byte status = 0;
         if (cpu.C == 1) status |= 0b00000001;
         if (cpu.Z == 1) status |= 0b00000010;
@@ -999,14 +998,15 @@ struct InstructionHandlers
         if (cpu.B == 1) status |= 0b00010000;
         if (cpu.V == 1) status |= 0b01000000;
         if (cpu.N == 1) status |= 0b10000000;
-        bus.write(cpu.SP, status);
+        bus.write(0x0100 | cpu.SP, status);
+        cpu.SP--;
         Cycles += 3;
     }
     // PLP: 4 cycles
     static void PLP_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         cpu.SP++;
         cpu.modifySP();
-        Byte status = bus.read(cpu.SP);
+        Byte status = bus.read(0x0100 | cpu.SP);
         cpu.C = (status & (1 << 0)) ? 1 : 0;
         cpu.Z = (status & (1 << 1)) ? 1 : 0;
         cpu.I = (status & (1 << 2)) ? 1 : 0;
@@ -1074,12 +1074,10 @@ struct InstructionHandlers
         // JSR should push (address of return - 1) so that RTS pulling it and adding 1 returns to the byte after JSR.
         Word returnAddress = cpu.PC + 2; // address of the last byte of the JSR instruction
         // push high then low bytes
-        bus.write(cpu.SP, (returnAddress >> 8) & 0xFF);
+        bus.write(0x0100 | cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;
-        cpu.modifySP();
-        bus.write(cpu.SP, returnAddress & 0xFF);
+        bus.write(0x0100 | cpu.SP, returnAddress & 0xFF);
         cpu.SP--;
-        cpu.modifySP();
         cpu.PC = cpu.FetchWord(Cycles, bus);
         Cycles += 6;
     }
@@ -1095,15 +1093,17 @@ struct InstructionHandlers
     static void RTI_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         cpu.SP++;
         Byte status = bus.read(0x0100 | cpu.SP);
+        printf("PULL STATUS=%02X from %04X\n", status, 0x0100 | cpu.SP);
 
-        cpu.C = status & 0x01;
-        cpu.Z = status & 0x02;
-        cpu.I = status & 0x04;
-        cpu.D = status & 0x08;
+
+        cpu.C = (status >> 0) & 1;
+        cpu.Z = (status >> 1) & 1;
+        cpu.I = (status >> 2) & 1;
+        cpu.D = (status >> 3) & 1;
         // bit 4 ignored
-        // bit 5 ignored
-        cpu.V = status & 0x40;
-        cpu.N = status & 0x80;
+// bit 5 ignored
+        cpu.V = (status >> 6) & 1;
+        cpu.N = (status >> 7) & 1;
 
         cpu.SP++;
         Byte lo = bus.read(0x0100 | cpu.SP);
@@ -1118,17 +1118,13 @@ struct InstructionHandlers
     }
     // BRK: 7 cycles
     static void BRK_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Word returnAddress = cpu.PC + 2;
-        // push high then low
+        Word returnAddress = cpu.PC + 1;
+
+        bus.write(0x0100 | cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;
-        cpu.modifySP();
-        bus.write(cpu.SP, (returnAddress >> 8) & 0xFF);
-        cpu.SP--;
-        cpu.modifySP();
-        bus.write(cpu.SP, returnAddress & 0xFF);
+        bus.write(0x0100 | cpu.SP, returnAddress & 0xFF);
         // push status with B flag set
         cpu.SP--;
-        cpu.modifySP();
         Byte status = 0;
         if (cpu.C == 1) status |= 0b00000001;
         if (cpu.Z == 1) status |= 0b00000010;
@@ -1138,7 +1134,8 @@ struct InstructionHandlers
         status |= 0b00100000;
         if (cpu.V == 1) status |= 0b01000000;
         if (cpu.N == 1) status |= 0b10000000;
-        bus.write(cpu.SP, status);
+        bus.write(0x0100 | cpu.SP, status);
+        cpu.SP--;
         cpu.I = 0x01;
         cpu.PC = bus.read(0xFFFE) | (bus.read(0xFFFF) << 8);
         Cycles += 7;

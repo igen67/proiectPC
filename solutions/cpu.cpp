@@ -42,12 +42,7 @@ void CPU::printReg(char reg) {
 
 void CPU::modifySP()
 {
-    if (SP < 0x0100) {
-        SP = 0x01FF;
-    }
-    else if (SP > 0x01FF) {
-        SP = 0x0100;
-    }
+int abc =0;
 }
 
 Byte CPU::FetchByte(u32& Cycles, Bus& bus) {
@@ -79,8 +74,7 @@ void CPU::Reset(Bus& bus) {
     printf("Memory[0xFFFD]: 0x%X\n", bus.read(0xFFFD));
 
     printf("Reset Vector: 0x%X\n", PC);
-    // Use full 16-bit stack pointer (page 1 range 0x0100-0x01FF)
-    SP = 0x01FD;
+    SP = 0xFD;
     C = Z = D = B = V = N = 0;
     A = X = Y = 0;
     I = 1;
@@ -88,12 +82,14 @@ void CPU::Reset(Bus& bus) {
 } 
 
 Word CPU::PullWord(u32& Cycles, Bus& bus) {
+    SP++;
+    modifySP();
     Byte LowByte = bus.read(SP);
+
     SP++;
     modifySP();
     Byte HighByte = bus.read(SP);
-    SP++;
-    modifySP();
+
     Cycles += 2;
 
     return static_cast<Word>(HighByte) << 8 | LowByte;
@@ -271,79 +267,71 @@ void CPU::InvokeInstruction(Byte opcode, u32& Cycles, Bus& bus) {
 }
 void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 {
-    if (Interrupt && I == 0)  // Check if interrupt is requested and I flag is clear
-    {
-        // Log and acknowledge the IRQ
+    if (Interrupt && I == 0)  
+    {   // Log and acknowledge the IRQ
         std::cout << "[IRQ] Taking IRQ at PC=0x" << std::hex << PC << std::dec << " SP=0x" << std::hex << SP << std::dec << std::endl;
-        if (bus.cpu) bus.cpu->Interrupt = false; // acknowledge the line so it won't retrigger immediately
-
-        // Save PC to stack (low byte first) - pre-decrement to match PHA/PLA convention
+      //  if (bus.cpu) bus.cpu->Interrupt = false; // acknowledge the line so it won't retrigger immediately
+        bus.write(0x0100 | SP, (PC >> 8) & 0xFF);  // High byte
         SP--;
-        modifySP();
-        bus.write(SP, PC & 0xFF);  // Low byte
-        std::cout << "[IRQ] SP after pushing low PC: 0x" << std::hex << SP << std::dec << std::endl;
-
+        bus.write(0x0100 | SP, PC & 0xFF);  // High byte
         SP--;
-        modifySP();
-        bus.write(SP, (PC >> 8));  // High byte
-        std::cout << "[IRQ] SP after pushing high PC: 0x" << std::hex << SP << std::dec << std::endl;
 
         // Save status register to stack
-        Byte status = 0;
-        if (C == 1) status |= 0b00000001;
-        if (Z == 1) status |= 0b00000010;
-        if (I == 1) status |= 0b00000100;
-        if (D == 1) status |= 0b00001000;
-                    status |= 0b00010000;  // Set only for BRK
-                    status |= 0b00100000;
-        if (V == 1) status |= 0b01000000;
-        if (N == 1) status |= 0b10000000;
+       Byte status = 0;
 
+        if (C) status |= 0x01;   // Carry
+        if (Z) status |= 0x02;   // Zero
+        if (I) status |= 0x04;   // Interrupt Disable
+        if (D) status |= 0x08;   // Decimal (ignored on NES but still stored)
+// B flag = 0 for IRQ (DO NOT set bit 4)
+// Bit 5 is ALWAYS 1
+        status |= 0x20;
+        if (V) status |= 0x40;   // Overflow
+        if (N) status |= 0x80;   // Negative
+        printf("PUSH STATUS=%02X at %04X\n", status, 0x0100 | SP);
+
+        bus.write(0x0100 | SP, status);
         SP--;
-        modifySP();
-        bus.write(SP, status);
         std::cout << "[IRQ] SP after pushing status: 0x" << std::hex << SP << std::dec << std::endl;
-
-
         // Set I flag
         I = 1;
-
         // Fetch IRQ vector and set PC
         Word Address = bus.read(0xFFFE) | (bus.read(0xFFFF) << 8);
         std::cout << "[IRQ] Vector -> 0x" << std::hex << Address << std::dec << std::endl;
         PC = Address;
+        Cycles += 7; // IRQ handling takes 7 cycles
     }
 }
 
 // Non-Maskable Interrupt handler (NMI)
 void CPU::HandleNMI(u32& Cycles, Bus& bus) {
-    // Log NMI for debugging
-    std::cout << "[NMI] Taking NMI at PC=0x" << std::hex << PC << std::dec << " SP=0x" << std::hex << SP << std::dec << std::endl;
+        bus.nmiLine = false;
 
-    // Save PC to stack (low byte first) - pre-decrement to match PHA/PLA convention
-    SP--;
-    modifySP();
+printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
+
     bus.write(SP, PC & 0xFF);
-    std::cout << "[NMI] SP after pushing low PC: 0x" << std::hex << SP << std::dec << std::endl;
-
     SP--;
     modifySP();
+    std::cout << "[NMI] SP after pushing low PC: 0x" << std::hex << SP << std::dec << std::endl;
     bus.write(SP, (PC >> 8));
+    SP--;
+    modifySP();
     std::cout << "[NMI] SP after pushing high PC: 0x" << std::hex << SP << std::dec << std::endl;
-
-    // Save status register to stack (B flag is cleared for NMI)
+   // Save status register to stack (B flag is cleared for NMI)
     Byte status = 0;
     if (C == 1) status |= 0b00000001;
     if (Z == 1) status |= 0b00000010;
     if (I == 1) status |= 0b00000100;
     if (D == 1) status |= 0b00001000;
     // B flag should be 0 for NMI
+    status |= 0b00100000;
     if (V == 1) status |= 0b01000000;
     if (N == 1) status |= 0b10000000;
 
+
+    bus.write(SP, status);
     SP--;
     modifySP();
-    bus.write(SP, status);
 
     // Set I flag to disable further IRQs during NMI handling
     I = 1;
@@ -363,16 +351,8 @@ void CPU::HandleNMI(u32& Cycles, Bus& bus) {
     // Start a short post-NMI instruction trace to help debug initialization behavior
     traceInstructionsRemaining = 256; // trace next 256 instructions
     std::cout << "TRACE: Starting NMI instruction trace (" << traceInstructionsRemaining << " instrs) at 0x" << std::hex << PC << std::dec << std::endl;
-    // Dump a small memory window at the NMI handler for quick inspection
-    std::cout << "TRACE: Memory @NMI: ";
-    for (int i = 0; i < 64; ++i) {
-        uint16_t a = static_cast<uint16_t>(PC + i);
-        std::cout << std::hex << int(bus.read(a)) << " ";
-    }
-    std::cout << std::dec << std::endl;
+
 }
-
-
 
 // Execute a single instruction (used by GUI to step/run)
 void CPU::Step(u32& Cycles, Bus& bus) {
@@ -451,6 +431,11 @@ void CPU::Step(u32& Cycles, Bus& bus) {
 void CPU::Execute(u32& Cycles, Bus& bus) {
     while (true) {
         u32 before = Cycles;
+        if (bus.nmiLine && !prevNmiLine) {
+            HandleNMI(Cycles, bus);
+        }       
+        prevNmiLine = bus.nmiLine;
+
         int Instruction = FetchByte(Cycles, bus);
 
         if (traceInstructionsRemaining > 0) {
@@ -509,12 +494,18 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
         if (std::cin.get() == ' ') {
             continue;
         }
-        IRQ_Handler(Cycles, bus, Interrupt);
+
+    
+        if (bus.irqEnable && !I) {
+        IRQ_Handler(Cycles, bus, true);
+        bus.irqEnable = false;
+        }
+
         // Advance PPU based on cycles used by this instruction
         u32 delta = Cycles - before;
         if (bus.ppu) bus.ppu->StepCycles(delta * 3);
-        std::this_thread::sleep_for(std::chrono::milliseconds((1 / (40 * (1000000))) * Cycles));
-        Cycles = 0;
+        //std::this_thread::sleep_for(std::chrono::milliseconds((1 / (40 * (1000000))) * Cycles));
+        //Cycles = 0;
         std::cerr << "Registrele A, X , Y";
         printReg('A');
         printReg('X');

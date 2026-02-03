@@ -84,6 +84,7 @@ int main(int argc, char** argv)
 		if (!filePath.empty()) loadFile(filePath);
 		InitializeInstructionTable();
 		cpu.Reset(bus);
+
 		RunGUI(cpu, bus);
 		return 0;
 	}

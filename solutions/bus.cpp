@@ -15,7 +15,9 @@ Bus::Bus() {
     cpu = nullptr;
     mapper = nullptr;
     mirrorVertical = false;
+    irqEnable = false;
 }
+
 
 uint8_t Bus::read(uint16_t addr) const {
     // RAM and mirrors
@@ -25,7 +27,7 @@ uint8_t Bus::read(uint16_t addr) const {
 
     // PPU registers mirrored every 8 bytes: $2000-$3FFF
     if (addr >= 0x2000 && addr <= 0x3FFF && ppu) {
-        uint16_t reg = addr & 0x7;
+        uint16_t reg = (addr - 0x2000) & 0x7;
         return ppu->ReadRegister(reg);
     }
 
@@ -36,16 +38,15 @@ uint8_t Bus::read(uint16_t addr) const {
     }
 
     // PRG-ROM: fallback mapping for simple ROMs (NROM)
-    if (!prgRom.empty() && addr >= 0x8000) {
-        size_t prgSize = prgRom.size();
-        const size_t PRG_WINDOW = 0x8000; // 32KB window: $8000-$FFFF
-        // If ROM is larger than 32KB, map the last 32KB into CPU space.
-        size_t base = (prgSize > PRG_WINDOW) ? (prgSize - PRG_WINDOW) : 0;
-        size_t rel = static_cast<size_t>(addr - 0x8000); // 0..0x7FFF
-        size_t windowSize = prgSize - base; // <= PRG_WINDOW
-        size_t index = base + (rel % windowSize);
-        return prgRom[index];
+ if (!prgRom.empty() && addr >= 0x8000) {
+    if (prgRom.size() == 0x4000) {
+        // 16KB PRG: mirror
+        return prgRom[(addr - 0x8000) & 0x3FFF];
+    } else {
+        // 32KB PRG
+        return prgRom[addr - 0x8000];
     }
+}
 
     // For other addresses, return underlying RAM image (useful for tests)
     return ram.Data[addr];
@@ -79,7 +80,7 @@ void Bus::write(uint16_t addr, uint8_t value) {
             std::cout << "Bus: (further PPU writes suppressed)" << std::endl;
             ++ppuWriteLogCount;
         }
-        uint16_t reg = addr & 0x7;
+        Word reg = (addr - 0x2000) & 0x7;
         ppu->WriteRegister(reg, value);
         return;
     }

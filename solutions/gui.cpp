@@ -63,6 +63,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
     // PPU + texture for pattern table/frame view
     PPU ppu(bus);
+    ppu.Reset();
     bus.AttachPPU(&ppu);
     // Attach CPU ptr to bus so mappers can request IRQs
     bus.AttachCPU(&cpu);
@@ -87,7 +88,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     bool show_demo_window = false;
-    bool running = true; // auto-start to measure emulation speed
+    bool running = false; // auto-start to measure emulation speed
     bool liveRender = true; // Enable live per-frame updates from PPU
     int patternPaletteGroup = 0; // palette group (0..3) used for pattern table viewer
     u32 cycles = 0;
