@@ -7,6 +7,8 @@ class Bus;
 class PPU {
 public:
     explicit PPU(Bus& bus);
+    bool frameReady = false;
+    
 
     // Reset PPU state
     void Reset();
@@ -19,7 +21,8 @@ public:
     void WriteRegister(uint16_t reg, uint8_t val);
 
     // Force render of a frame from current memory (useful for GUI immediate view)
-    bool RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeight);
+    //bool RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeight);
+    uint32_t RenderPixel(int x, int y);
 
     // Pop a completed frame that was produced by StepCycles. Returns true if a frame was available.
     bool PopFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeight);
@@ -37,11 +40,13 @@ public:
     uint8_t GetPPUSTATUS() const { return PPUSTATUS; }
     int GetSpriteHeight() const { return (PPUCTRL & 0x20) ? 16 : 8; }
 
+
     // OAM DMA: copy 256 bytes from CPU page (value<<8) into OAM
     void DoOAMDMA(uint8_t page);
 
 private:
     Bus& bus;
+
 
     // Internal VRAM (2KB) for name tables (mirrored as appropriate)
     std::vector<uint8_t> vram; // 2KB
@@ -65,7 +70,7 @@ private:
 
     // PPU cycle/frame counters
     uint32_t ppuCycleCounter = 0;
-    bool frameReady = false;
+
     int scanline = 0;
     int cycle = 0;
 

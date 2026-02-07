@@ -305,15 +305,13 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 
 // Non-Maskable Interrupt handler (NMI)
 void CPU::HandleNMI(u32& Cycles, Bus& bus) {
-        bus.nmiLine = false;
-
 printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
 
-    bus.write(SP, PC & 0xFF);
+    bus.write(0x0100 | SP, (PC >> 8) & 0xFF);
     SP--;
     modifySP();
     std::cout << "[NMI] SP after pushing low PC: 0x" << std::hex << SP << std::dec << std::endl;
-    bus.write(SP, (PC >> 8));
+    bus.write(0x0100 | SP, PC & 0xFF);
     SP--;
     modifySP();
     std::cout << "[NMI] SP after pushing high PC: 0x" << std::hex << SP << std::dec << std::endl;
@@ -329,7 +327,7 @@ printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
     if (N == 1) status |= 0b10000000;
 
 
-    bus.write(SP, status);
+    bus.write(0x0100 | SP, status);
     SP--;
     modifySP();
 
@@ -351,7 +349,7 @@ printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
     // Start a short post-NMI instruction trace to help debug initialization behavior
     traceInstructionsRemaining = 256; // trace next 256 instructions
     std::cout << "TRACE: Starting NMI instruction trace (" << traceInstructionsRemaining << " instrs) at 0x" << std::hex << PC << std::dec << std::endl;
-
+    Cycles += 7;
 }
 
 // Execute a single instruction (used by GUI to step/run)

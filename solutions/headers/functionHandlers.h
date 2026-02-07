@@ -1097,9 +1097,7 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     }
     // JSR: 6 cycles
     static void JSR_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        // On entry, PC points to the low byte of the operand (FetchByte advanced PC)
-        // JSR should push (address of return - 1) so that RTS pulling it and adding 1 returns to the byte after JSR.
-        Word returnAddress = cpu.PC + 2; // address of the last byte of the JSR instruction
+        Word returnAddress = static_cast<Word>(cpu.PC + 1);
         // push high then low bytes
         bus.write(0x0100 | cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;
@@ -1114,6 +1112,9 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         Byte lo = bus.read(0x0100 | cpu.SP);
         cpu.SP++;
         Byte hi = bus.read(0x0100 | cpu.SP);
+        cpu.PC = static_cast<Word>((hi << 8) | lo);
+        cpu.PC++;
+
         Cycles += 6;
     }
     // RTI: 6 cycles

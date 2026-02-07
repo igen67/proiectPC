@@ -6,15 +6,11 @@
 #include <algorithm>
 
 // Basic NES palette for visualization (64 colors approximated)
-static const uint32_t NES_COLORS[64] = {
-    0xFF757575u,0xFF271B8Fu,0xFF0000ABu,0xFF47009Fu,0xFF8F0077u,0xFFA7003Bu,0xFFA70000u,0xFF7F0B00u,
-    0xFF432F00u,0xFF004700u,0xFF005100u,0xFF003F17u,0xFF1B3F5Fu,0xFF000000u,0xFF000000u,0xFF000000u,
-    0xFFBCBCBCu,0xFF0073EFu,0xFF233BEFu,0xFF8300F3u,0xFFBF00BFu,0xFFE7005Bu,0xFFDB2B00u,0xFFCB4F0Fu,
-    0xFF8B7300u,0xFF004700u,0xFF004F00u,0xFF00432Bu,0xFF00407Fu,0xFF000000u,0xFF000000u,0xFF000000u,
-    0xFFF7F7F7u,0xFF3FBFFFu,0xFF5F97FFu,0xFFA78BFDu,0xFFF77BFFu,0xFFFF77B7u,0xFFFF7763u,0xFFFF9B3Fu,
-    0xFFF3BF3Fu,0xFF56DB57u,0xFF4DEB8Bu,0xFF60EFD5u,0xFFB3E7EFu,0xFF000000u,0xFF000000u,0xFF000000u,
-    0xFFFFFFFFu,0xFFABE7FFu,0xFFC7D7FFu,0xFFF7C7FFu,0xFFFFC7FFu,0xFFFFC7DBu,0xFFFFC7B7u,0xFFFFDBABu,
-    0xFFF7E7A3u,0xFFDBF7BDu,0xFFBFF3BFu,0xFFBFF3DFu,0xFFE8F7FFu,0xFF000000u,0xFF000000u,0xFF000000u
+const unsigned char NES_COLORS[64] = {
+    0x35,0x23,0x16,0x22,0x1C,0x09,0x1D,0x15,0x20,0x00,0x27,0x05,0x04,0x28,0x08,0x20,
+    0x21,0x3E,0x1F,0x29,0x3C,0x32,0x36,0x12,0x3F,0x2B,0x2E,0x1E,0x3D,0x2D,0x24,0x01,
+    0x0E,0x31,0x33,0x2A,0x2C,0x0C,0x1B,0x14,0x2E,0x07,0x34,0x06,0x13,0x02,0x26,0x2E,
+    0x2E,0x19,0x10,0x0A,0x39,0x03,0x37,0x17,0x0F,0x11,0x0B,0x0D,0x38,0x25,0x18,0x3A
 };
 
 PPU::PPU(Bus& b) : bus(b) {
@@ -32,8 +28,52 @@ PPUMASK = PPUSTATUS = OAMADDR = 0;
     vramAddr = vramAddrTemp = 0;
     vramLatch = false;
     ppuCycleCounter = 0;
-    frameReady = false;
+    frameReady = true;
+    scanline = 0;
+    cycle = 0;
+
 }
+uint32_t PPU::RenderPixel(int x, int y) {
+    // --- Nametable ---
+    uint16_t baseNametableAddr = 0x2000;
+    uint16_t tileIndexAddr =
+        baseNametableAddr + (y / 8) * 32 + (x / 8);
+
+    uint8_t tileIndex = vram[tileIndexAddr & 0x7FF];
+
+    // --- Pattern table ---
+    uint16_t patternTableAddr = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
+    uint16_t tileDataAddr =
+        patternTableAddr + tileIndex * 16 + (y % 8);
+
+    uint8_t lowByte  = bus.ReadCHR(tileDataAddr);
+    uint8_t highByte = bus.ReadCHR(tileDataAddr + 8);
+
+    int bit = 7 - (x % 8);
+    int colorIndex =
+        ((highByte >> bit) & 1) << 1 |
+        ((lowByte >> bit) & 1);
+
+    // --- Attribute table ---
+    uint16_t attrAddr =
+        (baseNametableAddr + 0x3C0 +
+         ((y / 32) * 8) + (x / 32)) & 0x7FF;
+
+    uint8_t attr = vram[attrAddr];
+
+    int shift =
+        ((y % 32) / 16) * 4 +
+        ((x % 32) / 16) * 2;
+
+    uint8_t paletteIndex = (attr >> shift) & 0x03;
+
+    // --- Final color (still simplified) ---
+    int finalIndex = (paletteIndex * 4 + colorIndex) & 0x3F;
+    uint32_t rgb = NES_COLORS[finalIndex];
+
+    return 0xFF000000u | rgb;
+}
+
 
 // Advance PPU cycles; triggers a frame render when enough cycles collected
 void PPU::StepCycles(uint32_t cycles) {
@@ -46,20 +86,24 @@ void PPU::StepCycles(uint32_t cycles) {
             if (scanline > 261) scanline = 0;
         }
 
+    if (scanline >= 0 && scanline < 240 &&
+    cycle > 0 && cycle <= 256) {
+
+    int x = cycle - 1;
+    int y = scanline;
+
+    uint32_t color = RenderPixel(x, y);
+    lastFrame[y * 256 + x] = color;
+}
+
  // --- VBlank start ---
 if (scanline == 241 && cycle == 1) {
     frameReady = true;
-    printf("PPU: ENTER VBLANK\n");
-    printf("VBLANK: PPUCTRL=%02X\n", PPUCTRL);
-    PPUSTATUS |= 0x80; //debug
+    PPUSTATUS |= 0x80;
     if (PPUCTRL & 0x80) {
    // ASSERT NMI
         bus.nmiLine = true;
         std::cout << "[PPU] VBlank start: NMI line asserted\n";
-
-            int w = 0, h = 0;
-            RenderFrame(lastFrame, w, h);
-
     }
 
 }
@@ -107,7 +151,7 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
             }
             // increment
             uint16_t inc = (PPUCTRL & 0x04) ? 32 : 1;
-            vramAddr = (vramAddr + inc) & 0x7FFF;
+            vramAddr = (vramAddr + inc) & 0x3FFF;
             return data;
         }
         default:
@@ -146,7 +190,7 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 vramLatch = true;
             } else {
                 vramAddrTemp |= val;
-                vramAddr = vramAddrTemp & 0x7FFF;
+                vramAddr = vramAddrTemp & 0x3FFF;
                 vramLatch = false;
             }
             break;
@@ -171,205 +215,12 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 }
             }
             uint16_t inc = (PPUCTRL & 0x04) ? 32 : 1;
-            vramAddr = (vramAddr + inc) & 0x7FFF;
+            vramAddr = (vramAddr + inc) & 0x3FFF;
             break;
         }
         default:
             break;
     }
-}
-
-// Render a full 256x240 frame into outPixels. Uses nametable at $2000 and list simplifications.
-bool PPU::RenderFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeight) {
-    PPUMASK |= 0x18;
-    if ((PPUMASK & 0x08) == 0 && (PPUMASK & 0x10) == 0) {
-    return false;
-}
-
-    outWidth = 256;
-    outHeight = 240;
-    outPixels.assign(outWidth * outHeight, 0xFF000000u);
-
-    // We'll record background color indices so sprite priority (behind/background) can be respected
-    std::vector<uint8_t> bgIndex(outWidth * outHeight, 0);
-
-    // For each tile on the screen (32x30 tiles)
-    for (int ty = 0; ty < 30; ++ty) {
-        for (int tx = 0; tx < 32; ++tx) {
-            // Calculate nametable index with mirroring
-            int ntX = tx;
-            int ntY = ty;
-            int ntIndex = 0;
-            /*if (bus.mirrorVertical) {
-                // Vertical mirroring: NT0 ($2000) and NT1 ($2400) are unique, NT2/NT3 mirror NT0/NT1
-                if (ntX < 32) {
-                    ntIndex = ntY * 32 + ntX; // $2000
-                } else {
-                    ntIndex = ntY * 32 + (ntX - 32) + 0x400; // $2400
-                }
-            } else {
-                // Horizontal mirroring: NT0 ($2000) and NT2 ($2800) are unique, NT1/NT3 mirror NT0/NT2
-                if (ntY < 30) {
-                    ntIndex = ntY * 32 + ntX; // $2000
-                } else {
-                    ntIndex = (ntY - 30) * 32 + ntX + 0x800; // $2800
-                }
-            }*/
-           Word ntBase = 0x2000;
-           Word ntAdress = ntBase + (ntY * 32) + ntX;
-            uint16_t tileIndex = vram[(ntAdress) & 0x3FF]; // mirrored to 0x800
-            // attribute table index
-            int attrX = tx / 4;
-            int attrY = ty / 4;
-            uint8_t attr = vram[0x3C0 + attrY * 8 + attrX];
-            int localTx = (tx % 4) / 2;
-            int localTy = (ty % 4) / 2;
-            int shift = (localTy * 2 + localTx) * 2;
-            uint8_t paletteHighBits = (attr >> shift) & 0x3;
-
-            int tileBase = tileIndex * 16;
-            int patternBase = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
-            const uint8_t* chr = nullptr;
-            if (!bus.chrRom.empty()) chr = bus.chrRom.data() + patternBase;
-
-            for (int row = 0; row < 8; ++row) {
-                uint16_t addrLow = patternBase + tileBase + row;
-                uint16_t addrHigh = patternBase + tileBase + row + 8;
-                bus.NotifyPPUAddr(addrLow);
-                bus.NotifyPPUAddr(addrHigh);
-                uint8_t low = 0, high = 0;
-                if (bus.mapper) {
-                    low = bus.mapper->CHRRead(addrLow);
-                    high = bus.mapper->CHRRead(addrHigh);
-                } else if (chr) {
-                    low = chr[tileBase + row];
-                    high = chr[tileBase + row + 8];
-                }
-                for (int col = 0; col < 8; ++col) {
-                    int bit = 7 - col;
-                    uint8_t lo = (low >> bit) & 1;
-                    uint8_t hi = (high >> bit) & 1;
-                    uint8_t colorIndex = lo | (hi << 1);
-                    uint8_t palIndex = paletteRam[(paletteHighBits * 4) + colorIndex] & 0x3F;
-                    uint32_t finalColor = NES_COLORS[palIndex % 64];
-                    int px = tx * 8 + col;
-                    int py = ty * 8 + row;
-                    if (px < outWidth && py < outHeight) {
-                        outPixels[py * outWidth + px] = finalColor | 0xFF000000u;
-                        bgIndex[py * outWidth + px] = colorIndex;
-                    }
-                }
-            }
-        }
-    }
-
-    // --- Sprite rendering (OAM) ---
-    // Each sprite: Y, tile, attr, X (Y is stored as top-1)
-    int spriteHeight = (PPUCTRL & 0x20) ? 16 : 8;
-    // Draw sprites so that lower OAM indices have higher priority -> draw in reverse so index 0 ends up on top
-    for (int si = 63; si >= 0; --si) {
-        int base = si * 4;
-        int spriteY = static_cast<int>(oam[base + 0]) + 1; // stored as top-1
-        int tile = oam[base + 1];
-        uint8_t attr = oam[base + 2];
-        int spriteX = static_cast<int>(oam[base + 3]);
-
-        bool flipV = (attr & 0x80) != 0;
-        bool flipH = (attr & 0x40) != 0;
-        bool behindBg = (attr & 0x20) != 0; // sprite behind background if set
-        int paletteSelect = attr & 0x3; // selects sprite palette at $3F10 + palette*4
-
-        // Determine pattern table base for sprites (8x8 uses PPUCTRL bit 3; 8x16 builds from tile LSB)
-        for (int row = 0; row < spriteHeight; ++row) {
-            int srcRow = flipV ? (spriteHeight - 1 - row) : row;
-            int patternBase = 0;
-            int tileIndex = tile;
-            if (spriteHeight == 8) {
-                patternBase = (PPUCTRL & 0x08) ? 0x1000 : 0x0000; // sprite table select
-                int tileBase = tileIndex * 16;
-                uint16_t addrLow = patternBase + tileBase + srcRow;
-                uint16_t addrHigh = patternBase + tileBase + srcRow + 8;
-                bus.NotifyPPUAddr(addrLow);
-                bus.NotifyPPUAddr(addrHigh);
-                uint8_t low = 0, high = 0;
-                if (bus.mapper) {
-                    low = bus.mapper->CHRRead(addrLow);
-                    high = bus.mapper->CHRRead(addrHigh);
-                } else if (!bus.chrRom.empty()) {
-                    const uint8_t* chr = bus.chrRom.data() + patternBase;
-                    low = chr[tileBase + srcRow];
-                    high = chr[tileBase + srcRow + 8];
-                }
-
-                for (int col = 0; col < 8; ++col) {
-                    int srcCol = flipH ? col : (7 - col);
-                    int bit = srcCol;
-                    uint8_t lo = (low >> bit) & 1;
-                    uint8_t hi = (high >> bit) & 1;
-                    uint8_t colorIndex = lo | (hi << 1);
-                    if (colorIndex == 0) continue; // transparent
-                    int px = spriteX + col;
-                    int py = spriteY + row;
-                    if (px < 0 || px >= outWidth || py < 0 || py >= outHeight) continue;
-                    // If sprite behind background and background pixel non-zero, skip drawing
-                    if (behindBg && bgIndex[py * outWidth + px] != 0) continue;
-                    // Palette index at $3F10 + paletteSelect*4 + colorIndex
-                    uint8_t palIndex = paletteRam[0x10 + paletteSelect * 4 + colorIndex] & 0x3F;
-                    uint32_t finalColor = NES_COLORS[palIndex % 64] | 0xFF000000u;
-
-                    // Sprite-0 hit detection: if sprite 0 overlaps non-zero background
-                    if (si == 0 && bgIndex[py * outWidth + px] != 0) {
-                        PPUSTATUS |= 0x40; // set sprite 0 hit
-                    }
-
-                    outPixels[py * outWidth + px] = finalColor;
-                }
-            } else {
-                // 8x16 mode
-                // pattern table is selected by tile's low bit
-                patternBase = (tileIndex & 0x1) ? 0x1000 : 0x0000;
-                int baseTile = tileIndex & 0xFE; // even tile selects top
-                int tileNum = (srcRow < 8) ? baseTile : (baseTile + 1);
-                int rowInTile = (srcRow < 8) ? srcRow : (srcRow - 8);
-                int tileBase = tileNum * 16;
-                uint16_t addrLow = patternBase + tileBase + rowInTile;
-                uint16_t addrHigh = patternBase + tileBase + rowInTile + 8;
-                bus.NotifyPPUAddr(addrLow);
-                bus.NotifyPPUAddr(addrHigh);
-                uint8_t low = 0, high = 0;
-                if (bus.mapper) {
-                    low = bus.mapper->CHRRead(addrLow);
-                    high = bus.mapper->CHRRead(addrHigh);
-                } else if (!bus.chrRom.empty()) {
-                    const uint8_t* chr = bus.chrRom.data() + patternBase;
-                    low = chr[tileBase + rowInTile];
-                    high = chr[tileBase + rowInTile + 8];
-                }
-
-                for (int col = 0; col < 8; ++col) {
-                    int srcCol = flipH ? col : (7 - col);
-                    int bit = srcCol;
-                    uint8_t lo = (low >> bit) & 1;
-                    uint8_t hi = (high >> bit) & 1;
-                    uint8_t colorIndex = lo | (hi << 1);
-                    if (colorIndex == 0) continue;
-                    int px = spriteX + col;
-                    int py = spriteY + row;
-                    if (px < 0 || px >= outWidth || py < 0 || py >= outHeight) continue;
-                    if (behindBg && bgIndex[py * outWidth + px] != 0) continue;
-                    uint8_t palIndex = paletteRam[0x10 + paletteSelect * 4 + colorIndex] & 0x3F;
-                    uint32_t finalColor = NES_COLORS[palIndex % 64] | 0xFF000000u;
-                    if (si == 0 && bgIndex[py * outWidth + px] != 0) {
-                        PPUSTATUS |= 0x40;
-                    }
-                    outPixels[py * outWidth + px] = finalColor;
-                }
-            }
-        }
-    }
-
-    // Do not modify frameReady when forcing a render; PopFrame is used to consume completed frames.
-    return true;
 }
 
 // Return the last frame produced by StepCycles if available and clear the flag
@@ -379,8 +230,6 @@ bool PPU::PopFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeig
     outHeight = 240;
     outPixels = lastFrame;
     frameReady = false;
-    // clear VBlank (mimic read of PPUSTATUS behavior)
-    PPUSTATUS &= ~0x80u;
     return true;
 }
 

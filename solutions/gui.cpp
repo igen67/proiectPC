@@ -149,12 +149,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
             running = !running;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Render Frame Now")) {
-            if (ppu.RenderFrame(ppuPixels, ppuW, ppuH)) {
-                glBindTexture(GL_TEXTURE_2D, ppuTex);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
-            }
-        }
+
         ImGui::SameLine();
         ImGui::Checkbox("Live Render", &liveRender);
         ImGui::Text("Cycles last step: %u", cycles);
@@ -220,18 +215,13 @@ void RunGUI(CPU& cpu, Bus& bus) {
                 executed += (cycles - before);
             }
 
-            // Only render when a new frame is ready
-            if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
-                glBindTexture(GL_TEXTURE_2D, ppuTex);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
-            }
         }
 
-        if (show_demo_window)
+        if (show_demo_window){
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // PPU: render a full frame (256x240) and display it
-        if (ppu.RenderFrame(ppuPixels, ppuW, ppuH)) {
+            // PPU: render a full frame (256x240) and display it
+            if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
             glBindTexture(GL_TEXTURE_2D, ppuTex);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -300,6 +290,8 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
         glfwSwapBuffers(window);
     }
+}
+
 
     // Cleanup
     if (ppuTex) {
