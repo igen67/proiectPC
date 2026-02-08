@@ -53,8 +53,9 @@ uint8_t Bus::read(uint16_t addr) const {
 }
 
 uint8_t Bus::ReadCHR(uint16_t addr) const {
-    if (mapper) return mapper->CHRRead(addr);
-    if (!chrRom.empty() && addr < chrRom.size()) return chrRom[addr];
+    if (mapper) {
+        return mapper->CHRRead(addr);
+    }
     return 0;
 }
 
@@ -64,11 +65,6 @@ void Bus::NotifyPPUAddr(uint16_t addr) {
 }
 
 void Bus::write(uint16_t addr, uint8_t value) {
-   if (addr >= 0x2000 && addr <= 0x2007) {
-    std::cout << "CPU write to PPU reg addr=$"
-              << std::hex << addr
-              << " val=$" << int(value) << std::dec << "\n";
-}
 
 
     // RAM and mirrors
@@ -79,14 +75,6 @@ void Bus::write(uint16_t addr, uint8_t value) {
 
     // PPU registers mirrored every 8 bytes: $2000-$3FFF
     if (addr >= 0x2000 && addr <= 0x3FFF && ppu) {
-        static int ppuWriteLogCount = 0;
-        if (ppuWriteLogCount < 64) {
-            std::cout << "Bus: write to PPU addr=0x" << std::hex << addr << " val=0x" << int(value) << std::dec << std::endl;
-            ++ppuWriteLogCount;
-        } else if (ppuWriteLogCount == 64) {
-            std::cout << "Bus: (further PPU writes suppressed)" << std::endl;
-            ++ppuWriteLogCount;
-        }
         Word reg = addr & 0x7;
         ppu->WriteRegister(reg, value);
         return;
@@ -94,6 +82,10 @@ void Bus::write(uint16_t addr, uint8_t value) {
 
     // Mapper-aware PRG area handling
     if (mapper) {
+        if (addr == 0x4014 && ppu) {
+            ppu->DoOAMDMA(value);
+            return;
+        }       
         if (mapper && addr >= 0x6000) {
             mapper->CPUWrite(addr, value);
             return;
@@ -122,6 +114,7 @@ void Bus::write(uint16_t addr, uint8_t value) {
     // Otherwise, permit writing to the RAM image for tests
     ram.Data[addr] = value;
 }
+
 
 bool Bus::LoadPRGFromFile(const std::string& filename) {
     std::ifstream file(filename, std::ios::binary);
@@ -203,4 +196,6 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
     std::cout << "Loaded raw PRG file: " << size << " bytes\n";
     return true;
 }
+
+
 

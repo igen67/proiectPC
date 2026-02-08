@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alex/Downloads/proiectPC
+CMAKE_SOURCE_DIR = /home/preda/Documents/proiectPC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alex/Downloads/proiectPC/build
+CMAKE_BINARY_DIR = /home/preda/Documents/proiectPC/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/CMakeFiles /home/alex/Downloads/proiectPC/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles /home/preda/Documents/proiectPC/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -167,6 +167,32 @@ ppu_test: cmake_check_build_system
 ppu_test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/build
 .PHONY : ppu_test/fast
+
+#=============================================================================
+# Target rules for targets named glfw
+
+# Build rule for target.
+glfw: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 glfw
+.PHONY : glfw
+
+# fast build rule for target.
+glfw/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/glfw-build/src/CMakeFiles/glfw.dir/build.make _deps/glfw-build/src/CMakeFiles/glfw.dir/build
+.PHONY : glfw/fast
+
+#=============================================================================
+# Target rules for targets named update_mappings
+
+# Build rule for target.
+update_mappings: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 update_mappings
+.PHONY : update_mappings
+
+# fast build rule for target.
+update_mappings/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build.make _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build
+.PHONY : update_mappings/fast
 
 _deps/imgui-src/backends/imgui_impl_glfw.o: _deps/imgui-src/backends/imgui_impl_glfw.cpp.o
 .PHONY : _deps/imgui-src/backends/imgui_impl_glfw.o
@@ -548,6 +574,8 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... update_mappings"
+	@echo "... glfw"
 	@echo "... imgui"
 	@echo "... imgui_impl"
 	@echo "... ppu_test"

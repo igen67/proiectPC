@@ -1,10 +1,10 @@
 CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: \
- /home/alex/Downloads/proiectPC/solutions/6502.cpp \
+ /home/preda/Documents/proiectPC/solutions/6502.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/solutions/headers/cpu.h \
- /home/alex/Downloads/proiectPC/solutions/headers/instructions.h \
- /home/alex/Downloads/proiectPC/solutions/headers/types.h \
- /home/alex/Downloads/proiectPC/solutions/headers/libraries.h \
+ /home/preda/Documents/proiectPC/solutions/headers/cpu.h \
+ /home/preda/Documents/proiectPC/solutions/headers/instructions.h \
+ /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/libraries.h \
  /usr/include/c++/15.2.1/cstdint \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -186,8 +186,8 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: \
  /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/bus.h \
- /home/alex/Downloads/proiectPC/solutions/headers/memory.h \
- /home/alex/Downloads/proiectPC/solutions/headers/table.h \
- /home/alex/Downloads/proiectPC/solutions/headers/functionHandlers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/gui.h
+ /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/table.h \
+ /home/preda/Documents/proiectPC/solutions/headers/functionHandlers.h \
+ /home/preda/Documents/proiectPC/solutions/headers/gui.h

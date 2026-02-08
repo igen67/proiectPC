@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alex/Downloads/proiectPC
+CMAKE_SOURCE_DIR = /home/preda/Documents/proiectPC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alex/Downloads/proiectPC/build
+CMAKE_BINARY_DIR = /home/preda/Documents/proiectPC/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/ppu_test.dir/depend.make
@@ -73,74 +73,74 @@ CMakeFiles/ppu_test.dir/codegen:
 .PHONY : CMakeFiles/ppu_test.dir/codegen
 
 CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: CMakeFiles/ppu_test.dir/flags.make
-CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: /home/alex/Downloads/proiectPC/solutions/ppu_test.cpp
+CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: /home/preda/Documents/proiectPC/solutions/ppu_test.cpp
 CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: CMakeFiles/ppu_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o -c /home/alex/Downloads/proiectPC/solutions/ppu_test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o -c /home/preda/Documents/proiectPC/solutions/ppu_test.cpp
 
 CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/ppu_test.cpp > CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/ppu_test.cpp > CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.i
 
 CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/ppu_test.cpp -o CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/ppu_test.cpp -o CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.s
 
 CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o: CMakeFiles/ppu_test.dir/flags.make
-CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o: /home/alex/Downloads/proiectPC/solutions/mapper.cpp
+CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o: /home/preda/Documents/proiectPC/solutions/mapper.cpp
 CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o: CMakeFiles/ppu_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o -c /home/alex/Downloads/proiectPC/solutions/mapper.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o -c /home/preda/Documents/proiectPC/solutions/mapper.cpp
 
 CMakeFiles/ppu_test.dir/solutions/mapper.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ppu_test.dir/solutions/mapper.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/mapper.cpp > CMakeFiles/ppu_test.dir/solutions/mapper.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/mapper.cpp > CMakeFiles/ppu_test.dir/solutions/mapper.cpp.i
 
 CMakeFiles/ppu_test.dir/solutions/mapper.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ppu_test.dir/solutions/mapper.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/mapper.cpp -o CMakeFiles/ppu_test.dir/solutions/mapper.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/mapper.cpp -o CMakeFiles/ppu_test.dir/solutions/mapper.cpp.s
 
 CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o: CMakeFiles/ppu_test.dir/flags.make
-CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o: /home/alex/Downloads/proiectPC/solutions/ppu.cpp
+CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o: /home/preda/Documents/proiectPC/solutions/ppu.cpp
 CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o: CMakeFiles/ppu_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o -c /home/alex/Downloads/proiectPC/solutions/ppu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o -c /home/preda/Documents/proiectPC/solutions/ppu.cpp
 
 CMakeFiles/ppu_test.dir/solutions/ppu.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ppu_test.dir/solutions/ppu.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/ppu.cpp > CMakeFiles/ppu_test.dir/solutions/ppu.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/ppu.cpp > CMakeFiles/ppu_test.dir/solutions/ppu.cpp.i
 
 CMakeFiles/ppu_test.dir/solutions/ppu.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ppu_test.dir/solutions/ppu.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/ppu.cpp -o CMakeFiles/ppu_test.dir/solutions/ppu.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/ppu.cpp -o CMakeFiles/ppu_test.dir/solutions/ppu.cpp.s
 
 CMakeFiles/ppu_test.dir/solutions/bus.cpp.o: CMakeFiles/ppu_test.dir/flags.make
-CMakeFiles/ppu_test.dir/solutions/bus.cpp.o: /home/alex/Downloads/proiectPC/solutions/bus.cpp
+CMakeFiles/ppu_test.dir/solutions/bus.cpp.o: /home/preda/Documents/proiectPC/solutions/bus.cpp
 CMakeFiles/ppu_test.dir/solutions/bus.cpp.o: CMakeFiles/ppu_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ppu_test.dir/solutions/bus.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/bus.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/bus.cpp.o -c /home/alex/Downloads/proiectPC/solutions/bus.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ppu_test.dir/solutions/bus.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/bus.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/bus.cpp.o -c /home/preda/Documents/proiectPC/solutions/bus.cpp
 
 CMakeFiles/ppu_test.dir/solutions/bus.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ppu_test.dir/solutions/bus.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/bus.cpp > CMakeFiles/ppu_test.dir/solutions/bus.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/bus.cpp > CMakeFiles/ppu_test.dir/solutions/bus.cpp.i
 
 CMakeFiles/ppu_test.dir/solutions/bus.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ppu_test.dir/solutions/bus.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/bus.cpp -o CMakeFiles/ppu_test.dir/solutions/bus.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/bus.cpp -o CMakeFiles/ppu_test.dir/solutions/bus.cpp.s
 
 CMakeFiles/ppu_test.dir/solutions/memory.cpp.o: CMakeFiles/ppu_test.dir/flags.make
-CMakeFiles/ppu_test.dir/solutions/memory.cpp.o: /home/alex/Downloads/proiectPC/solutions/memory.cpp
+CMakeFiles/ppu_test.dir/solutions/memory.cpp.o: /home/preda/Documents/proiectPC/solutions/memory.cpp
 CMakeFiles/ppu_test.dir/solutions/memory.cpp.o: CMakeFiles/ppu_test.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ppu_test.dir/solutions/memory.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/memory.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/memory.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/memory.cpp.o -c /home/alex/Downloads/proiectPC/solutions/memory.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ppu_test.dir/solutions/memory.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ppu_test.dir/solutions/memory.cpp.o -MF CMakeFiles/ppu_test.dir/solutions/memory.cpp.o.d -o CMakeFiles/ppu_test.dir/solutions/memory.cpp.o -c /home/preda/Documents/proiectPC/solutions/memory.cpp
 
 CMakeFiles/ppu_test.dir/solutions/memory.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ppu_test.dir/solutions/memory.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/memory.cpp > CMakeFiles/ppu_test.dir/solutions/memory.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/memory.cpp > CMakeFiles/ppu_test.dir/solutions/memory.cpp.i
 
 CMakeFiles/ppu_test.dir/solutions/memory.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ppu_test.dir/solutions/memory.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/memory.cpp -o CMakeFiles/ppu_test.dir/solutions/memory.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/memory.cpp -o CMakeFiles/ppu_test.dir/solutions/memory.cpp.s
 
 # Object files for target ppu_test
 ppu_test_OBJECTS = \
@@ -161,7 +161,7 @@ ppu_test: CMakeFiles/ppu_test.dir/solutions/memory.cpp.o
 ppu_test: CMakeFiles/ppu_test.dir/build.make
 ppu_test: CMakeFiles/ppu_test.dir/compiler_depend.ts
 ppu_test: CMakeFiles/ppu_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ppu_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ppu_test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ppu_test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -173,6 +173,6 @@ CMakeFiles/ppu_test.dir/clean:
 .PHONY : CMakeFiles/ppu_test.dir/clean
 
 CMakeFiles/ppu_test.dir/depend:
-	cd /home/alex/Downloads/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build/CMakeFiles/ppu_test.dir/DependInfo.cmake "--color=$(COLOR)" ppu_test
+	cd /home/preda/Documents/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build/CMakeFiles/ppu_test.dir/DependInfo.cmake "--color=$(COLOR)" ppu_test
 .PHONY : CMakeFiles/ppu_test.dir/depend
 

@@ -1,9 +1,9 @@
 CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: \
- /home/alex/Downloads/proiectPC/solutions/ppu_test.cpp \
+ /home/preda/Documents/proiectPC/solutions/ppu_test.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/solutions/headers/bus.h \
- /home/alex/Downloads/proiectPC/solutions/headers/memory.h \
- /home/alex/Downloads/proiectPC/solutions/headers/libraries.h \
+ /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/libraries.h \
  /usr/include/c++/15.2.1/cstdint \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -185,5 +185,5 @@ CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o: \
  /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/types.h \
- /home/alex/Downloads/proiectPC/solutions/headers/ppu.h
+ /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/ppu.h

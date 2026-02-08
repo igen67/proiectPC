@@ -20,42 +20,40 @@ events:
     names:
       - "uname"
     candidate_directories:
-      - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
-      - "/home/alex/.config/openbox/scripts/"
-      - "/usr/share/archcraft/scripts/"
+      - "/home/preda/.local/bin/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
+      - "/var/lib/flatpak/exports/bin/"
+      - "/usr/lib/jvm/default/bin/"
       - "/usr/bin/site_perl/"
       - "/usr/bin/vendor_perl/"
       - "/usr/bin/core_perl/"
+      - "/home/preda/.spicetify/"
       - "/bin/"
     searched_directories:
-      - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/uname"
-      - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/uname"
-      - "/home/alex/.config/openbox/scripts/uname"
-      - "/usr/share/archcraft/scripts/uname"
+      - "/home/preda/.local/bin/uname"
       - "/usr/local/sbin/uname"
       - "/usr/local/bin/uname"
     found: "/usr/bin/uname"
     search_context:
       ENV{PATH}:
-        - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/alex/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
-        - "/home/alex/.config/openbox/scripts"
-        - "/usr/share/archcraft/scripts"
+        - "/home/preda/.local/bin"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
+        - "/var/lib/flatpak/exports/bin"
+        - "/usr/lib/jvm/default/bin"
         - "/usr/bin/site_perl"
         - "/usr/bin/vendor_perl"
         - "/usr/bin/core_perl"
+        - "/home/preda/.spicetify"
+        - "/home/preda/.spicetify"
   -
     kind: "message-v1"
     backtrace:
       - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:212 (message)"
       - "CMakeLists.txt:16 (project)"
     message: |
-      The system is: Linux - 6.18.7-arch1-1 - x86_64
+      The system is: Linux - 6.12.68-1-MANJARO - x86_64
 ...

@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o" "gcc" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o.d"
-  "/home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o" "gcc" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o.d"
+  "/home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o" "gcc" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o.d"
+  "/home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o" "gcc" "CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

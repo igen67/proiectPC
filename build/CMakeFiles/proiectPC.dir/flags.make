@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/alex/Downloads/proiectPC/solutions/headers -I/home/alex/Downloads/proiectPC/build/_deps/imgui-src -I/home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends
+CXX_INCLUDES = -I/home/preda/Documents/proiectPC/solutions/headers -I/home/preda/Documents/proiectPC/build/_deps/imgui-src -I/home/preda/Documents/proiectPC/build/_deps/imgui-src/backends -I/home/preda/Documents/proiectPC/build/_deps/glfw-src/include
 
 CXX_FLAGS = -std=gnu++17
 

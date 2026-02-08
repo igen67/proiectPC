@@ -61,7 +61,7 @@ struct InstructionHandlers
     // Indirect,Y: 5 cycles (+1 if page crossed)
     static void LDA_INDY_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         Word addr = cpu.indirectAddrModeY(Cycles, bus);
-        bool pageCrossed = ((addr & 0xFF00) != ((addr) & 0xFF00)); // You may want to check page crossing with Y
+        bool pageCrossed = ((addr & 0xFF00) != ((addr) & 0xFF00));
         cpu.A = bus.read(addr);
         cpu.LDASetStatus();
         Cycles += 5 + (pageCrossed ? 1 : 0);
@@ -251,24 +251,15 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     }
     static void TXS_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         // TXS: 2 cycles
-        if (cpu.X & (1 << 0)) cpu.C = 1;
-        if (cpu.X & (1 << 1)) cpu.Z = 1;
-        if (cpu.X & (1 << 2)) cpu.I = 1;
-        if (cpu.X & (1 << 3)) cpu.D = 1;
-        if (cpu.X & (1 << 4)) cpu.B = 1;
-        if (cpu.X & (1 << 6)) cpu.V = 1;
-        if (cpu.X & (1 << 7)) cpu.N = 1;
+        cpu.SP = cpu.X;
         Cycles += 2;
     }
     static void TSX_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         // TSX: 2 cycles
-        if (cpu.C == 1) cpu.X = cpu.X | 0b00000001;
-        if (cpu.Z == 1) cpu.X = cpu.X | 0b00000010;
-        if (cpu.I == 1) cpu.X = cpu.X | 0b00000100;
-        if (cpu.D == 1) cpu.X = cpu.X | 0b00001000;
-        if (cpu.B == 1) cpu.X = cpu.X | 0b00010000;
-        if (cpu.V == 1) cpu.X = cpu.X | 0b01000000;
-        if (cpu.N == 1) cpu.X = cpu.X | 0b10000000;
+        cpu.X = cpu.SP;
+        cpu.Z = (cpu.X == 0);
+        cpu.N = (cpu.X & 0b10000000) > 0;
+
         Cycles += 2;
     }
 
@@ -939,7 +930,9 @@ Byte Address = Byte(zp + cpu.X); // force wrap
        static void INX_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
         cpu.X += 1;
-        cpu.C = (cpu.X > 0xFF);
+        cpu.Z = (cpu.X == 0);
+        cpu.N = (cpu.X & 0b10000000) > 0;
+
         Cycles += 2;
     }
         static void DEY_Handler(CPU& cpu, u32& Cycles, Bus& bus)
@@ -954,7 +947,6 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         cpu.Y += 1;
         cpu.Z = (cpu.Y == 0);
         cpu.N = (cpu.Y & 0b10000000) > 0;
-        cpu.C = (cpu.Y > 0xFF);
         Cycles += 2;
     }
 
@@ -1025,6 +1017,7 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         if (cpu.B == 1) status |= 0b00010000;
         if (cpu.V == 1) status |= 0b01000000;
         if (cpu.N == 1) status |= 0b10000000;
+        status |= 0b00100000;
         bus.write(0x0100 | cpu.SP, status);
         cpu.SP--;
         Cycles += 3;
@@ -1038,7 +1031,8 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         cpu.Z = (status & (1 << 1)) ? 1 : 0;
         cpu.I = (status & (1 << 2)) ? 1 : 0;
         cpu.D = (status & (1 << 3)) ? 1 : 0;
-        cpu.B = (status & (1 << 4)) ? 1 : 0;
+        cpu.B = 0;          // never stored
+        status |= 0x20;     // force bit 5
         cpu.V = (status & (1 << 6)) ? 1 : 0;
         cpu.N = (status & (1 << 7)) ? 1 : 0;
         Cycles += 4;
@@ -1128,8 +1122,8 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         cpu.Z = (status >> 1) & 1;
         cpu.I = (status >> 2) & 1;
         cpu.D = (status >> 3) & 1;
-        // bit 4 ignored
-// bit 5 ignored
+        status &= ~0x10;   // clear B
+status |=  0x20;   // set unused bit
         cpu.V = (status >> 6) & 1;
         cpu.N = (status >> 7) & 1;
 
@@ -1146,7 +1140,7 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     }
     // BRK: 7 cycles
     static void BRK_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        Word returnAddress = cpu.PC + 1;
+        Word returnAddress = cpu.PC + 2;
 
         bus.write(0x0100 | cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;

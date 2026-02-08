@@ -61,7 +61,28 @@ struct CPU
     void startProg(Bus& bus, u32 cycles);
     InstructionHandler GetInstructionHandler(Byte opcode);
     void InvokeInstruction(Byte opcode, u32& Cycles, Bus& bus);
-    void Step(u32& Cycles, Bus& bus); // Execute a single instruction
     void Execute(u32& Cycles, Bus& bus);
     void IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt);
+    struct CPUTrace {
+    uint16_t pc;
+    uint8_t opcode;
+    uint8_t op1;
+    uint8_t op2;
+
+    uint8_t A, X, Y, P, SP;
+    uint64_t cycles;
+
+    };
+    CPUTrace CaptureTrace(Bus& bus) const {
+    CPUTrace t;
+    t.pc = PC;
+    t.opcode = bus.read(PC);
+    t.op1 = bus.read(PC + 1);
+    t.op2 = bus.read(PC + 2);
+    t.A = A;
+    t.X = X;
+    t.Y = Y;
+    t.SP = SP;
+    return t;
+}
 };

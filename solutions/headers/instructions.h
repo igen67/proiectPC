@@ -49,6 +49,7 @@ namespace Instructions {
         TAY = 0xA8,
         TYA = 0x98,
         TXS = 0x9A,
+        TSX = 0xBA,
 
         // Stack Operations
         PHA = 0x48,

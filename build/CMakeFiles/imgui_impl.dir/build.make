@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alex/Downloads/proiectPC
+CMAKE_SOURCE_DIR = /home/preda/Documents/proiectPC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alex/Downloads/proiectPC/build
+CMAKE_BINARY_DIR = /home/preda/Documents/proiectPC/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/imgui_impl.dir/depend.make
@@ -75,30 +75,30 @@ CMakeFiles/imgui_impl.dir/codegen:
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o: CMakeFiles/imgui_impl.dir/flags.make
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o: _deps/imgui-src/backends/imgui_impl_glfw.cpp
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o: CMakeFiles/imgui_impl.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -MF CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o.d -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -c /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -MF CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o.d -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -c /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
 
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp > CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp > CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i
 
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.s
 
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/imgui_impl.dir/flags.make
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o: _deps/imgui-src/backends/imgui_impl_opengl3.cpp
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/imgui_impl.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -MF CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -c /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -MF CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -c /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp > CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp > CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i
 
 CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp -o CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s
 
 # Object files for target imgui_impl
 imgui_impl_OBJECTS = \
@@ -112,7 +112,7 @@ libimgui_impl.a: CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_g
 libimgui_impl.a: CMakeFiles/imgui_impl.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o
 libimgui_impl.a: CMakeFiles/imgui_impl.dir/build.make
 libimgui_impl.a: CMakeFiles/imgui_impl.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libimgui_impl.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libimgui_impl.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/imgui_impl.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/imgui_impl.dir/link.txt --verbose=$(VERBOSE)
 
@@ -125,6 +125,6 @@ CMakeFiles/imgui_impl.dir/clean:
 .PHONY : CMakeFiles/imgui_impl.dir/clean
 
 CMakeFiles/imgui_impl.dir/depend:
-	cd /home/alex/Downloads/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build/CMakeFiles/imgui_impl.dir/DependInfo.cmake "--color=$(COLOR)" imgui_impl
+	cd /home/preda/Documents/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build/CMakeFiles/imgui_impl.dir/DependInfo.cmake "--color=$(COLOR)" imgui_impl
 .PHONY : CMakeFiles/imgui_impl.dir/depend
 

@@ -24,7 +24,7 @@ void PPU::Reset() {
     std::fill(vram.begin(), vram.end(), 0);
     std::fill(std::begin(paletteRam), std::end(paletteRam), 0);
     std::fill(std::begin(oam), std::end(oam), 0);
-PPUMASK = PPUSTATUS = OAMADDR = 0;
+    PPUMASK = PPUSTATUS = OAMADDR = 0;
     vramAddr = vramAddrTemp = 0;
     vramLatch = false;
     ppuCycleCounter = 0;
@@ -33,7 +33,7 @@ PPUMASK = PPUSTATUS = OAMADDR = 0;
     cycle = 0;
 
 }
-uint32_t PPU::RenderPixel(int x, int y) {
+/*uint32_t PPU::RenderPixel(int x, int y) {
     // --- Nametable ---
     uint16_t baseNametableAddr = 0x2000;
     uint16_t tileIndexAddr =
@@ -71,51 +71,88 @@ uint32_t PPU::RenderPixel(int x, int y) {
     int finalIndex = (paletteIndex * 4 + colorIndex) & 0x3F;
     uint32_t rgb = NES_COLORS[finalIndex];
 
-    return 0xFF000000u | rgb;
+   return 0xFF000000u | rgb;
+
+}*/
+uint16_t MapNametableAddr(uint16_t addr, Bus& bus) {
+    addr &= 0x0FFF; // $2000–$2FFF → $000–$FFF
+
+    uint16_t table = addr / 0x400;
+    uint16_t offset = addr & 0x3FF;
+
+    if (bus.mirrorVertical) {
+        // NT0+NT2, NT1+NT3
+        table &= 1;
+    } else {
+        // NT0+NT1, NT2+NT3
+        table = (table >> 1);
+    }
+
+    return table * 0x400 + offset;
+}
+uint32_t PPU::RenderPixel(int x, int y) {
+   
+uint16_t ntAddr = 0x2000 + (y / 8) * 32 + (x / 8);
+uint16_t vramAddr = MapNametableAddr(ntAddr, bus);
+uint8_t tileIndex = vram[vramAddr];
+
+    uint16_t patternTableAddr = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
+    uint16_t tileDataAddr = patternTableAddr + tileIndex * 16 + (y % 8);
+
+    uint8_t low = bus.ReadCHR(tileDataAddr);
+    uint8_t high = bus.ReadCHR(tileDataAddr + 8);
+
+    int bit = 7 - (x % 8);
+    int colorIndex =
+        ((high >> bit) & 1) << 1 |
+            ((low >> bit) & 1);
+
+    // DEBUG: show pattern bits directly
+    if (colorIndex == 0) return 0xFF000000;      // black
+    if (colorIndex == 1) return 0xFFFF0000;      // red
+    if (colorIndex == 2) return 0xFF00FF00;      // green
+    return 0xFF0000FF;                           // blue
 }
 
 
 // Advance PPU cycles; triggers a frame render when enough cycles collected
 void PPU::StepCycles(uint32_t cycles) {
     for (uint32_t i = 0; i < cycles; i++) {
-        // Advance cycle
-        cycle++;
-        if (cycle > 340) {
-            cycle = 0;
-            scanline++;
-            if (scanline > 261) scanline = 0;
+
+
+        if (scanline < 240 && cycle >= 1 && cycle <= 256) {
+            int x = cycle - 1;
+            int y = scanline;
+            lastFrame[y * 256 + x] = RenderPixel(x, y);
         }
 
-    if (scanline >= 0 && scanline < 240 &&
-    cycle > 0 && cycle <= 256) {
+        // VBlank start
+        if (scanline == 241 && cycle == 1) {
+            std::cout << "[PPU] VBLANK SET\n";
+            PPUSTATUS |= 0x80;
+            if (PPUCTRL & 0x80)
+                bus.nmiLine = true;
+            frameReady = true;    
+        }
 
-    int x = cycle - 1;
-    int y = scanline;
+        // Pre-render line
+        if (scanline == 261 && cycle == 1) {
+            PPUSTATUS &= ~0x80;
+            PPUSTATUS &= ~0x40;
+            PPUSTATUS &= ~0x20;
+            std::cout << "[PPU] VBLANK CLEARED\n";
+            bus.nmiLine = false;
+        }
 
-    uint32_t color = RenderPixel(x, y);
-    lastFrame[y * 256 + x] = color;
-}
-
- // --- VBlank start ---
-if (scanline == 241 && cycle == 1) {
-    frameReady = true;
-    PPUSTATUS |= 0x80;
-    if (PPUCTRL & 0x80) {
-   // ASSERT NMI
-        bus.nmiLine = true;
-        std::cout << "[PPU] VBlank start: NMI line asserted\n";
-    }
-
-}
-
-// --- VBlank end ---
-if (scanline == 261 && cycle == 1) {
-    PPUSTATUS &= ~0xE0;   // DEASSERT NMI
-}
-        // End of frame
-        if (scanline == 240 && cycle == 340) {
-
-            // Reset for next frame
+        // Frame finished
+        if (scanline == 240 && cycle == 0) {
+        }
+        cycle++;
+        if (cycle == 341) {
+            cycle = 0;
+            scanline++;
+            if (scanline == 262)
+                scanline = 0;
         }
     }
 }
@@ -124,6 +161,7 @@ if (scanline == 261 && cycle == 1) {
 
 
 uint8_t PPU::ReadRegister(uint16_t reg) {
+    reg &= 7;
     if (bus.mapper) bus.mapper->OnPPUAddr(reg, 0);
     switch (reg) {
         case 2: { // PPUSTATUS
@@ -142,7 +180,7 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
             uint8_t data = 0;
             if (addr < 0x2000) {
                 // pattern table (CHR)
-                if (!bus.chrRom.empty() && addr < bus.chrRom.size()) data = bus.chrRom[addr];
+                if (bus.mapper) data = bus.mapper->CHRRead(addr);
             } else if (addr >= 0x2000 && addr <= 0x2FFF) {
                 // nametables: mirror to 0x800
                 data = vram[addr & 0x7FF];
@@ -160,7 +198,6 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
 }
 
 void PPU::WriteRegister(uint16_t reg, uint8_t val) {
-    printf("PPU WRITE reg=%d val=%02X\n", reg, val);
     switch (reg) {
         case 0: // PPUCTRL
         {

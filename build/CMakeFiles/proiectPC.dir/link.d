@@ -11,9 +11,11 @@ proiectPC: \
   CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o \
   libimgui.a \
   libimgui_impl.a \
-  /usr/lib/libglfw.so.3.4 \
+  _deps/glfw-build/src/libglfw3.a \
   /usr/lib/libGL.so \
   libimgui.a \
+  /usr/lib/librt.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libdl.a \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
@@ -78,11 +80,15 @@ libimgui.a:
 
 libimgui_impl.a:
 
-/usr/lib/libglfw.so.3.4:
+_deps/glfw-build/src/libglfw3.a:
 
 /usr/lib/libGL.so:
 
 libimgui.a:
+
+/usr/lib/librt.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libdl.a:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so:
 

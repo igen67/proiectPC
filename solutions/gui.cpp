@@ -107,6 +107,28 @@ void RunGUI(CPU& cpu, Bus& bus) {
     auto lastConsolePrint = std::chrono::steady_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
+
+        if (running) {
+            // Throttle emulation to NES frame rate (60Hz)
+            static auto lastFrameTime = std::chrono::steady_clock::now();
+            auto nowFrame = std::chrono::steady_clock::now();
+            double elapsedSec = std::chrono::duration<double>(nowFrame - lastFrameTime).count();
+            if (elapsedSec < (1.0 / 60.0)) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
+            lastFrameTime = nowFrame;
+
+            // Run enough cycles for one NES frame (about 29780 cycles)
+            uint32_t targetCycles = 29780;
+            uint32_t executed = 0;
+            while (executed < targetCycles && !glfwWindowShouldClose(window)) {
+                u32 before = cycles;
+                cpu.Execute(cycles, bus);
+                executed += (cycles - before);
+            }
+
+        }
+
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -141,9 +163,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
             cpu.Reset(bus);
         }
         ImGui::SameLine();
-        if (ImGui::Button("Step")) {
-            cpu.Step(cycles, bus);
-        }
+
         ImGui::SameLine();
         if (ImGui::Button(running ? "Pause" : "Run")) {
             running = !running;
@@ -152,6 +172,9 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
         ImGui::SameLine();
         ImGui::Checkbox("Live Render", &liveRender);
+        ImGui::SameLine();
+        ImGui::Checkbox("Show ImGui Demo", &show_demo_window);
+
         ImGui::Text("Cycles last step: %u", cycles);
 
         // Update emulation speed sampler
@@ -196,37 +219,21 @@ void RunGUI(CPU& cpu, Bus& bus) {
         // Memory view
         DrawMemoryView(bus, memBase);
 
-        if (running) {
-            // Throttle emulation to NES frame rate (60Hz)
-            static auto lastFrameTime = std::chrono::steady_clock::now();
-            auto nowFrame = std::chrono::steady_clock::now();
-            double elapsedSec = std::chrono::duration<double>(nowFrame - lastFrameTime).count();
-            if (elapsedSec < (1.0 / 60.0)) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-            lastFrameTime = nowFrame;
-
-            // Run enough cycles for one NES frame (about 29780 cycles)
-            uint32_t targetCycles = 29780;
-            uint32_t executed = 0;
-            while (executed < targetCycles && !glfwWindowShouldClose(window)) {
-                u32 before = cycles;
-                cpu.Step(cycles, bus);
-                executed += (cycles - before);
-            }
-
-        }
-
         if (show_demo_window){
             ImGui::ShowDemoWindow(&show_demo_window);
+        }
+        
 
             // PPU: render a full frame (256x240) and display it
-            if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
+        if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
+
             glBindTexture(GL_TEXTURE_2D, ppuTex);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+            if(liveRender)
+            {
+            
             ImGui::Begin("PPU");
             ImGui::Image((void*)(intptr_t)ppuTex, ImVec2((float)ppuW * 2.0f, (float)ppuH * 2.0f));
 
@@ -277,6 +284,8 @@ void RunGUI(CPU& cpu, Bus& bus) {
             }
 
             ImGui::End();
+            }
+
         }
 
 
@@ -290,10 +299,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
         glfwSwapBuffers(window);
     }
-}
-
-
-    // Cleanup
+        // Cleanup
     if (ppuTex) {
         glDeleteTextures(1, &ppuTex);
         ppuTex = 0;
@@ -305,3 +311,8 @@ void RunGUI(CPU& cpu, Bus& bus) {
     glfwDestroyWindow(window);
     glfwTerminate();
 }
+
+
+
+
+

@@ -1,7 +1,7 @@
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: \
- /home/alex/Downloads/proiectPC/solutions/ppu.cpp \
+ /home/preda/Documents/proiectPC/solutions/ppu.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/solutions/headers/ppu.h \
+ /home/preda/Documents/proiectPC/solutions/headers/ppu.h \
  /usr/include/c++/15.2.1/vector \
  /usr/include/c++/15.2.1/bits/requires_hosted.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
@@ -64,9 +64,9 @@ CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: \
  /usr/include/bits/time64.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-intn.h /usr/include/bits/stdint-uintn.h \
  /usr/include/bits/stdint-least.h \
- /home/alex/Downloads/proiectPC/solutions/headers/bus.h \
- /home/alex/Downloads/proiectPC/solutions/headers/memory.h \
- /home/alex/Downloads/proiectPC/solutions/headers/libraries.h \
+ /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/libraries.h \
  /usr/include/stdio.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
  /usr/include/bits/types/__fpos_t.h /usr/include/bits/types/__mbstate_t.h \
@@ -188,10 +188,10 @@ CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: \
  /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/types.h \
- /home/alex/Downloads/proiectPC/solutions/headers/cpu.h \
- /home/alex/Downloads/proiectPC/solutions/headers/instructions.h \
- /home/alex/Downloads/proiectPC/solutions/headers/mapper.h \
+ /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/cpu.h \
+ /home/preda/Documents/proiectPC/solutions/headers/instructions.h \
+ /home/preda/Documents/proiectPC/solutions/headers/mapper.h \
  /usr/include/c++/15.2.1/cstring /usr/include/string.h \
  /usr/include/strings.h /usr/include/c++/15.2.1/algorithm \
  /usr/include/c++/15.2.1/bits/stl_algo.h \

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild
+CMAKE_SOURCE_DIR = /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild
+CMAKE_BINARY_DIR = /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,16 +87,16 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild/CMakeFiles /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild/CMakeFiles /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild/CMakeFiles 0
 .PHONY : all
 
 # The main codegen target
 codegen: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild/CMakeFiles /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild/CMakeFiles /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 codegen
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/alex/Downloads/proiectPC/build/_deps/imgui-subbuild/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/_deps/imgui-subbuild/CMakeFiles 0
 .PHONY : codegen
 
 # The main clean target

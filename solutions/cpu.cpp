@@ -1,11 +1,22 @@
 #include "headers/cpu.h"
 #include "headers/ppu.h"
 #include "headers/mapper.h"
+#include "headers/debugger.h"
 
 
 
-
+Debugger debugger;
 // 6502 proccesor emulation,
+void PrintTrace(const CPU::CPUTrace& t) {
+    printf(
+        "%04X  %02X %02X %02X  "
+        "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%llu\n",
+        t.pc,
+        t.opcode, t.op1, t.op2,
+        t.A, t.X, t.Y, t.P, t.SP,
+        t.cycles
+    );
+}
 
 void PrintStartupDebug(Bus& bus) {
     // Print values at $FFFC/$FFFD (reset vector)
@@ -352,66 +363,21 @@ printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
     Cycles += 7;
 }
 
-// Execute a single instruction (used by GUI to step/run)
-void CPU::Step(u32& Cycles, Bus& bus) {
-    u32 before = Cycles;
-    Byte opcode = FetchByte(Cycles, bus);
-       static bool printedStartup = false;
-    if (!printedStartup) {
-        PrintStartupDebug(bus);
-        printedStartup = true;
-    }
 
-    // Optional instruction tracing (enabled briefly after NMI)
-    if (traceInstructionsRemaining > 0) {
-        if (traceInstructionsRemaining <= 16) {
-            uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-            std::cout << "TRACE: PC=0x" << std::hex << instrAddr << " opcode=0x" << int(opcode) << " bytes:";
-            for (int i = 0; i < 6; ++i) std::cout << " " << std::hex << int(bus.read(instrAddr + i));
-            std::cout << std::dec << std::endl;
-        }
-        traceInstructionsRemaining--;
-        if (traceInstructionsRemaining == 0) {
-            if (bus.ppu) {
-                const uint8_t* pal = bus.ppu->GetPaletteRam();
-                const uint8_t* oam = bus.ppu->GetOAM();
-                std::cout << "TRACE: PPU Palette:";
-                for (int i = 0; i < 32; ++i) std::cout << " " << std::hex << int(pal[i]);
-                std::cout << std::dec << std::endl;
-                std::cout << "TRACE: PPU OAM (first 64 bytes):";
-                for (int i = 0; i < 64; ++i) std::cout << " " << std::hex << int(oam[i]);
-                std::cout << std::dec << std::endl;
-            }
-        }
-    }
-
-    // Loop detection & hotspot diagnostics for suspicious PC ranges (e.g., $FFF0-$FFFF, $F400-$F4FF)
-    {
-        uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-    }
-
-    InvokeInstruction(opcode, Cycles, bus);
-    // Handle pending NMI (non-maskable) before maskable IRQ
-    if (NMIRequested) {
-        NMIRequested = false;
-        HandleNMI(Cycles, bus);
-    }
-    IRQ_Handler(Cycles, bus, Interrupt);
-    u32 delta = Cycles - before;
-    if (bus.ppu) bus.ppu->StepCycles(delta * 3);
-    
-}
 
 
 void CPU::Execute(u32& Cycles, Bus& bus) {
-    while (true) {
         u32 before = Cycles;
         if (bus.nmiLine) {
             bus.nmiLine = false;
             HandleNMI(Cycles, bus);
-        }       
+        }    
+        else if (bus.irqEnable && !I) {
+        IRQ_Handler(Cycles, bus, true);
+        bus.irqEnable = false;
+        }   
 
-
+        else{
         int Instruction = FetchByte(Cycles, bus);
 
         if (traceInstructionsRemaining > 0) {
@@ -443,6 +409,11 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
                 }
             }
         }
+        
+debugger.CheckBreakpoint(PC);
+CPUTrace trace = CaptureTrace(bus);
+//PrintTrace(trace);
+
 
         InvokeInstruction(Instruction, Cycles, bus);
         // Tight-loop detection (same logic as Step) to catch busy-wait loops during Execute()
@@ -467,28 +438,16 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
                 }
             }
         }
-        if (std::cin.get() == ' ') {
-            continue;
-        }
 
     
-        if (bus.irqEnable && !I) {
-        IRQ_Handler(Cycles, bus, true);
-        bus.irqEnable = false;
-        }
+    }
 
         // Advance PPU based on cycles used by this instruction
         u32 delta = Cycles - before;
         if (bus.ppu) bus.ppu->StepCycles(delta * 3);
         //std::this_thread::sleep_for(std::chrono::milliseconds((1 / (40 * (1000000))) * Cycles));
         //Cycles = 0;
-        std::cerr << "Registrele A, X , Y";
-        printReg('A');
-        printReg('X');
-        printReg('Y');
-        std::cerr << std::endl;
     }
-}
 
 
 

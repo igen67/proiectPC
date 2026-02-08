@@ -8,11 +8,11 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/alex/Downloads/proiectPC/solutions/bus.cpp" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d"
-  "/home/alex/Downloads/proiectPC/solutions/mapper.cpp" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d"
-  "/home/alex/Downloads/proiectPC/solutions/memory.cpp" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o.d"
-  "/home/alex/Downloads/proiectPC/solutions/ppu.cpp" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o.d"
-  "/home/alex/Downloads/proiectPC/solutions/ppu_test.cpp" "CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/bus.cpp" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/mapper.cpp" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/memory.cpp" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/ppu.cpp" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/ppu_test.cpp" "CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o.d"
   "" "ppu_test" "gcc" "CMakeFiles/ppu_test.dir/link.d"
   )
 

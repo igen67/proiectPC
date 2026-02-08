@@ -93,6 +93,7 @@ void InitializeInstructionTable() {
     CPU::instructionTable[0x1D] = &InstructionHandlers::ORA_ABSX_Handler; // ORA Absolute, X
     CPU::instructionTable[0x19] = &InstructionHandlers::ORA_ABSY_Handler; // ORA Absolute, Y
     CPU::instructionTable[0x01] = &InstructionHandlers::ORA_INDX_Handler; // ORA Indirect, X
+    CPU::instructionTable[0x11] = &InstructionHandlers::ORA_INDY_Handler; // ORA Indirect, Y
 
     CPU::instructionTable[0xC9] = &InstructionHandlers::CMP_IM_Handler;
     CPU::instructionTable[0xC5] = &InstructionHandlers::CMP_ZP_Handler;

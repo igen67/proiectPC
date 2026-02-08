@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alex/Downloads/proiectPC
+CMAKE_SOURCE_DIR = /home/preda/Documents/proiectPC
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alex/Downloads/proiectPC/build
+CMAKE_BINARY_DIR = /home/preda/Documents/proiectPC/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/proiectPC.dir/depend.make
@@ -73,102 +73,102 @@ CMakeFiles/proiectPC.dir/codegen:
 .PHONY : CMakeFiles/proiectPC.dir/codegen
 
 CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/alex/Downloads/proiectPC/solutions/6502.cpp
+CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/solutions/6502.cpp
 CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/proiectPC.dir/solutions/6502.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/6502.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/6502.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/6502.cpp.o -c /home/alex/Downloads/proiectPC/solutions/6502.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/proiectPC.dir/solutions/6502.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/6502.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/6502.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/6502.cpp.o -c /home/preda/Documents/proiectPC/solutions/6502.cpp
 
 CMakeFiles/proiectPC.dir/solutions/6502.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/6502.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/6502.cpp > CMakeFiles/proiectPC.dir/solutions/6502.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/6502.cpp > CMakeFiles/proiectPC.dir/solutions/6502.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/6502.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/6502.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/6502.cpp -o CMakeFiles/proiectPC.dir/solutions/6502.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/6502.cpp -o CMakeFiles/proiectPC.dir/solutions/6502.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o: /home/alex/Downloads/proiectPC/solutions/cpu.cpp
+CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o: /home/preda/Documents/proiectPC/solutions/cpu.cpp
 CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o -c /home/alex/Downloads/proiectPC/solutions/cpu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o -c /home/preda/Documents/proiectPC/solutions/cpu.cpp
 
 CMakeFiles/proiectPC.dir/solutions/cpu.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/cpu.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/cpu.cpp > CMakeFiles/proiectPC.dir/solutions/cpu.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/cpu.cpp > CMakeFiles/proiectPC.dir/solutions/cpu.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/cpu.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/cpu.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/cpu.cpp -o CMakeFiles/proiectPC.dir/solutions/cpu.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/cpu.cpp -o CMakeFiles/proiectPC.dir/solutions/cpu.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/memory.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/memory.cpp.o: /home/alex/Downloads/proiectPC/solutions/memory.cpp
+CMakeFiles/proiectPC.dir/solutions/memory.cpp.o: /home/preda/Documents/proiectPC/solutions/memory.cpp
 CMakeFiles/proiectPC.dir/solutions/memory.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/proiectPC.dir/solutions/memory.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/memory.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/memory.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/memory.cpp.o -c /home/alex/Downloads/proiectPC/solutions/memory.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/proiectPC.dir/solutions/memory.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/memory.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/memory.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/memory.cpp.o -c /home/preda/Documents/proiectPC/solutions/memory.cpp
 
 CMakeFiles/proiectPC.dir/solutions/memory.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/memory.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/memory.cpp > CMakeFiles/proiectPC.dir/solutions/memory.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/memory.cpp > CMakeFiles/proiectPC.dir/solutions/memory.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/memory.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/memory.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/memory.cpp -o CMakeFiles/proiectPC.dir/solutions/memory.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/memory.cpp -o CMakeFiles/proiectPC.dir/solutions/memory.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/bus.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/bus.cpp.o: /home/alex/Downloads/proiectPC/solutions/bus.cpp
+CMakeFiles/proiectPC.dir/solutions/bus.cpp.o: /home/preda/Documents/proiectPC/solutions/bus.cpp
 CMakeFiles/proiectPC.dir/solutions/bus.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/proiectPC.dir/solutions/bus.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/bus.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/bus.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/bus.cpp.o -c /home/alex/Downloads/proiectPC/solutions/bus.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/proiectPC.dir/solutions/bus.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/bus.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/bus.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/bus.cpp.o -c /home/preda/Documents/proiectPC/solutions/bus.cpp
 
 CMakeFiles/proiectPC.dir/solutions/bus.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/bus.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/bus.cpp > CMakeFiles/proiectPC.dir/solutions/bus.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/bus.cpp > CMakeFiles/proiectPC.dir/solutions/bus.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/bus.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/bus.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/bus.cpp -o CMakeFiles/proiectPC.dir/solutions/bus.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/bus.cpp -o CMakeFiles/proiectPC.dir/solutions/bus.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: /home/alex/Downloads/proiectPC/solutions/gui.cpp
+CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: /home/preda/Documents/proiectPC/solutions/gui.cpp
 CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/proiectPC.dir/solutions/gui.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/gui.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/gui.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/gui.cpp.o -c /home/alex/Downloads/proiectPC/solutions/gui.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/proiectPC.dir/solutions/gui.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/gui.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/gui.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/gui.cpp.o -c /home/preda/Documents/proiectPC/solutions/gui.cpp
 
 CMakeFiles/proiectPC.dir/solutions/gui.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/gui.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/gui.cpp > CMakeFiles/proiectPC.dir/solutions/gui.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/gui.cpp > CMakeFiles/proiectPC.dir/solutions/gui.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/gui.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/gui.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/gui.cpp -o CMakeFiles/proiectPC.dir/solutions/gui.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/gui.cpp -o CMakeFiles/proiectPC.dir/solutions/gui.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: /home/alex/Downloads/proiectPC/solutions/ppu.cpp
+CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: /home/preda/Documents/proiectPC/solutions/ppu.cpp
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o -c /home/alex/Downloads/proiectPC/solutions/ppu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o -c /home/preda/Documents/proiectPC/solutions/ppu.cpp
 
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/ppu.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/ppu.cpp > CMakeFiles/proiectPC.dir/solutions/ppu.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/ppu.cpp > CMakeFiles/proiectPC.dir/solutions/ppu.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/ppu.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/ppu.cpp -o CMakeFiles/proiectPC.dir/solutions/ppu.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/ppu.cpp -o CMakeFiles/proiectPC.dir/solutions/ppu.cpp.s
 
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: CMakeFiles/proiectPC.dir/flags.make
-CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: /home/alex/Downloads/proiectPC/solutions/mapper.cpp
+CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: /home/preda/Documents/proiectPC/solutions/mapper.cpp
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: CMakeFiles/proiectPC.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o -c /home/alex/Downloads/proiectPC/solutions/mapper.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o -MF CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o.d -o CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o -c /home/preda/Documents/proiectPC/solutions/mapper.cpp
 
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/proiectPC.dir/solutions/mapper.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/alex/Downloads/proiectPC/solutions/mapper.cpp > CMakeFiles/proiectPC.dir/solutions/mapper.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/preda/Documents/proiectPC/solutions/mapper.cpp > CMakeFiles/proiectPC.dir/solutions/mapper.cpp.i
 
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/proiectPC.dir/solutions/mapper.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/alex/Downloads/proiectPC/solutions/mapper.cpp -o CMakeFiles/proiectPC.dir/solutions/mapper.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/preda/Documents/proiectPC/solutions/mapper.cpp -o CMakeFiles/proiectPC.dir/solutions/mapper.cpp.s
 
 # Object files for target proiectPC
 proiectPC_OBJECTS = \
@@ -194,11 +194,13 @@ proiectPC: CMakeFiles/proiectPC.dir/build.make
 proiectPC: CMakeFiles/proiectPC.dir/compiler_depend.ts
 proiectPC: libimgui.a
 proiectPC: libimgui_impl.a
-proiectPC: /usr/lib/libglfw.so.3.4
+proiectPC: _deps/glfw-build/src/libglfw3.a
 proiectPC: /usr/lib/libGL.so
 proiectPC: libimgui.a
+proiectPC: /usr/lib/librt.a
+proiectPC: /usr/lib/libm.so
 proiectPC: CMakeFiles/proiectPC.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/alex/Downloads/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable proiectPC"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable proiectPC"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/proiectPC.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -210,6 +212,6 @@ CMakeFiles/proiectPC.dir/clean:
 .PHONY : CMakeFiles/proiectPC.dir/clean
 
 CMakeFiles/proiectPC.dir/depend:
-	cd /home/alex/Downloads/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build /home/alex/Downloads/proiectPC/build/CMakeFiles/proiectPC.dir/DependInfo.cmake "--color=$(COLOR)" proiectPC
+	cd /home/preda/Documents/proiectPC/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build /home/preda/Documents/proiectPC/build/CMakeFiles/proiectPC.dir/DependInfo.cmake "--color=$(COLOR)" proiectPC
 .PHONY : CMakeFiles/proiectPC.dir/depend
 

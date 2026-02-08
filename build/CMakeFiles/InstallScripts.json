@@ -1,7 +1,9 @@
 {
 	"InstallScripts" : 
 	[
-		"/home/alex/Downloads/proiectPC/build/cmake_install.cmake"
+		"/home/preda/Documents/proiectPC/build/cmake_install.cmake",
+		"/home/preda/Documents/proiectPC/build/_deps/glfw-build/cmake_install.cmake",
+		"/home/preda/Documents/proiectPC/build/_deps/glfw-build/src/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

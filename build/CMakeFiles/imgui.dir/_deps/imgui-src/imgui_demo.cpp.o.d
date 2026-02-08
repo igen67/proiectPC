@@ -1,8 +1,8 @@
 CMakeFiles/imgui.dir/_deps/imgui-src/imgui_demo.cpp.o: \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/imgui_demo.cpp \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/imgui_demo.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/imgui.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/imconfig.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/imgui.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/imconfig.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h \

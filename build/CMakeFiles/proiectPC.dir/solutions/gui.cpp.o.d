@@ -1,11 +1,11 @@
 CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: \
- /home/alex/Downloads/proiectPC/solutions/gui.cpp \
+ /home/preda/Documents/proiectPC/solutions/gui.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/solutions/headers/gui.h \
- /home/alex/Downloads/proiectPC/solutions/headers/cpu.h \
- /home/alex/Downloads/proiectPC/solutions/headers/instructions.h \
- /home/alex/Downloads/proiectPC/solutions/headers/types.h \
- /home/alex/Downloads/proiectPC/solutions/headers/libraries.h \
+ /home/preda/Documents/proiectPC/solutions/headers/gui.h \
+ /home/preda/Documents/proiectPC/solutions/headers/cpu.h \
+ /home/preda/Documents/proiectPC/solutions/headers/instructions.h \
+ /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/libraries.h \
  /usr/include/c++/15.2.1/cstdint \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -187,14 +187,15 @@ CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: \
  /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/bus.h \
- /home/alex/Downloads/proiectPC/solutions/headers/memory.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/imgui.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/imconfig.h \
+ /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/imgui.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/imconfig.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \
  /usr/include/string.h /usr/include/strings.h /usr/include/assert.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.h \
- /home/alex/Downloads/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.h \
- /home/alex/Downloads/proiectPC/solutions/headers/ppu.h \
- /usr/include/GLFW/glfw3.h /usr/include/GL/gl.h /usr/include/GL/glext.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_glfw.h \
+ /home/preda/Documents/proiectPC/build/_deps/imgui-src/backends/imgui_impl_opengl3.h \
+ /home/preda/Documents/proiectPC/solutions/headers/ppu.h \
+ /home/preda/Documents/proiectPC/build/_deps/glfw-src/include/GLFW/glfw3.h \
+ /usr/include/GL/gl.h /usr/include/GL/glext.h \
  /usr/include/KHR/khrplatform.h /usr/include/c++/15.2.1/chrono

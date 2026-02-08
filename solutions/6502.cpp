@@ -107,7 +107,6 @@ int main(int argc, char** argv)
 		if (!(std::cin >> cmd)) break;
 		if (cmd == 'q') break;
 		else if (cmd == 'r') cpu.Execute(Cycles, bus);
-		else if (cmd == 's') cpu.Step(Cycles, bus);
 		else if (cmd == 'p') {
 			cpu.printReg('A'); cpu.printReg('X'); cpu.printReg('Y');
 			std::cerr << "PC: 0x" << std::hex << cpu.PC << std::dec << " SP: 0x" << std::hex << cpu.SP << std::dec << std::endl;

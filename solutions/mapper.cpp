@@ -58,8 +58,8 @@ public:
             if ((addr & 1) == 0) {
                 // bank select
                 bankSelect = value & 0x07;
-prgMode = value & 0x40;
-chrMode = value & 0x80;
+                prgMode = value & 0x40;
+                chrMode = value & 0x80;
 
 
                 if (g_mapperVerbose) std::cout << "Mapper4: bank select=" << int(bankSelect)

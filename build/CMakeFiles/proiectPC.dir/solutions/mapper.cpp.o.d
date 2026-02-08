@@ -1,7 +1,7 @@
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: \
- /home/alex/Downloads/proiectPC/solutions/mapper.cpp \
+ /home/preda/Documents/proiectPC/solutions/mapper.cpp \
  /usr/include/stdc-predef.h \
- /home/alex/Downloads/proiectPC/solutions/headers/mapper.h \
+ /home/preda/Documents/proiectPC/solutions/headers/mapper.h \
  /usr/include/c++/15.2.1/cstdint \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
  /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
@@ -112,9 +112,9 @@ CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: \
  /usr/include/bits/types/error_t.h \
  /usr/include/c++/15.2.1/bits/charconv.h \
  /usr/include/c++/15.2.1/bits/basic_string.tcc \
- /home/alex/Downloads/proiectPC/solutions/headers/bus.h \
- /home/alex/Downloads/proiectPC/solutions/headers/memory.h \
- /home/alex/Downloads/proiectPC/solutions/headers/libraries.h \
+ /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/libraries.h \
  /usr/include/c++/15.2.1/stdlib.h /usr/include/c++/15.2.1/iostream \
  /usr/include/c++/15.2.1/ostream /usr/include/c++/15.2.1/bits/ostream.h \
  /usr/include/c++/15.2.1/ios /usr/include/c++/15.2.1/exception \
@@ -189,8 +189,8 @@ CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: \
  /usr/include/c++/15.2.1/bits/chrono.h /usr/include/c++/15.2.1/ratio \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
- /home/alex/Downloads/proiectPC/solutions/headers/types.h \
- /home/alex/Downloads/proiectPC/solutions/headers/cpu.h \
- /home/alex/Downloads/proiectPC/solutions/headers/instructions.h \
+ /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/cpu.h \
+ /home/preda/Documents/proiectPC/solutions/headers/instructions.h \
  /usr/include/c++/15.2.1/cstring /usr/include/string.h \
  /usr/include/strings.h

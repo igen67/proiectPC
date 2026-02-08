@@ -7,25 +7,29 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/alex/Downloads/proiectPC/CMakeLists.txt"
+  "/home/preda/Documents/proiectPC/CMakeLists.txt"
   "CMakeFiles/4.2.3/CMakeCCompiler.cmake"
   "CMakeFiles/4.2.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/4.2.3/CMakeSystem.cmake"
-  "/usr/lib/cmake/glfw3/glfw3Config.cmake"
-  "/usr/lib/cmake/glfw3/glfw3ConfigVersion.cmake"
-  "/usr/lib/cmake/glfw3/glfw3Targets-none.cmake"
-  "/usr/lib/cmake/glfw3/glfw3Targets.cmake"
+  "_deps/glfw-src/CMake/glfw3.pc.in"
+  "_deps/glfw-src/CMake/glfw3Config.cmake.in"
+  "_deps/glfw-src/CMakeLists.txt"
+  "_deps/glfw-src/src/CMakeLists.txt"
+  "/usr/share/cmake/Modules/BasicConfigVersion-SameMajorVersion.cmake.in"
   "/usr/share/cmake/Modules/CMakeCInformation.cmake"
   "/usr/share/cmake/Modules/CMakeCXXInformation.cmake"
   "/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"
-  "/usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake"
+  "/usr/share/cmake/Modules/CMakeDependentOption.cmake"
   "/usr/share/cmake/Modules/CMakeGenericSystem.cmake"
   "/usr/share/cmake/Modules/CMakeInitializeConfigs.cmake"
   "/usr/share/cmake/Modules/CMakeLanguageInformation.cmake"
+  "/usr/share/cmake/Modules/CMakePackageConfigHelpers.cmake"
   "/usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake"
   "/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake"
   "/usr/share/cmake/Modules/CheckCSourceCompiles.cmake"
+  "/usr/share/cmake/Modules/CheckFunctionExists.cmake"
   "/usr/share/cmake/Modules/CheckIncludeFile.cmake"
+  "/usr/share/cmake/Modules/CheckIncludeFiles.cmake"
   "/usr/share/cmake/Modules/CheckLibraryExists.cmake"
   "/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
   "/usr/share/cmake/Modules/Compiler/GNU-C.cmake"
@@ -34,11 +38,16 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake/Modules/ExternalProject/shared_internal_commands.cmake"
   "/usr/share/cmake/Modules/FetchContent.cmake"
   "/usr/share/cmake/Modules/FetchContent/CMakeLists.cmake.in"
+  "/usr/share/cmake/Modules/FindFontconfig.cmake"
+  "/usr/share/cmake/Modules/FindFreetype.cmake"
   "/usr/share/cmake/Modules/FindGit.cmake"
   "/usr/share/cmake/Modules/FindOpenGL.cmake"
   "/usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake"
   "/usr/share/cmake/Modules/FindPackageMessage.cmake"
+  "/usr/share/cmake/Modules/FindPkgConfig.cmake"
   "/usr/share/cmake/Modules/FindThreads.cmake"
+  "/usr/share/cmake/Modules/FindX11.cmake"
+  "/usr/share/cmake/Modules/GNUInstallDirs.cmake"
   "/usr/share/cmake/Modules/Internal/CMakeCLinkerInformation.cmake"
   "/usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake"
   "/usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake"
@@ -56,6 +65,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake/Modules/Platform/Linux-Initialize.cmake"
   "/usr/share/cmake/Modules/Platform/Linux.cmake"
   "/usr/share/cmake/Modules/Platform/UnixPaths.cmake"
+  "/usr/share/cmake/Modules/SelectLibraryConfigurations.cmake"
+  "/usr/share/cmake/Modules/WriteBasicConfigVersionFile.cmake"
   )
 
 # The corresponding makefile is:
@@ -66,8 +77,14 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+  "_deps/glfw-subbuild/CMakeLists.txt"
   "_deps/imgui-subbuild/CMakeLists.txt"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "_deps/glfw-build/src/glfw3Config.cmake"
+  "_deps/glfw-build/src/glfw3ConfigVersion.cmake"
+  "_deps/glfw-build/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "_deps/glfw-build/src/glfw3.pc"
+  "_deps/glfw-build/src/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
@@ -76,4 +93,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/imgui_impl.dir/DependInfo.cmake"
   "CMakeFiles/proiectPC.dir/DependInfo.cmake"
   "CMakeFiles/ppu_test.dir/DependInfo.cmake"
+  "_deps/glfw-build/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "_deps/glfw-build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake"
   )
