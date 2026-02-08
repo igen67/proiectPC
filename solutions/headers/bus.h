@@ -3,6 +3,7 @@
 #include "libraries.h"
 #include <vector>
 #include <string>
+#include "input.h"
 
 // NES memory map (simplified for now):
 // $0000-$07FF: 2KB internal RAM
@@ -36,8 +37,22 @@ public:
     // Mapper interface attached (optional)
     class Mapper* mapper = nullptr;
 
+    // Input / controller state
+    class Input input;
+
     // Cartridge mirroring (from iNES flags)
     bool mirrorVertical = false;
+
+    // OAM DMA state: when a CPU writes to $4014, emulator may need to stall CPU cycles
+    bool oamDmaActive = false;
+    uint8_t oamDmaPage = 0;
+    uint32_t oamDmaCycles = 0;
+    // Per-byte DMA state
+    uint16_t oamDmaIndex = 0;
+    bool oamDmaDummy = true; // first dummy cycle behavior
+
+    // Host-facing helper to set controller button bits (bit0=A, bit1=B, bit2=Select, bit3=Start, bit4=Up, bit5=Down, bit6=Left, bit7=Right)
+    void SetControllerButtons(uint8_t buttons) { input.SetButtons(0, buttons); }
 
     // Attach CPU so mappers can request IRQs
     void AttachCPU(class CPU* c) { cpu = c; }

@@ -9,6 +9,7 @@ proiectPC: \
   CMakeFiles/proiectPC.dir/solutions/gui.cpp.o \
   CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o \
   CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o \
+  CMakeFiles/proiectPC.dir/solutions/input.cpp.o \
   libimgui.a \
   libimgui_impl.a \
   _deps/glfw-build/src/libglfw3.a \
@@ -75,6 +76,8 @@ CMakeFiles/proiectPC.dir/solutions/gui.cpp.o:
 CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o:
 
 CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o:
+
+CMakeFiles/proiectPC.dir/solutions/input.cpp.o:
 
 libimgui.a:
 

@@ -188,6 +188,7 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
  /home/preda/Documents/proiectPC/solutions/headers/bus.h \
  /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/input.h \
  /home/preda/Documents/proiectPC/solutions/headers/table.h \
  /home/preda/Documents/proiectPC/solutions/headers/functionHandlers.h \
  /home/preda/Documents/proiectPC/solutions/headers/gui.h

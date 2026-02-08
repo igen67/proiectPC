@@ -997,13 +997,11 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     }
     // PLA: 4 cycles
     static void PLA_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        if (cpu.SP == 0x01FF) {
-            std::cerr << "Stack overflow!" << std::endl;
-            exit(1);
-        }
+        // Pull A from stack: increment SP, then read
+        // Avoid aborting on edge cases; just increment and read (emulator should handle wrap)
         cpu.SP++;
+        cpu.modifySP();
         cpu.A = bus.read(0x0100 | cpu.SP);
-
         Cycles += 4;
     }
     // PHP: 3 cycles
@@ -1115,7 +1113,6 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     static void RTI_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         cpu.SP++;
         Byte status = bus.read(0x0100 | cpu.SP);
-        printf("PULL STATUS=%02X from %04X\n", status, 0x0100 | cpu.SP);
 
 
         cpu.C = (status >> 0) & 1;
@@ -1135,7 +1132,6 @@ status |=  0x20;   // set unused bit
 
         cpu.PC = (hi << 8) | lo;
         Cycles += 6;
-        printf("STATUS=%02X I=%d\n", status, cpu.I);
 
     }
     // BRK: 7 cycles

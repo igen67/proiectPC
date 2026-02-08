@@ -83,6 +83,8 @@ int main(int argc, char** argv)
 	if (wantGui) {
 		if (!filePath.empty()) loadFile(filePath);
 		InitializeInstructionTable();
+		// Attach CPU to bus for mapper IRQs and other interactions
+		bus.AttachCPU(&cpu);
 		cpu.Reset(bus);
 
 		RunGUI(cpu, bus);
@@ -98,6 +100,8 @@ int main(int argc, char** argv)
 	if (!filePath.empty()) loadFile(filePath);
 
 	InitializeInstructionTable();
+	// Attach CPU to bus so mappers can signal IRQs even in non-GUI runs
+	bus.AttachCPU(&cpu);
 	cpu.Reset(bus);
 
 	std::cerr << "Commands: r=run, s=step, p=print regs, q=quit\n";
@@ -109,7 +113,7 @@ int main(int argc, char** argv)
 		else if (cmd == 'r') cpu.Execute(Cycles, bus);
 		else if (cmd == 'p') {
 			cpu.printReg('A'); cpu.printReg('X'); cpu.printReg('Y');
-			std::cerr << "PC: 0x" << std::hex << cpu.PC << std::dec << " SP: 0x" << std::hex << cpu.SP << std::dec << std::endl;
+			std::cerr << "PC: 0x" << std::hex << cpu.PC << std::dec << " SP: 0x" << std::hex << int(cpu.SP) << std::dec << std::endl;
 		}
 	}
 

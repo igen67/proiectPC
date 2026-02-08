@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/preda/Documents/proiectPC/solutions/bus.cpp" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/input.cpp" "CMakeFiles/ppu_test.dir/solutions/input.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/input.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/mapper.cpp" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/memory.cpp" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/ppu.cpp" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o" "gcc" "CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o.d"

@@ -186,5 +186,6 @@ CMakeFiles/ppu_test.dir/solutions/bus.cpp.o: \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
  /home/preda/Documents/proiectPC/solutions/headers/types.h \
  /home/preda/Documents/proiectPC/solutions/headers/bus.h \
+ /home/preda/Documents/proiectPC/solutions/headers/input.h \
  /home/preda/Documents/proiectPC/solutions/headers/ppu.h \
  /home/preda/Documents/proiectPC/solutions/headers/mapper.h

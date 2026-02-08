@@ -5,12 +5,16 @@
 #include <cstring>
 #include <algorithm>
 
-// Basic NES palette for visualization (64 colors approximated)
-const unsigned char NES_COLORS[64] = {
-    0x35,0x23,0x16,0x22,0x1C,0x09,0x1D,0x15,0x20,0x00,0x27,0x05,0x04,0x28,0x08,0x20,
-    0x21,0x3E,0x1F,0x29,0x3C,0x32,0x36,0x12,0x3F,0x2B,0x2E,0x1E,0x3D,0x2D,0x24,0x01,
-    0x0E,0x31,0x33,0x2A,0x2C,0x0C,0x1B,0x14,0x2E,0x07,0x34,0x06,0x13,0x02,0x26,0x2E,
-    0x2E,0x19,0x10,0x0A,0x39,0x03,0x37,0x17,0x0F,0x11,0x0B,0x0D,0x38,0x25,0x18,0x3A
+// NES RGB palette (64 entries) - common NTSC approximated values
+const uint32_t NES_COLORS[64] = {
+    0xFF757575, 0xFF271B8F, 0xFF0000AB, 0xFF47009F, 0xFF8F0077, 0xFFAB0013, 0xFFA70000, 0xFF7F0B00,
+    0xFF432F00, 0xFF004700, 0xFF005100, 0xFF003F17, 0xFF1B3F5F, 0xFF000000, 0xFF000000, 0xFF000000,
+    0xFFBCBCBC, 0xFF0073EF, 0xFF233BEF, 0xFF8300F3, 0xFFBF00BF, 0xFFE7005B, 0xFFDB2B00, 0xFFCB4F0F,
+    0xFF8B7300, 0xFF009700, 0xFF00AB00, 0xFF00933B, 0xFF00838B, 0xFF000000, 0xFF000000, 0xFF000000,
+    0xFFFFFFFF, 0xFF3FBFFF, 0xFF5F97FF, 0xFFA78BFD, 0xFFF77BFF, 0xFFFF77B7, 0xFFFF7763, 0xFFFF9B3B,
+    0xFFF3BF3F, 0xFF4FFB73, 0xFF66FF66, 0xFF4DE09E, 0xFF4CD7D7, 0xFF000000, 0xFF000000, 0xFF000000,
+    0xFFFFFEFF, 0xFFA7E7FF, 0xFFC7D7FF, 0xFFD7CBFF, 0xFFFFC7FF, 0xFFFFC7DB, 0xFFFFBFA3, 0xFFFFDBAB,
+    0xFFFFE7A3, 0xFFE3FFCF, 0xFFABF3BF, 0xFFB3FFCF, 0xFF9FFFF3, 0xFF000000, 0xFF000000, 0xFF000000
 };
 
 PPU::PPU(Bus& b) : bus(b) {
@@ -26,14 +30,14 @@ void PPU::Reset() {
     std::fill(std::begin(oam), std::end(oam), 0);
     PPUMASK = PPUSTATUS = OAMADDR = 0;
     vramAddr = vramAddrTemp = 0;
-    vramLatch = false;
+    writeToggle = false;
     ppuCycleCounter = 0;
     frameReady = true;
     scanline = 0;
     cycle = 0;
 
 }
-/*uint32_t PPU::RenderPixel(int x, int y) {
+uint32_t PPU::RenderPixel(int x, int y) {
     // --- Nametable ---
     uint16_t baseNametableAddr = 0x2000;
     uint16_t tileIndexAddr =
@@ -46,6 +50,9 @@ void PPU::Reset() {
     uint16_t tileDataAddr =
         patternTableAddr + tileIndex * 16 + (y % 8);
 
+    // Notify mapper of PPU address accesses (full address) for A12 edge detection
+    bus.NotifyPPUAddr(tileDataAddr);
+    bus.NotifyPPUAddr(tileDataAddr + 8);
     uint8_t lowByte  = bus.ReadCHR(tileDataAddr);
     uint8_t highByte = bus.ReadCHR(tileDataAddr + 8);
 
@@ -67,52 +74,14 @@ void PPU::Reset() {
 
     uint8_t paletteIndex = (attr >> shift) & 0x03;
 
-    // --- Final color (still simplified) ---
-    int finalIndex = (paletteIndex * 4 + colorIndex) & 0x3F;
-    uint32_t rgb = NES_COLORS[finalIndex];
+    // --- Final color: map through palette RAM then to NES_COLORS ---
+    int palRamIndex = (paletteIndex * 4 + colorIndex) & 0x1F; // palette RAM has 32 entries
+    uint8_t palEntry = paletteRam[palRamIndex] & 0x3F;
+    uint32_t finalColor = NES_COLORS[palEntry % 64];
+    return finalColor;
 
-   return 0xFF000000u | rgb;
-
-}*/
-uint16_t MapNametableAddr(uint16_t addr, Bus& bus) {
-    addr &= 0x0FFF; // $2000–$2FFF → $000–$FFF
-
-    uint16_t table = addr / 0x400;
-    uint16_t offset = addr & 0x3FF;
-
-    if (bus.mirrorVertical) {
-        // NT0+NT2, NT1+NT3
-        table &= 1;
-    } else {
-        // NT0+NT1, NT2+NT3
-        table = (table >> 1);
-    }
-
-    return table * 0x400 + offset;
 }
-uint32_t PPU::RenderPixel(int x, int y) {
-   
-uint16_t ntAddr = 0x2000 + (y / 8) * 32 + (x / 8);
-uint16_t vramAddr = MapNametableAddr(ntAddr, bus);
-uint8_t tileIndex = vram[vramAddr];
 
-    uint16_t patternTableAddr = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
-    uint16_t tileDataAddr = patternTableAddr + tileIndex * 16 + (y % 8);
-
-    uint8_t low = bus.ReadCHR(tileDataAddr);
-    uint8_t high = bus.ReadCHR(tileDataAddr + 8);
-
-    int bit = 7 - (x % 8);
-    int colorIndex =
-        ((high >> bit) & 1) << 1 |
-            ((low >> bit) & 1);
-
-    // DEBUG: show pattern bits directly
-    if (colorIndex == 0) return 0xFF000000;      // black
-    if (colorIndex == 1) return 0xFFFF0000;      // red
-    if (colorIndex == 2) return 0xFF00FF00;      // green
-    return 0xFF0000FF;                           // blue
-}
 
 
 // Advance PPU cycles; triggers a frame render when enough cycles collected
@@ -128,7 +97,7 @@ void PPU::StepCycles(uint32_t cycles) {
 
         // VBlank start
         if (scanline == 241 && cycle == 1) {
-            std::cout << "[PPU] VBLANK SET\n";
+
             PPUSTATUS |= 0x80;
             if (PPUCTRL & 0x80)
                 bus.nmiLine = true;
@@ -137,10 +106,10 @@ void PPU::StepCycles(uint32_t cycles) {
 
         // Pre-render line
         if (scanline == 261 && cycle == 1) {
+            // pre-render line: clear VBlank and secondary flags
             PPUSTATUS &= ~0x80;
             PPUSTATUS &= ~0x40;
             PPUSTATUS &= ~0x20;
-            std::cout << "[PPU] VBLANK CLEARED\n";
             bus.nmiLine = false;
         }
 
@@ -162,14 +131,13 @@ void PPU::StepCycles(uint32_t cycles) {
 
 uint8_t PPU::ReadRegister(uint16_t reg) {
     reg &= 7;
-    if (bus.mapper) bus.mapper->OnPPUAddr(reg, 0);
     switch (reg) {
         case 2: { // PPUSTATUS
             uint8_t val = PPUSTATUS;
 
             // reading PPUSTATUS clears VBlank flag and latch
             PPUSTATUS &= ~0x80u;
-            vramLatch = false;
+                writeToggle = false;
             return val;
         }
         case 4: { // OAMDATA
@@ -177,20 +145,28 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
         }
         case 7: { // PPUDATA
             uint16_t addr = vramAddr & 0x3FFF;
-            uint8_t data = 0;
-            if (addr < 0x2000) {
-                // pattern table (CHR)
-                if (bus.mapper) data = bus.mapper->CHRRead(addr);
-            } else if (addr >= 0x2000 && addr <= 0x2FFF) {
-                // nametables: mirror to 0x800
-                data = vram[addr & 0x7FF];
-            } else if (addr >= 0x3F00 && addr <= 0x3F1F) {
-                data = paletteRam[addr & 0x1F];
+            uint8_t ret = 0;
+            // PPUDATA is buffered for reads from $0000-$3EFF
+            if (addr >= 0x3F00 && addr <= 0x3FFF) {
+                // palette reads are not buffered
+                ret = paletteRam[addr & 0x1F];
+            } else {
+                // Return buffered value and refill buffer with current memory read
+                ret = readBuffer;
+                if (addr < 0x2000) {
+                    // pattern table (CHR)
+                    bus.NotifyPPUAddr(addr);
+                    readBuffer = bus.ReadCHR(addr);
+                } else if (addr >= 0x2000 && addr <= 0x2FFF) {
+                    readBuffer = vram[addr & 0x7FF];
+                } else {
+                    readBuffer = 0;
+                }
             }
-            // increment
-            uint16_t inc = (PPUCTRL & 0x04) ? 32 : 1;
+            // increment vramAddr
+                uint16_t inc = (PPUCTRL & 0x04) ? 32 : 1;
             vramAddr = (vramAddr + inc) & 0x3FFF;
-            return data;
+            return ret;
         }
         default:
             return 0;
@@ -203,10 +179,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
         {
             uint8_t old = PPUCTRL;
             PPUCTRL = val & 0xFF;
-            if ((old & 0x80) != (PPUCTRL & 0x80)) {
-                if (PPUCTRL & 0x80) std::cout << "[PPU] PPUCTRL: NMI enabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;
-                else std::cout << "[PPU] PPUCTRL: NMI disabled (PPUCTRL=0x" << std::hex << int(PPUCTRL) << ")" << std::dec << std::endl;
-            }
         }
         break;
         case 1: // PPUMASK
@@ -218,17 +190,30 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
         case 4: // OAMDATA
             oam[OAMADDR++] = val;
             break;
-        case 5: // PPUSCROLL (ignored for now)
-            // toggle behaviour omitted; we'll ignore scroll in phase 1
+        case 5: // PPUSCROLL
+            if (!writeToggle) {
+                // first write: coarse X (t: bits 0-4) and fine X (x)
+                fineX = val & 0x07;
+                vramAddrTemp = (vramAddrTemp & 0xFFE0) | (uint16_t)(val >> 3);
+                writeToggle = true;
+            } else {
+                // second write: coarse Y (t: bits 5-9) and fine Y (t: bits 12-14)
+                uint16_t coarseY = (uint16_t)(val >> 3) & 0x1F;
+                uint16_t fineY = (uint16_t)(val & 0x07);
+                vramAddrTemp = (vramAddrTemp & 0x8C1F) | (coarseY << 5) | (fineY << 12);
+                writeToggle = false;
+            }
             break;
         case 6: // PPUADDR (two writes)
-            if (!vramLatch) {
-                vramAddrTemp = (uint16_t)(val & 0x3F) << 8; // only 14 bits but store
-                vramLatch = true;
+            if (!writeToggle) {
+                // first write: high 6 bits of vram address
+                vramAddrTemp = (uint16_t)(val & 0x3F) << 8;
+                writeToggle = true;
             } else {
+                // second write: low 8 bits, then copy t -> v
                 vramAddrTemp |= val;
                 vramAddr = vramAddrTemp & 0x3FFF;
-                vramLatch = false;
+                writeToggle = false;
             }
             break;
         case 7: { // PPUDATA
@@ -244,10 +229,9 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 paletteRam[addr & 0x1F] = val & 0x3F;
                 static int palLog = 0;
                 if (palLog < 32) {
-                    std::cout << "PPU: Pal write addr=0x" << std::hex << addr << " val=0x" << int(val) << std::dec << std::endl;
+                   
                     ++palLog;
                 } else if (palLog == 32) {
-                    std::cout << "PPU: (further palette write logs suppressed)" << std::endl;
                     ++palLog;
                 }
             }
@@ -272,26 +256,19 @@ bool PPU::PopFrame(std::vector<uint32_t>& outPixels, int& outWidth, int& outHeig
 
 // OAM DMA: copy 256 bytes from CPU page (page<<8)
 void PPU::DoOAMDMA(uint8_t page) {
+    // Legacy helper that performs a whole-frame copy; kept for compatibility
     uint16_t base = static_cast<uint16_t>(page) << 8;
-    // Read 256 bytes from CPU memory via bus and copy into OAM
     for (int i = 0; i < 256; ++i) {
         uint16_t addr = base + i;
-        // bus.read will route to RAM/PRG/etc.
         uint8_t val = bus.read(addr);
         oam[i] = val;
     }
-    // Reset OAMADDR to 0 (consistent with many emulators)
     OAMADDR = 0;
-    static int dmaLogCount = 0;
-    if (dmaLogCount < 8) {
-        std::cout << "PPU: OAM after DMA (first 16 bytes):";
-        for (int i = 0; i < 16; ++i) std::cout << " " << std::hex << int(oam[i]);
-        std::cout << std::dec << std::endl;
-        ++dmaLogCount;
-    } else if (dmaLogCount == 8) {
-        std::cout << "PPU: (further OAM DMA logs suppressed)" << std::endl;
-        ++dmaLogCount;
-    }
+}
+
+// Write a single byte into OAM at index (used by cycle-accurate DMA)
+void PPU::WriteOAMByte(uint16_t index, uint8_t value) {
+    if (index < 256) oam[index] = value;
 }
 
 // Keep old helper: RenderPatternTable

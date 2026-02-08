@@ -85,6 +85,12 @@
 },
 {
   "directory": "/home/preda/Documents/proiectPC/build",
+  "command": "/usr/bin/c++  -I/home/preda/Documents/proiectPC/solutions/headers -I/home/preda/Documents/proiectPC/build/_deps/imgui-src -I/home/preda/Documents/proiectPC/build/_deps/imgui-src/backends -I/home/preda/Documents/proiectPC/build/_deps/glfw-src/include -std=gnu++17 -o CMakeFiles/proiectPC.dir/solutions/input.cpp.o -c /home/preda/Documents/proiectPC/solutions/input.cpp",
+  "file": "/home/preda/Documents/proiectPC/solutions/input.cpp",
+  "output": "CMakeFiles/proiectPC.dir/solutions/input.cpp.o"
+},
+{
+  "directory": "/home/preda/Documents/proiectPC/build",
   "command": "/usr/bin/c++  -I/home/preda/Documents/proiectPC/solutions/headers -std=gnu++17 -o CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o -c /home/preda/Documents/proiectPC/solutions/ppu_test.cpp",
   "file": "/home/preda/Documents/proiectPC/solutions/ppu_test.cpp",
   "output": "CMakeFiles/ppu_test.dir/solutions/ppu_test.cpp.o"
@@ -112,6 +118,12 @@
   "command": "/usr/bin/c++  -I/home/preda/Documents/proiectPC/solutions/headers -std=gnu++17 -o CMakeFiles/ppu_test.dir/solutions/memory.cpp.o -c /home/preda/Documents/proiectPC/solutions/memory.cpp",
   "file": "/home/preda/Documents/proiectPC/solutions/memory.cpp",
   "output": "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o"
+},
+{
+  "directory": "/home/preda/Documents/proiectPC/build",
+  "command": "/usr/bin/c++  -I/home/preda/Documents/proiectPC/solutions/headers -std=gnu++17 -o CMakeFiles/ppu_test.dir/solutions/input.cpp.o -c /home/preda/Documents/proiectPC/solutions/input.cpp",
+  "file": "/home/preda/Documents/proiectPC/solutions/input.cpp",
+  "output": "CMakeFiles/ppu_test.dir/solutions/input.cpp.o"
 },
 {
   "directory": "/home/preda/Documents/proiectPC/build/_deps/glfw-build/src",

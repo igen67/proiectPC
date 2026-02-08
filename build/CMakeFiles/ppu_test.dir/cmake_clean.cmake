@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ppu_test.dir/link.d"
   "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o"
   "CMakeFiles/ppu_test.dir/solutions/bus.cpp.o.d"
+  "CMakeFiles/ppu_test.dir/solutions/input.cpp.o"
+  "CMakeFiles/ppu_test.dir/solutions/input.cpp.o.d"
   "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o"
   "CMakeFiles/ppu_test.dir/solutions/mapper.cpp.o.d"
   "CMakeFiles/ppu_test.dir/solutions/memory.cpp.o"

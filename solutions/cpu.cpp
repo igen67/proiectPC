@@ -13,7 +13,7 @@ void PrintTrace(const CPU::CPUTrace& t) {
         "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%llu\n",
         t.pc,
         t.opcode, t.op1, t.op2,
-        t.A, t.X, t.Y, t.P, t.SP,
+        t.A, t.X, t.Y, t.P, int(t.SP),
         t.cycles
     );
 }
@@ -127,8 +127,8 @@ void CPU::SBCSetStatus(Byte Value)
 
 bool g_verboseCpu = false;
 
-// Loop detector / hotspot diagnostics: enabled during debugging to detect tight busy-wait loops
-bool g_loopDetect = true;
+// Loop detector / hotspot diagnostics: disabled by default to avoid automatic yielding
+bool g_loopDetect = false;
 uint16_t g_loopLastPage = 0;
 uint32_t g_loopStreak = 0;
 uint32_t g_loopReportThreshold = 1000; // report every N iterations
@@ -280,7 +280,7 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 {
     if (Interrupt && I == 0)  
     {   // Log and acknowledge the IRQ
-        std::cout << "[IRQ] Taking IRQ at PC=0x" << std::hex << PC << std::dec << " SP=0x" << std::hex << SP << std::dec << std::endl;
+    
       //  if (bus.cpu) bus.cpu->Interrupt = false; // acknowledge the line so it won't retrigger immediately
         bus.write(0x0100 | SP, (PC >> 8) & 0xFF);  // High byte
         SP--;
@@ -303,12 +303,10 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 
         bus.write(0x0100 | SP, status);
         SP--;
-        std::cout << "[IRQ] SP after pushing status: 0x" << std::hex << SP << std::dec << std::endl;
         // Set I flag
         I = 1;
         // Fetch IRQ vector and set PC
         Word Address = bus.read(0xFFFE) | (bus.read(0xFFFF) << 8);
-        std::cout << "[IRQ] Vector -> 0x" << std::hex << Address << std::dec << std::endl;
         PC = Address;
         Cycles += 7; // IRQ handling takes 7 cycles
     }
@@ -316,16 +314,13 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 
 // Non-Maskable Interrupt handler (NMI)
 void CPU::HandleNMI(u32& Cycles, Bus& bus) {
-printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
 
     bus.write(0x0100 | SP, (PC >> 8) & 0xFF);
     SP--;
-    modifySP();
-    std::cout << "[NMI] SP after pushing low PC: 0x" << std::hex << SP << std::dec << std::endl;
+    modifySP();;
     bus.write(0x0100 | SP, PC & 0xFF);
     SP--;
     modifySP();
-    std::cout << "[NMI] SP after pushing high PC: 0x" << std::hex << SP << std::dec << std::endl;
    // Save status register to stack (B flag is cleared for NMI)
     Byte status = 0;
     if (C == 1) status |= 0b00000001;
@@ -347,19 +342,12 @@ printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
 
     // Fetch NMI vector and set PC
     Word Address = bus.read(0xFFFA) | (bus.read(0xFFFB) << 8);
-    std::cout << "CPU: NMI vector read -> 0x" << std::hex << Address << std::dec << std::endl;
     PC = Address;
     // Dump a few bytes at NMI address for inspection
-    std::cout << "CPU: bytes @NMI: ";
-    for (int i = 0; i < 16; ++i) {
-        uint16_t a = static_cast<uint16_t>(PC + i);
-        std::cout << std::hex << int(bus.read(a)) << " ";
-    }
-    std::cout << std::dec << std::endl;
 
     // Start a short post-NMI instruction trace to help debug initialization behavior
     traceInstructionsRemaining = 256; // trace next 256 instructions
-    std::cout << "TRACE: Starting NMI instruction trace (" << traceInstructionsRemaining << " instrs) at 0x" << std::hex << PC << std::dec << std::endl;
+    
     Cycles += 7;
 }
 
@@ -368,25 +356,60 @@ printf("NMI TAKEN PC=%04X SP=%02X\n", PC, SP);
 
 void CPU::Execute(u32& Cycles, Bus& bus) {
         u32 before = Cycles;
+        // Handle pending OAM DMA per-byte transfer (cycle-accurate)
+        while (bus.oamDmaActive) {
+            if (bus.oamDmaDummy) {
+                // initial dummy cycle before bytes are transferred
+                Cycles += 1;
+                if (bus.ppu) bus.ppu->StepCycles(3);
+                bus.oamDmaDummy = false;
+            } else if (bus.oamDmaIndex < 256) {
+                // transfer one byte per CPU cycle: read from CPU memory, write to PPU OAM
+                uint16_t src = (uint16_t(bus.oamDmaPage) << 8) | (bus.oamDmaIndex & 0xFF);
+                uint8_t val = bus.read(src);
+                if (bus.ppu) bus.ppu->WriteOAMByte(bus.oamDmaIndex, val);
+                bus.oamDmaIndex++;
+                Cycles += 1;
+                if (bus.ppu) bus.ppu->StepCycles(3);
+            }
+            if (bus.oamDmaIndex >= 256) {
+                // DMA finished
+                bus.oamDmaActive = false;
+                bus.oamDmaIndex = 0;
+                bus.oamDmaDummy = true;
+                // OAMADDR reset typical behavior
+                if (bus.ppu) bus.ppu->WriteOAMByte(0, bus.ppu->GetOAM()[0]);
+                break; // resume normal instruction fetch
+            }
+            // If the emulator's Execute is called in small steps, it's fine to loop until DMA completes
+        }
+
+        // NMI has highest priority
         if (bus.nmiLine) {
             bus.nmiLine = false;
             HandleNMI(Cycles, bus);
         }    
+        else if (bus.cpu && bus.cpu->Interrupt && !I) {
+            // Mapper signaled an IRQ via CPU->Interrupt
+            IRQ_Handler(Cycles, bus, true);
+            if (bus.cpu) bus.cpu->Interrupt = false;
+        }
         else if (bus.irqEnable && !I) {
-        IRQ_Handler(Cycles, bus, true);
-        bus.irqEnable = false;
-        }   
+            // Legacy IRQ line (set by mapper writes $E000/$E001)
+            IRQ_Handler(Cycles, bus, true);
+            bus.irqEnable = false;
+        }
 
         else{
         int Instruction = FetchByte(Cycles, bus);
 
         if (traceInstructionsRemaining > 0) {
             uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-            std::cout << "TRACE: PC=0x" << std::hex << instrAddr << " opcode=0x" << int(Instruction) << " bytes:";
-            for (int i = 0; i < 6; ++i) std::cout << " " << std::hex << int(bus.read(instrAddr + i));
-            std::cout << std::dec << std::endl;
+           // std::cout << "TRACE: PC=0x" << std::hex << instrAddr << " opcode=0x" << int(Instruction) << " bytes:";
+           // for (int i = 0; i < 6; ++i) std::cout << " " << std::hex << int(bus.read(instrAddr + i));
+           // std::cout << std::dec << std::endl;
             traceInstructionsRemaining--;
-            if (traceInstructionsRemaining == 0) {
+            if (/*traceInstructionsRemaining == 0*/false) {
                 if (bus.ppu) {
                     const uint8_t* pal = bus.ppu->GetPaletteRam();
                     const uint8_t* oam = bus.ppu->GetOAM();
@@ -416,28 +439,6 @@ CPUTrace trace = CaptureTrace(bus);
 
 
         InvokeInstruction(Instruction, Cycles, bus);
-        // Tight-loop detection (same logic as Step) to catch busy-wait loops during Execute()
-        if (g_loopDetect) {
-            uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-            uint16_t page = instrAddr & 0xFFF0;
-            if (page == g_loopLastPage) {
-                ++g_loopStreak;
-            } else {
-                g_loopLastPage = page;
-                g_loopStreak = 1;
-            }
-            if (instrAddr >= 0xFFF0 || (instrAddr >= 0xF400 && instrAddr < 0xF500)) {
-                if ((g_loopStreak % g_loopReportThreshold) == 0) {
-                    std::cout << "[LOOP] Hotspot page=0x" << std::hex << page << " PC=0x" << instrAddr << std::dec
-                              << " count=" << g_loopStreak << " I=" << int(I)
-                              << " Interrupt=" << (Interrupt?1:0) << " NMIRequested=" << (NMIRequested?1:0);
-                    if (bus.mapper) std::cout << " Mapper(" << bus.mapper->DebugString() << ")";
-                    std::cout << std::endl;
-                }
-                if (g_loopStreak > g_loopSleepThreshold) {
-                }
-            }
-        }
 
     
     }

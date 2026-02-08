@@ -43,6 +43,8 @@ public:
 
     // OAM DMA: copy 256 bytes from CPU page (value<<8) into OAM
     void DoOAMDMA(uint8_t page);
+    // Write a single byte into OAM (used for cycle-accurate DMA)
+    void WriteOAMByte(uint16_t index, uint8_t value);
 
 private:
     Bus& bus;
@@ -63,10 +65,14 @@ private:
     uint8_t PPUSTATUS = 0;
     uint8_t OAMADDR = 0;
 
-    // VRAM address latch and temp
-    uint16_t vramAddr = 0;
-    uint16_t vramAddrTemp = 0;
-    bool vramLatch = false; // two-write toggle for $2005/$2006
+    // VRAM address (v) and temporary VRAM address (t), fine X and write toggle (w)
+    uint16_t vramAddr = 0;       // v
+    uint16_t vramAddrTemp = 0;   // t
+    bool writeToggle = false;    // w (toggle for $2005/$2006 writes)
+    uint8_t fineX = 0;           // x (fine X scroll, 3 bits)
+
+    // PPUDATA read buffer (reads from $0000-$3EFF are buffered)
+    uint8_t readBuffer = 0;
 
     // PPU cycle/frame counters
     uint32_t ppuCycleCounter = 0;

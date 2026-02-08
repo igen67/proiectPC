@@ -8,6 +8,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o.d"
   "CMakeFiles/proiectPC.dir/solutions/gui.cpp.o"
   "CMakeFiles/proiectPC.dir/solutions/gui.cpp.o.d"
+  "CMakeFiles/proiectPC.dir/solutions/input.cpp.o"
+  "CMakeFiles/proiectPC.dir/solutions/input.cpp.o.d"
   "CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o"
   "CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o.d"
   "CMakeFiles/proiectPC.dir/solutions/memory.cpp.o"

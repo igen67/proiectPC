@@ -461,6 +461,33 @@ solutions/gui.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/solutions/gui.cpp.s
 .PHONY : solutions/gui.cpp.s
 
+solutions/input.o: solutions/input.cpp.o
+.PHONY : solutions/input.o
+
+# target to build an object file
+solutions/input.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/solutions/input.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/solutions/input.cpp.o
+.PHONY : solutions/input.cpp.o
+
+solutions/input.i: solutions/input.cpp.i
+.PHONY : solutions/input.i
+
+# target to preprocess a source file
+solutions/input.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/solutions/input.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/solutions/input.cpp.i
+.PHONY : solutions/input.cpp.i
+
+solutions/input.s: solutions/input.cpp.s
+.PHONY : solutions/input.s
+
+# target to generate assembly for a file
+solutions/input.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/solutions/input.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/solutions/input.cpp.s
+.PHONY : solutions/input.cpp.s
+
 solutions/mapper.o: solutions/mapper.cpp.o
 .PHONY : solutions/mapper.o
 
@@ -613,6 +640,9 @@ help:
 	@echo "... solutions/gui.o"
 	@echo "... solutions/gui.i"
 	@echo "... solutions/gui.s"
+	@echo "... solutions/input.o"
+	@echo "... solutions/input.i"
+	@echo "... solutions/input.s"
 	@echo "... solutions/mapper.o"
 	@echo "... solutions/mapper.i"
 	@echo "... solutions/mapper.s"

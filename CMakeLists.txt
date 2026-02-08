@@ -15,6 +15,7 @@ set(SOURCES
     solutions/gui.cpp
     solutions/ppu.cpp
     solutions/mapper.cpp
+    solutions/input.cpp
 )
 
 # Fetch and build GUI dependencies: GLFW and ImGui
@@ -96,7 +97,7 @@ include_directories(
 add_executable(proiectPC ${SOURCES})
 
 # Simple PPU test binary that generates a pattern table image
-add_executable(ppu_test solutions/ppu_test.cpp solutions/mapper.cpp solutions/ppu.cpp solutions/bus.cpp solutions/memory.cpp)
+add_executable(ppu_test solutions/ppu_test.cpp solutions/mapper.cpp solutions/ppu.cpp solutions/bus.cpp solutions/memory.cpp solutions/input.cpp)
 target_include_directories(ppu_test PRIVATE ${CMAKE_SOURCE_DIR}/solutions/headers)
 
 # Add ImGui include dirs if ImGui was fetched/provided

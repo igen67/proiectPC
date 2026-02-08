@@ -190,6 +190,7 @@ CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o: \
  /usr/include/c++/15.2.1/limits \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
  /home/preda/Documents/proiectPC/solutions/headers/types.h \
+ /home/preda/Documents/proiectPC/solutions/headers/input.h \
  /home/preda/Documents/proiectPC/solutions/headers/cpu.h \
  /home/preda/Documents/proiectPC/solutions/headers/instructions.h \
  /usr/include/c++/15.2.1/cstring /usr/include/string.h \

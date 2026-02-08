@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/preda/Documents/proiectPC/solutions/bus.cpp" "CMakeFiles/proiectPC.dir/solutions/bus.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/bus.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/cpu.cpp" "CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/gui.cpp" "CMakeFiles/proiectPC.dir/solutions/gui.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/gui.cpp.o.d"
+  "/home/preda/Documents/proiectPC/solutions/input.cpp" "CMakeFiles/proiectPC.dir/solutions/input.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/input.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/mapper.cpp" "CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/mapper.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/memory.cpp" "CMakeFiles/proiectPC.dir/solutions/memory.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/memory.cpp.o.d"
   "/home/preda/Documents/proiectPC/solutions/ppu.cpp" "CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o" "gcc" "CMakeFiles/proiectPC.dir/solutions/ppu.cpp.o.d"

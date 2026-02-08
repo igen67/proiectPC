@@ -7,6 +7,7 @@ ppu_test: \
   CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o \
   CMakeFiles/ppu_test.dir/solutions/bus.cpp.o \
   CMakeFiles/ppu_test.dir/solutions/memory.cpp.o \
+  CMakeFiles/ppu_test.dir/solutions/input.cpp.o \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
@@ -50,6 +51,8 @@ CMakeFiles/ppu_test.dir/solutions/ppu.cpp.o:
 CMakeFiles/ppu_test.dir/solutions/bus.cpp.o:
 
 CMakeFiles/ppu_test.dir/solutions/memory.cpp.o:
+
+CMakeFiles/ppu_test.dir/solutions/input.cpp.o:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libstdc++.so:
 

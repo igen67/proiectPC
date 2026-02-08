@@ -109,14 +109,8 @@ void RunGUI(CPU& cpu, Bus& bus) {
     while (!glfwWindowShouldClose(window)) {
 
         if (running) {
-            // Throttle emulation to NES frame rate (60Hz)
-            static auto lastFrameTime = std::chrono::steady_clock::now();
-            auto nowFrame = std::chrono::steady_clock::now();
-            double elapsedSec = std::chrono::duration<double>(nowFrame - lastFrameTime).count();
-            if (elapsedSec < (1.0 / 60.0)) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-            lastFrameTime = nowFrame;
+            // NOTE: Frame-throttling / artificial sleeps removed to run as-fast-as-possible.
+            // If you want to re-enable host-frame-rate throttling, restore a sleep here.
 
             // Run enough cycles for one NES frame (about 29780 cycles)
             uint32_t targetCycles = 29780;
@@ -130,6 +124,17 @@ void RunGUI(CPU& cpu, Bus& bus) {
         }
 
         glfwPollEvents();
+        // Map keyboard to NES controller and update bus controller state
+        uint8_t joy = 0;
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) joy |= (1 << 0); // A
+        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) joy |= (1 << 1); // B
+        if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) joy |= (1 << 2); // Select
+        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) joy |= (1 << 3); // Start
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) joy |= (1 << 4); // Up
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) joy |= (1 << 5); // Down
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) joy |= (1 << 6); // Left
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) joy |= (1 << 7); // Right
+        bus.SetControllerButtons(joy);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -204,6 +209,12 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
         ImGui::Text("Host FPS: %.1f, Emu speed: %.1f%% (%.0f cycles/s)", io.Framerate, 100.0 * (smoothedCyclesPerSec / NES_CPU_FREQ), smoothedCyclesPerSec);
         ImGui::InputScalar("Mem Base", ImGuiDataType_U32, &memBase, NULL, NULL);
+        // Show controller state for debugging
+        uint8_t buttons = bus.input.GetButtons(0);
+        ImGui::Text("Controller0: 0x%02X", buttons);
+        ImGui::SameLine(); ImGui::Text("[A B Sel St Up Dn Lf Rt]: %d %d %d %d %d %d %d %d",
+            (buttons>>0)&1, (buttons>>1)&1, (buttons>>2)&1, (buttons>>3)&1,
+            (buttons>>4)&1, (buttons>>5)&1, (buttons>>6)&1, (buttons>>7)&1);
         ImGui::End();
 
         // Registers window

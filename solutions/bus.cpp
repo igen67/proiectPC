@@ -31,11 +31,25 @@ uint8_t Bus::read(uint16_t addr) const {
         return ppu->ReadRegister(reg);
     }
 
+    // APU / I/O registers (0x4000 - 0x4017)
+    if (addr >= 0x4000 && addr <= 0x4017) {
+        if (addr == 0x4016) {
+            return input.Read(0);
+        }
+        if (addr == 0x4017) {
+            return input.Read(1);
+        }
+        // Unimplemented APU / IO registers: return 0
+        return 0;
+    }
+
     // Mapper-aware PRG area
     if (mapper) {
         // Mapper handles CPU read mapping for $6000-$FFFF
         if (addr >= 0x6000) return mapper->CPURead(addr);
     }
+
+    // (controller reads are handled via Input at 0x4016/0x4017 above)
 
     // PRG-ROM: fallback mapping for simple ROMs (NROM)
  if (!prgRom.empty() && addr >= 0x8000) {
@@ -55,6 +69,12 @@ uint8_t Bus::read(uint16_t addr) const {
 uint8_t Bus::ReadCHR(uint16_t addr) const {
     if (mapper) {
         return mapper->CHRRead(addr);
+    }
+    // If no mapper is present, read directly from loaded CHR ROM/RAM
+    if (!chrRom.empty()) {
+        if (addr < chrRom.size()) return chrRom[addr];
+        // Safety: wrap or clamp if address outside CHR size
+        return chrRom[addr % chrRom.size()];
     }
     return 0;
 }
@@ -80,30 +100,27 @@ void Bus::write(uint16_t addr, uint8_t value) {
         return;
     }
 
+    // OAM DMA write (0x4014): initialize per-byte DMA state for cycle-accurate transfer
+    if (addr == 0x4014 && ppu) {
+        this->oamDmaActive = true;
+        this->oamDmaPage = value;
+        this->oamDmaIndex = 0;
+        this->oamDmaDummy = true; // initial dummy cycle
+        return;
+    }
+
+    // Controller strobe write (0x4016): forward to Input
+    if (addr == 0x4016) {
+        this->input.WriteStrobe(value);
+        return;
+    }
+
     // Mapper-aware PRG area handling
     if (mapper) {
-        if (addr == 0x4014 && ppu) {
-            ppu->DoOAMDMA(value);
-            return;
-        }       
-        if (mapper && addr >= 0x6000) {
+        if (addr >= 0x6000) {
             mapper->CPUWrite(addr, value);
             return;
         }
-    }
-
-    // OAM DMA write (0x4014): copy 256 bytes from CPU page (value<<8) into PPU OAM
-    if (addr == 0x4014 && ppu) {
-        static int oamDmaLogCount = 0;
-        if (oamDmaLogCount < 8) {
-            std::cout << "Bus: OAMDMA page=0x" << std::hex << int(value) << std::dec << std::endl;
-            ++oamDmaLogCount;
-        } else if (oamDmaLogCount == 8) {
-            std::cout << "Bus: (further OAMDMA logs suppressed)" << std::endl;
-            ++oamDmaLogCount;
-        }
-        ppu->DoOAMDMA(value);
-        return;
     }
 
     // PRG-ROM area is read-only; ignore writes (fallback for NROM)

@@ -189,6 +189,7 @@ CMakeFiles/proiectPC.dir/solutions/gui.cpp.o: \
  /usr/include/c++/15.2.1/bits/parse_numbers.h \
  /home/preda/Documents/proiectPC/solutions/headers/bus.h \
  /home/preda/Documents/proiectPC/solutions/headers/memory.h \
+ /home/preda/Documents/proiectPC/solutions/headers/input.h \
  /home/preda/Documents/proiectPC/build/_deps/imgui-src/imgui.h \
  /home/preda/Documents/proiectPC/build/_deps/imgui-src/imconfig.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h \

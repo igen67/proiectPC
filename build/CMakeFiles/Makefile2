@@ -203,12 +203,12 @@ CMakeFiles/proiectPC.dir/all: CMakeFiles/imgui_impl.dir/all
 CMakeFiles/proiectPC.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=61,62,63,64,65,66,67,68 "Built target proiectPC"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=62,63,64,65,66,67,68,69,70 "Built target proiectPC"
 .PHONY : CMakeFiles/proiectPC.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/proiectPC.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 62
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 63
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/proiectPC.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 0
 .PHONY : CMakeFiles/proiectPC.dir/rule
@@ -220,7 +220,7 @@ proiectPC: CMakeFiles/proiectPC.dir/rule
 # codegen rule for target.
 CMakeFiles/proiectPC.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/proiectPC.dir/build.make CMakeFiles/proiectPC.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=61,62,63,64,65,66,67,68 "Finished codegen for target proiectPC"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=62,63,64,65,66,67,68,69,70 "Finished codegen for target proiectPC"
 .PHONY : CMakeFiles/proiectPC.dir/codegen
 
 # clean rule for target.
@@ -235,12 +235,12 @@ CMakeFiles/proiectPC.dir/clean:
 CMakeFiles/ppu_test.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=55,56,57,58,59,60 "Built target ppu_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=55,56,57,58,59,60,61 "Built target ppu_test"
 .PHONY : CMakeFiles/ppu_test.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/ppu_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ppu_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/preda/Documents/proiectPC/build/CMakeFiles 0
 .PHONY : CMakeFiles/ppu_test.dir/rule
@@ -252,7 +252,7 @@ ppu_test: CMakeFiles/ppu_test.dir/rule
 # codegen rule for target.
 CMakeFiles/ppu_test.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ppu_test.dir/build.make CMakeFiles/ppu_test.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=55,56,57,58,59,60 "Finished codegen for target ppu_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=55,56,57,58,59,60,61 "Finished codegen for target ppu_test"
 .PHONY : CMakeFiles/ppu_test.dir/codegen
 
 # clean rule for target.
@@ -299,7 +299,7 @@ _deps/glfw-build/src/CMakeFiles/glfw.dir/clean:
 _deps/glfw-build/src/CMakeFiles/update_mappings.dir/all:
 	$(MAKE) $(MAKESILENT) -f _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build.make _deps/glfw-build/src/CMakeFiles/update_mappings.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build.make _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=69 "Built target update_mappings"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=71 "Built target update_mappings"
 .PHONY : _deps/glfw-build/src/CMakeFiles/update_mappings.dir/all
 
 # Build rule for subdir invocation for target.
@@ -316,7 +316,7 @@ update_mappings: _deps/glfw-build/src/CMakeFiles/update_mappings.dir/rule
 # codegen rule for target.
 _deps/glfw-build/src/CMakeFiles/update_mappings.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f _deps/glfw-build/src/CMakeFiles/update_mappings.dir/build.make _deps/glfw-build/src/CMakeFiles/update_mappings.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=69 "Finished codegen for target update_mappings"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/preda/Documents/proiectPC/build/CMakeFiles --progress-num=71 "Finished codegen for target update_mappings"
 .PHONY : _deps/glfw-build/src/CMakeFiles/update_mappings.dir/codegen
 
 # clean rule for target.
