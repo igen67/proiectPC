@@ -45,6 +45,7 @@ public:
     void DoOAMDMA(uint8_t page);
     // Write a single byte into OAM (used for cycle-accurate DMA)
     void WriteOAMByte(uint16_t index, uint8_t value);
+    uint16_t MapNametable(uint16_t addr) const;
 
 private:
     Bus& bus;

@@ -94,16 +94,13 @@ void CPU::Reset(Bus& bus) {
 
 Word CPU::PullWord(u32& Cycles, Bus& bus) {
     SP++;
-    modifySP();
-    Byte LowByte = bus.read(SP);
+    Byte low = bus.read(0x0100 | SP);
 
     SP++;
-    modifySP();
-    Byte HighByte = bus.read(SP);
+    Byte high = bus.read(0x0100 | SP);
 
     Cycles += 2;
-
-    return static_cast<Word>(HighByte) << 8 | LowByte;
+    return (high << 8) | low;
 }
 
 
@@ -282,9 +279,9 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
     {   // Log and acknowledge the IRQ
     
       //  if (bus.cpu) bus.cpu->Interrupt = false; // acknowledge the line so it won't retrigger immediately
-        bus.write(0x0100 | SP, (PC >> 8) & 0xFF);  // High byte
+        bus.write(0x0100 | SP, (PC >> 8) & 0xFF);  
         SP--;
-        bus.write(0x0100 | SP, PC & 0xFF);  // High byte
+        bus.write(0x0100 | SP, PC & 0xFF);  
         SP--;
 
         // Save status register to stack
@@ -299,7 +296,6 @@ void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
         status |= 0x20;
         if (V) status |= 0x40;   // Overflow
         if (N) status |= 0x80;   // Negative
-        printf("PUSH STATUS=%02X at %04X\n", status, 0x0100 | SP);
 
         bus.write(0x0100 | SP, status);
         SP--;
@@ -405,32 +401,7 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
 
         if (traceInstructionsRemaining > 0) {
             uint16_t instrAddr = static_cast<uint16_t>(PC - 1);
-           // std::cout << "TRACE: PC=0x" << std::hex << instrAddr << " opcode=0x" << int(Instruction) << " bytes:";
-           // for (int i = 0; i < 6; ++i) std::cout << " " << std::hex << int(bus.read(instrAddr + i));
-           // std::cout << std::dec << std::endl;
             traceInstructionsRemaining--;
-            if (/*traceInstructionsRemaining == 0*/false) {
-                if (bus.ppu) {
-                    const uint8_t* pal = bus.ppu->GetPaletteRam();
-                    const uint8_t* oam = bus.ppu->GetOAM();
-                    const uint8_t* vram = bus.ppu->GetVRAM();
-                    std::cout << "TRACE: PPU Palette:";
-                    for (int i = 0; i < 32; ++i) std::cout << " " << std::hex << int(pal[i]);
-                    std::cout << std::dec << std::endl;
-                    std::cout << "TRACE: PPU OAM (first 64 bytes):";
-                    for (int i = 0; i < 64; ++i) std::cout << " " << std::hex << int(oam[i]);
-                    std::cout << std::dec << std::endl;
-                    std::cout << "TRACE: PPU VRAM (first 64 bytes):";
-                    for (int i = 0; i < 64; ++i) std::cout << " " << std::hex << int(vram[i]);
-                    std::cout << std::dec << std::endl;
-                    std::cout << "TRACE: PPU VRAM @0x400 (nametable 1) 64 bytes:";
-                    for (int i = 0x400; i < 0x440; ++i) std::cout << " " << std::hex << int(vram[i]);
-                    std::cout << std::dec << std::endl;
-                    std::cout << "TRACE: PPU VRAM @0x800 (nametable 2) 64 bytes:";
-                    for (int i = 0x800; i < 0x840; ++i) std::cout << " " << std::hex << int(vram[i]);
-                    std::cout << std::dec << std::endl;
-                }
-            }
         }
         
 debugger.CheckBreakpoint(PC);
@@ -445,9 +416,7 @@ CPUTrace trace = CaptureTrace(bus);
 
         // Advance PPU based on cycles used by this instruction
         u32 delta = Cycles - before;
-        if (bus.ppu) bus.ppu->StepCycles(delta * 3);
-        //std::this_thread::sleep_for(std::chrono::milliseconds((1 / (40 * (1000000))) * Cycles));
-        //Cycles = 0;
+       if (bus.ppu) bus.ppu->StepCycles(delta * 3);
     }
 
 

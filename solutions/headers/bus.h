@@ -73,7 +73,7 @@ public:
     Bus();
 
     // Read a byte from the bus
-    uint8_t read(uint16_t addr) const;
+    uint8_t read(uint16_t addr) ;
 
     // Write a byte to the bus
     void write(uint16_t addr, uint8_t value);

@@ -234,7 +234,6 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         cpu.Y = cpu.A;
         cpu.Z = (cpu.Y == 0);
         cpu.N = (cpu.Y & 0b10000000) > 0;
-        cpu.printReg(cpu.Y);
         Cycles += 2;
     }
     static void TYA_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
@@ -990,7 +989,6 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     // PHA: 3 cycles
     static void PHA_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         // Push A onto the stack (stack is on page 1, wraps via modifySP)
-
         bus.write(0x0100 | cpu.SP, cpu.A);
         cpu.SP--;
         Cycles += 3;
@@ -1006,7 +1004,6 @@ Byte Address = Byte(zp + cpu.X); // force wrap
     }
     // PHP: 3 cycles
     static void PHP_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-
         Byte status = 0;
         if (cpu.C == 1) status |= 0b00000001;
         if (cpu.Z == 1) status |= 0b00000010;
@@ -1110,34 +1107,37 @@ Byte Address = Byte(zp + cpu.X); // force wrap
         Cycles += 6;
     }
     // RTI: 6 cycles
-    static void RTI_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
-        cpu.SP++;
-        Byte status = bus.read(0x0100 | cpu.SP);
+static void RTI_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
+    // Pull status
+    cpu.SP++;
+    Byte status = bus.read(0x0100 | cpu.SP);
 
+    // B flag ignored, bit 5 forced high
+    status &= ~0x10;
+    status |=  0x20;
 
-        cpu.C = (status >> 0) & 1;
-        cpu.Z = (status >> 1) & 1;
-        cpu.I = (status >> 2) & 1;
-        cpu.D = (status >> 3) & 1;
-        status &= ~0x10;   // clear B
-status |=  0x20;   // set unused bit
-        cpu.V = (status >> 6) & 1;
-        cpu.N = (status >> 7) & 1;
+    cpu.C = (status & 0x01) != 0;
+    cpu.Z = (status & 0x02) != 0;
+    cpu.I = (status & 0x04) != 0;
+    cpu.D = (status & 0x08) != 0;
+    cpu.V = (status & 0x40) != 0;
+    cpu.N = (status & 0x80) != 0;
 
-        cpu.SP++;
-        Byte lo = bus.read(0x0100 | cpu.SP);
+    // Pull PC low
+    cpu.SP++;
+    Byte lo = bus.read(0x0100 | cpu.SP);
 
-        cpu.SP++;
-        Byte hi = bus.read(0x0100 | cpu.SP);
+    // Pull PC high
+    cpu.SP++;
+    Byte hi = bus.read(0x0100 | cpu.SP);
 
-        cpu.PC = (hi << 8) | lo;
-        Cycles += 6;
+    cpu.PC = (hi << 8) | lo;
 
-    }
+    Cycles += 6;
+}
     // BRK: 7 cycles
     static void BRK_Handler(CPU& cpu, u32& Cycles, Bus& bus) {
         Word returnAddress = cpu.PC + 2;
-
         bus.write(0x0100 | cpu.SP, (returnAddress >> 8) & 0xFF);
         cpu.SP--;
         bus.write(0x0100 | cpu.SP, returnAddress & 0xFF);

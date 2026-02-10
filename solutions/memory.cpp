@@ -60,6 +60,14 @@ void Mem::LoadMachineCodeFromFile(const std::string& filename) {
 
 
 
-    file.read(reinterpret_cast<char*>(Data), MAX_MEM);
+    file.read(reinterpret_cast<char*>(Data), fileSize);
+}
+bool Mem::IsEmpty() const {
+    for (u32 i = 0; i < MAX_MEM; i++) {
+        if (Data[i] != 0) {
+            return false;
+        }
+    }
+    return true;
 }
 

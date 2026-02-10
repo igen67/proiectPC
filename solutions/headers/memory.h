@@ -16,6 +16,7 @@ struct Mem {
 
     void WriteWord(u32& Cycle, Word DataToWrite, u32 Adress);
     void LoadMachineCodeFromFile(const std::string& filename);
+    bool IsEmpty() const;
 
 
 };

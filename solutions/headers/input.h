@@ -29,7 +29,7 @@ public:
     void WriteStrobe(uint8_t value);
 
     // Read next bit from controller 0 or 1 (0x4016 / 0x4017)
-    uint8_t Read(int controller) const;
+    uint8_t Read(int controller) ;
 
     // Poll keyboard via GLFW and update internal current state
     void PollFromGLFW(GLFWwindow* window);

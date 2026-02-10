@@ -4,10 +4,19 @@
 #include <string>
 
 class Bus;
+enum class Mirroring {
+    Horizontal,
+    Vertical,
+    SingleScreenA,
+    SingleScreenB,
+    FourScreen
+    };
 
 class Mapper {
 public:
+
     Bus* bus = nullptr;
+    Mirroring mirroring = Mirroring::Horizontal;
     virtual ~Mapper() {}
     virtual uint8_t CPURead(uint16_t addr) = 0;
     virtual void CPUWrite(uint16_t addr, uint8_t value) = 0;
@@ -16,6 +25,9 @@ public:
     virtual void OnPPUAddr(uint16_t addr, uint32_t cycles) {}
     // Debug helper: return a concise status string for mapper internals
     virtual std::string DebugString() const { return std::string(); }
+    virtual Mirroring GetMirroring() const {
+        return mirroring;
+    }
 };
 
 // Factory helper

@@ -265,7 +265,9 @@ uint8_t ReadCHRBank(uint32_t bankIndex, uint32_t offset) {
     }
 };
 class Mapper0 : public Mapper {
+
 public:
+    Mirroring mirroring;
     size_t prgBanks = 0;
 
     Mapper0(Bus* b, size_t prgSize) {

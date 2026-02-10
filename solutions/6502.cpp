@@ -1,44 +1,12 @@
 #include "headers/cpu.h"
 #include "headers/table.h"
+#include "headers/input.h"
 
 
 
 // Use Bus instead of Mem
 #include "headers/bus.h"
 
-/*
-Old main (commented out for safety):
-int main()
-{
-	Bus bus{};
-	CPU cpu{};
-	u32 Cycles = 0;
-
-	std::string filePath;
-	std::cerr << "Pick program to execute"<<std::endl;
-	std::cin >> filePath;
-
-	// If file has an iNES header, load as PRG ROM; otherwise load it into RAM (legacy functional tests)
-	{
-		#include <fstream>
-		std::ifstream f(filePath, std::ios::binary);
-		char header[4] = {0};
-		bool loadedPRG = false;
-		if (f && f.read(header, 4) && std::string(header, header+4) == "NES\x1A") {
-			loadedPRG = bus.LoadPRGFromFile(filePath);
-		}
-		if (!loadedPRG) {
-			std::cerr << "Loading into RAM image" << std::endl;
-			bus.ram.LoadMachineCodeFromFile(filePath);
-		}
-	}
-
-	cpu.Reset(bus);
-	InitializeInstructionTable();
-	cpu.Execute(Cycles, bus);
-	system("pause");
-}
-*/
 
 // New main: supports 'gui' mode (./proiectPC gui [rom]) when GUI is available; otherwise REPL mode
 int main(int argc, char** argv)
@@ -86,6 +54,7 @@ int main(int argc, char** argv)
 		// Attach CPU to bus for mapper IRQs and other interactions
 		bus.AttachCPU(&cpu);
 		cpu.Reset(bus);
+		// SANITY CHECK — REMOVE AFTER TEST
 
 		RunGUI(cpu, bus);
 		return 0;

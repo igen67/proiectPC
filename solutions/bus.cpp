@@ -19,7 +19,8 @@ Bus::Bus() {
 }
 
 
-uint8_t Bus::read(uint16_t addr) const {
+
+uint8_t Bus::read(uint16_t addr)  {
     // RAM and mirrors
     if (addr <= 0x1FFF) {
         return ram.Data[addr & RAM_MASK];
@@ -37,6 +38,7 @@ uint8_t Bus::read(uint16_t addr) const {
             return input.Read(0);
         }
         if (addr == 0x4017) {
+            //ADD APU FRAME COUNTER
             return input.Read(1);
         }
         // Unimplemented APU / IO registers: return 0
@@ -63,7 +65,7 @@ uint8_t Bus::read(uint16_t addr) const {
 }
 
     // For other addresses, return underlying RAM image (useful for tests)
-    return ram.Data[addr];
+    return 0; // or open bus
 }
 
 uint8_t Bus::ReadCHR(uint16_t addr) const {
@@ -189,14 +191,13 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
         // Create mapper if one is supported
         uint8_t flags7 = static_cast<uint8_t>(header[7]);
         uint8_t mapper = ((flags7 & 0xF0) | (flags6 >> 4));
-        if (mapper != 0) {
-            Mapper* m = CreateMapperFor(this, mapper, prgRom.size(), chrRom.size());
-            if (m) {
-                AttachMapper(m);
-                std::cout << "Attached mapper " << int(mapper) << " implementation.\n";
-            } else {
-                std::cerr << "No implementation for mapper " << int(mapper) << ". Running with naive mapping may fail.\n";
-            }
+        Mapper* m = CreateMapperFor(this, mapper, prgRom.size(), chrRom.size());
+        if (m) {
+            AttachMapper(m);
+            m->mirroring = mirrorVertical ? Mirroring::Vertical : Mirroring::Horizontal;
+            std::cout << "Attached mapper " << int(mapper) << " implementation.\n";
+        } else if (mapper != 0) {
+            std::cerr << "No implementation for mapper " << int(mapper) << ". Running with naive mapping may fail.\n";
         }
 
         return true;

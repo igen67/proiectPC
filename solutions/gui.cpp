@@ -60,7 +60,6 @@ void RunGUI(CPU& cpu, Bus& bus) {
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
-
     // PPU + texture for pattern table/frame view
     PPU ppu(bus);
     //ppu.Reset();
@@ -88,7 +87,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     bool show_demo_window = false;
-    bool running = false; // auto-start to measure emulation speed
+    bool running = true; // auto-start to measure emulation speed
     bool liveRender = true; // Enable live per-frame updates from PPU
     int patternPaletteGroup = 0; // palette group (0..3) used for pattern table viewer
     u32 cycles = 0;
@@ -107,22 +106,6 @@ void RunGUI(CPU& cpu, Bus& bus) {
     auto lastConsolePrint = std::chrono::steady_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
-
-        if (running) {
-            // NOTE: Frame-throttling / artificial sleeps removed to run as-fast-as-possible.
-            // If you want to re-enable host-frame-rate throttling, restore a sleep here.
-
-            // Run enough cycles for one NES frame (about 29780 cycles)
-            uint32_t targetCycles = 29780;
-            uint32_t executed = 0;
-            while (executed < targetCycles && !glfwWindowShouldClose(window)) {
-                u32 before = cycles;
-                cpu.Execute(cycles, bus);
-                executed += (cycles - before);
-            }
-
-        }
-
         glfwPollEvents();
         // Map keyboard to NES controller and update bus controller state
         uint8_t joy = 0;
@@ -135,6 +118,22 @@ void RunGUI(CPU& cpu, Bus& bus) {
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) joy |= (1 << 6); // Left
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) joy |= (1 << 7); // Right
         bus.SetControllerButtons(joy);
+
+        if (running) {
+
+
+            // Run enough cycles for one NES frame (about 29780 cycles)
+            uint32_t targetCycles = 29780;
+            uint32_t executed = 0;
+            while (executed < targetCycles) {
+                u32 before = cycles;
+                cpu.Execute(cycles, bus);
+                executed += (cycles - before);
+            }
+
+        }
+
+      
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -185,6 +184,7 @@ void RunGUI(CPU& cpu, Bus& bus) {
         // Update emulation speed sampler
         auto now = std::chrono::steady_clock::now();
         if (running) {
+          
             uint64_t deltaCycles = cycles - cyclesAtLastMeasure;
             cyclesAtLastMeasure = cycles;
             accumCycles += deltaCycles;
