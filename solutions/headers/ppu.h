@@ -71,6 +71,10 @@ private:
     uint16_t vramAddrTemp = 0;   // t
     bool writeToggle = false;    // w (toggle for $2005/$2006 writes)
     uint8_t fineX = 0;           // x (fine X scroll, 3 bits)
+    uint16_t renderAddr = 0;     // internal render v (decoupled from CPU VRAM addr)
+    uint8_t scrollCoarseX = 0;   // coarse X from $2005 (0-31)
+    uint8_t scrollCoarseY = 0;   // coarse Y from $2005 (0-31)
+    uint8_t scrollFineY = 0;     // fine Y from $2005 (0-7)
 
     // PPUDATA read buffer (reads from $0000-$3EFF are buffered)
     uint8_t readBuffer = 0;

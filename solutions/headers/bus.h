@@ -27,6 +27,8 @@ public:
 
     // Cartridge CHR ROM (pattern tables)
     std::vector<uint8_t> chrRom;
+    // True when cartridge provides CHR RAM instead of ROM
+    bool chrIsRam = false;
 
     // PPU pointer (bus forwards PPU register accesses here when attached)
     class PPU* ppu = nullptr;
@@ -65,6 +67,8 @@ public:
 
     // Read CHR through mapper if present (used by PPU)
     uint8_t ReadCHR(uint16_t addr) const;
+    // Write CHR through mapper if present (used by PPU)
+    void WriteCHR(uint16_t addr, uint8_t value);
 
     // Notify mapper that PPU read occurred at addr (for MMC3 A12 detection)
     void NotifyPPUAddr(uint16_t addr);

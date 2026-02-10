@@ -15,6 +15,7 @@ Bus::Bus() {
     cpu = nullptr;
     mapper = nullptr;
     mirrorVertical = false;
+    chrIsRam = false;
     irqEnable = false;
 }
 
@@ -79,6 +80,16 @@ uint8_t Bus::ReadCHR(uint16_t addr) const {
         return chrRom[addr % chrRom.size()];
     }
     return 0;
+}
+
+void Bus::WriteCHR(uint16_t addr, uint8_t value) {
+    if (mapper) {
+        mapper->CHRWrite(addr, value);
+        return;
+    }
+    if (chrIsRam && addr < chrRom.size()) {
+        chrRom[addr] = value;
+    }
 }
 
 void Bus::NotifyPPUAddr(uint16_t addr) {
@@ -170,9 +181,18 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
         file.read(reinterpret_cast<char*>(prgRom.data()), prgSize);
         std::cout << "Loaded iNES PRG ROM: " << prgSize << " bytes (" << int(prgBanks) << " x 16KB banks)\n";
 
-        // Mirroring: bit0 == 1 => vertical, 0 => horizontal
-        mirrorVertical = (flags6 & 0x01) != 0;
-        std::cout << "Mirror: " << (mirrorVertical ? "vertical" : "horizontal") << "\n";
+        Mirroring cartMirroring = Mirroring::Horizontal;
+        if (flags6 & 0x08) {
+            cartMirroring = Mirroring::FourScreen;
+        } else if (flags6 & 0x01) {
+            cartMirroring = Mirroring::Vertical;
+        }
+        mirrorVertical = (cartMirroring == Mirroring::Vertical);
+        if (cartMirroring == Mirroring::FourScreen) {
+            std::cout << "Mirror: four-screen\n";
+        } else {
+            std::cout << "Mirror: " << (mirrorVertical ? "vertical" : "horizontal") << "\n";
+        }
 
     
         // Load CHR (8KB banks)
@@ -181,11 +201,31 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
             chrRom.resize(chrSize);
             file.read(reinterpret_cast<char*>(chrRom.data()), chrSize);
             std::cout << "Loaded iNES CHR ROM: " << chrSize << " bytes (" << int(chrBanks) << " x 8KB banks)\n";
+            chrIsRam = false;
+            if (!chrRom.empty()) {
+                uint32_t sum = 0;
+                for (uint8_t b : chrRom) sum += b;
+                std::cout << "CHR sum: 0x" << std::hex << sum << std::dec << "\n";
+                std::cout << "CHR first 32: ";
+                size_t headCount = std::min<size_t>(32, chrRom.size());
+                for (size_t i = 0; i < headCount; ++i) {
+                    std::cout << std::hex << int(chrRom[i]) << " ";
+                }
+                std::cout << std::dec << "\n";
+                std::cout << "CHR last 32: ";
+                size_t tailCount = std::min<size_t>(32, chrRom.size());
+                size_t start = chrRom.size() - tailCount;
+                for (size_t i = start; i < chrRom.size(); ++i) {
+                    std::cout << std::hex << int(chrRom[i]) << " ";
+                }
+                std::cout << std::dec << "\n";
+            }
         } else {
             // No CHR ROM: provide CHR RAM (8KB) initialized to zero
             chrRom.resize(8192);
             std::fill(chrRom.begin(), chrRom.end(), 0);
             std::cout << "No CHR ROM present in iNES file: allocated 8KB CHR RAM.\n";
+            chrIsRam = true;
         }
 
         // Create mapper if one is supported
@@ -194,7 +234,7 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
         Mapper* m = CreateMapperFor(this, mapper, prgRom.size(), chrRom.size());
         if (m) {
             AttachMapper(m);
-            m->mirroring = mirrorVertical ? Mirroring::Vertical : Mirroring::Horizontal;
+            m->mirroring = cartMirroring;
             std::cout << "Attached mapper " << int(mapper) << " implementation.\n";
         } else if (mapper != 0) {
             std::cerr << "No implementation for mapper " << int(mapper) << ". Running with naive mapping may fail.\n";
@@ -212,6 +252,7 @@ bool Bus::LoadPRGFromFile(const std::string& filename) {
     file.read(reinterpret_cast<char*>(prgRom.data()), size);
 
     std::cout << "Loaded raw PRG file: " << size << " bytes\n";
+    chrIsRam = false;
     return true;
 }
 

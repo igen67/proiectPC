@@ -8,14 +8,20 @@
 Debugger debugger;
 // 6502 proccesor emulation,
 void PrintTrace(const CPU::CPUTrace& t) {
-    printf(
+    std::ofstream file("nesTests/log.txt");
+
+if (!file.is_open()) {
+    // handle error
+    return;
+}
+    file<<
         "%04X  %02X %02X %02X  "
         "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%llu\n",
         t.pc,
         t.opcode, t.op1, t.op2,
         t.A, t.X, t.Y, t.P, int(t.SP),
-        t.cycles
-    );
+        t.cycles;
+
 }
 
 void PrintStartupDebug(Bus& bus) {
@@ -86,9 +92,9 @@ void CPU::Reset(Bus& bus) {
 
     printf("Reset Vector: 0x%X\n", PC);
     SP = 0xFD;
-    C = Z = D = B = V = N = 0;
+    P = FLAG_U;
     A = X = Y = 0;
-    I = 1;
+    SetFlag(FLAG_I, true);
 
 } 
 
@@ -105,20 +111,22 @@ Word CPU::PullWord(u32& Cycles, Bus& bus) {
 
 
 void CPU::ADCSetStatus(Byte Value) {
-    u32 Result = A + Value + C;
-    C = (Result > 0xFF);
-    Z = ((Result & 0xFF) == 0);
-    N = ((Result & 0x80) != 0);
-    V = (~(A ^ Value) & (A ^ Result) & 0x80) != 0;
+    u32 Result = A + Value + (GetFlag(FLAG_C) ? 1 : 0);
+    SetFlag(FLAG_C, Result > 0xFF);
+    SetFlag(FLAG_Z, ((Result & 0xFF) == 0));
+    SetFlag(FLAG_N, ((Result & 0x80) != 0));
+    SetFlag(FLAG_V, (~(A ^ Value) & (A ^ Result) & 0x80) != 0);
     A = Result & 0xFF;
 }
 void CPU::SBCSetStatus(Byte Value)
 {
-    u32 Result = A - Value -(1 - C);
-    C = (Result > 0xFF);
-    Z = ((Result & 0xFF) == 0);
-    N = ((Result & 0x80) != 0);
-    V = (~(A ^ Value) & (A ^ Result) & 0x80) != 0;
+    // Invert the operand to use ADC logic A - M - (1-C) -> A + ~M + C
+    Value = ~Value;
+    u32 Result = A + Value + (GetFlag(FLAG_C) ? 1 : 0);
+    SetFlag(FLAG_C, Result > 0xFF);
+    SetFlag(FLAG_Z, ((Result & 0xFF) == 0));
+    SetFlag(FLAG_N, ((Result & 0x80) != 0));
+    SetFlag(FLAG_V, ((A ^ Result) & (~A ^ Value) & 0x80) != 0);
     A = Result & 0xFF;
 }
 
@@ -135,7 +143,12 @@ void CPU::ExecuteBranch(u32& Cycles, Bus& bus, bool Condition) {
     Byte Offset = FetchByte(Cycles, bus);
 
     if (Condition) {
+        Word oldPC = PC;
         PC = PC + static_cast<int8_t>(Offset);
+        Cycles += 1;
+        if ((oldPC & 0xFF00) != (PC & 0xFF00)) {
+            Cycles += 1;
+        }
         if (g_verboseCpu) {
             std::cout << "Branch Condition: "<<Condition
                 << ", New PC: " << PC << std::endl;
@@ -148,17 +161,14 @@ void CPU::ExecuteBranch(u32& Cycles, Bus& bus, bool Condition) {
 } 
 
 void CPU::LDASetStatus() {
-    Z = (A == 0);
-    N = (A & 0b10000000) > 0;
+    SetZN(A);
     
 }
 void CPU::LDXSetStatus() {
-    Z = (X == 0);
-    N = (X & 0b10000000) > 0;
+    SetZN(X);
 }
 void CPU::LDYSetStatus() {
-    Z = (Y == 0);
-    N = (Y & 0b10000000) > 0;
+    SetZN(Y);
 }
 
 void CPU::AndSetStatus() {
@@ -168,50 +178,32 @@ void CPU::ASL(Bus& bus, Byte& Value)
 {
     Byte TempVal = Value;
     Value=Value << 1;
-    if(Value == 0)
-        {
-            Z = 1;
-        }
-    if((TempVal & 0b10000000) == 1)
-        {
-            C = 1;
-        }
-    if((Value & 0b10000000) == 1)
-        {
-            N = 1;
-        }
+    SetFlag(FLAG_Z, Value == 0);
+    SetFlag(FLAG_C, (TempVal & 0x80) != 0);
+    SetFlag(FLAG_N, (Value & 0x80) != 0);
 
 } 
 void CPU::LSR(Bus& bus, Byte& Value)
 {
     Byte TempVal = Value;
     Value=Value >> 1;
-    if(Value == 0)
-        {
-            Z = 1;
-        }
-    if((TempVal & 0b00000001) == 1)
-        {
-            C = 1;
-        }
-    if((Value & 0b10000000) == 1)
-        {
-            N = 1;
-        }
+    SetFlag(FLAG_Z, Value == 0);
+    SetFlag(FLAG_C, (TempVal & 0x01) != 0);
+    SetFlag(FLAG_N, (Value & 0x80) != 0);
 } 
     void CPU::ROR(Bus& bus, Byte& Value)
     {
-        C = Value & 0b00000001;
-        Z = Value & 0;
-        Value = (Value>>1) | (Value<<(7));
-        N = Value & 0b10000000;
+        bool old_carry = GetFlag(FLAG_C);
+        SetFlag(FLAG_C, (Value & 0x01) != 0);
+        Value = (Value >> 1) | (old_carry ? 0x80 : 0);
+        SetZN(Value);
     }
     void CPU::ROL(Bus& bus, Byte& Value)
     {
-        C = Value & 0b10000000;
-        Z = Value & 0;
-        Value = (Value<<1) | (Value>>(7));
-        N = Value & 0b10000000;
+        bool old_carry = GetFlag(FLAG_C);
+        SetFlag(FLAG_C, (Value & 0x80) != 0);
+        Value = (Value << 1) | (old_carry ? 0x01 : 0);
+        SetZN(Value);
     }
 
 
@@ -226,17 +218,17 @@ void CPU::LSR(Bus& bus, Byte& Value)
         Cycles += 4;
         return FinalAddr;
     }
-    Word CPU::indirectAddrModeY(u32& Cycles, Bus& bus)
+    Word CPU::indirectAddrModeY(u32& Cycles, Bus& bus, bool addPageCrossCycle)
     {
         Byte zp = FetchByte(Cycles, bus);
         Byte lo = bus.read(zp);
         Byte hi = bus.read((zp + 1) & 0xFF);
         Word base = lo | (hi << 8);
         Word addr = base + Y;
-        if ((base & 0xFF00) != (addr & 0xFF00)) {
-            Cycles += 4;
-        } else {
-            Cycles += 3;
+        bool pageCrossed = ((base & 0xFF00) != (addr & 0xFF00));
+        Cycles += 3;
+        if (addPageCrossCycle && pageCrossed) {
+            Cycles += 1;
         }
         return addr;
     }
@@ -275,40 +267,27 @@ void CPU::InvokeInstruction(Byte opcode, u32& Cycles, Bus& bus) {
 }
 void CPU::IRQ_Handler(u32& Cycles, Bus& bus, bool Interrupt)
 {
-    if (Interrupt && I == 0)  
-    {   // Log and acknowledge the IRQ
+    if (Interrupt && !GetFlag(FLAG_I))  
+    { 
     
-      //  if (bus.cpu) bus.cpu->Interrupt = false; // acknowledge the line so it won't retrigger immediately
         bus.write(0x0100 | SP, (PC >> 8) & 0xFF);  
         SP--;
         bus.write(0x0100 | SP, PC & 0xFF);  
         SP--;
 
         // Save status register to stack
-       Byte status = 0;
-
-        if (C) status |= 0x01;   // Carry
-        if (Z) status |= 0x02;   // Zero
-        if (I) status |= 0x04;   // Interrupt Disable
-        if (D) status |= 0x08;   // Decimal (ignored on NES but still stored)
-// B flag = 0 for IRQ (DO NOT set bit 4)
-// Bit 5 is ALWAYS 1
-        status |= 0x20;
-        if (V) status |= 0x40;   // Overflow
-        if (N) status |= 0x80;   // Negative
+        Byte status = GetStatus(false);
 
         bus.write(0x0100 | SP, status);
         SP--;
-        // Set I flag
-        I = 1;
-        // Fetch IRQ vector and set PC
+        SetFlag(FLAG_I, true);
         Word Address = bus.read(0xFFFE) | (bus.read(0xFFFF) << 8);
         PC = Address;
         Cycles += 7; // IRQ handling takes 7 cycles
     }
 }
 
-// Non-Maskable Interrupt handler (NMI)
+
 void CPU::HandleNMI(u32& Cycles, Bus& bus) {
 
     bus.write(0x0100 | SP, (PC >> 8) & 0xFF);
@@ -317,32 +296,18 @@ void CPU::HandleNMI(u32& Cycles, Bus& bus) {
     bus.write(0x0100 | SP, PC & 0xFF);
     SP--;
     modifySP();
-   // Save status register to stack (B flag is cleared for NMI)
-    Byte status = 0;
-    if (C == 1) status |= 0b00000001;
-    if (Z == 1) status |= 0b00000010;
-    if (I == 1) status |= 0b00000100;
-    if (D == 1) status |= 0b00001000;
-    // B flag should be 0 for NMI
-    status |= 0b00100000;
-    if (V == 1) status |= 0b01000000;
-    if (N == 1) status |= 0b10000000;
+    Byte status = GetStatus(false);
 
 
     bus.write(0x0100 | SP, status);
     SP--;
     modifySP();
 
-    // Set I flag to disable further IRQs during NMI handling
-    I = 1;
+    SetFlag(FLAG_I, true);
 
-    // Fetch NMI vector and set PC
     Word Address = bus.read(0xFFFA) | (bus.read(0xFFFB) << 8);
     PC = Address;
-    // Dump a few bytes at NMI address for inspection
 
-    // Start a short post-NMI instruction trace to help debug initialization behavior
-    traceInstructionsRemaining = 256; // trace next 256 instructions
     
     Cycles += 7;
 }
@@ -352,7 +317,7 @@ void CPU::HandleNMI(u32& Cycles, Bus& bus) {
 
 void CPU::Execute(u32& Cycles, Bus& bus) {
         u32 before = Cycles;
-        // Handle pending OAM DMA per-byte transfer (cycle-accurate)
+        // Handle pending OAM DMA per-byte transfer
         while (bus.oamDmaActive) {
             if (bus.oamDmaDummy) {
                 // initial dummy cycle before bytes are transferred
@@ -377,20 +342,18 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
                 if (bus.ppu) bus.ppu->WriteOAMByte(0, bus.ppu->GetOAM()[0]);
                 break; // resume normal instruction fetch
             }
-            // If the emulator's Execute is called in small steps, it's fine to loop until DMA completes
         }
 
-        // NMI has highest priority
+
         if (bus.nmiLine) {
             bus.nmiLine = false;
             HandleNMI(Cycles, bus);
         }    
-        else if (bus.cpu && bus.cpu->Interrupt && !I) {
-            // Mapper signaled an IRQ via CPU->Interrupt
+        else if (bus.cpu && bus.cpu->Interrupt && !GetFlag(FLAG_I)) {
             IRQ_Handler(Cycles, bus, true);
             if (bus.cpu) bus.cpu->Interrupt = false;
         }
-        else if (bus.irqEnable && !I) {
+        else if (bus.irqEnable && !GetFlag(FLAG_I)) {
             // Legacy IRQ line (set by mapper writes $E000/$E001)
             IRQ_Handler(Cycles, bus, true);
             bus.irqEnable = false;
@@ -407,7 +370,6 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
 debugger.CheckBreakpoint(PC);
 CPUTrace trace = CaptureTrace(bus);
 //PrintTrace(trace);
-
 
         InvokeInstruction(Instruction, Cycles, bus);
 

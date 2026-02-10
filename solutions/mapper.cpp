@@ -79,6 +79,7 @@ public:
             if ((addr & 1) == 0) {
                 // mirroring
                 bus->mirrorVertical = (value & 1) != 0;
+                mirroring = bus->mirrorVertical ? Mirroring::Vertical : Mirroring::Horizontal;
                 if (g_mapperVerbose) std::cout << "Mapper4: mirroring set to " << (bus->mirrorVertical ? "vertical" : "horizontal") << std::endl;
             } else {
                 // PRG RAM protect - ignored for now
@@ -162,6 +163,62 @@ public:
                 bankIndex = bankRegs[1] & 0xFF; offset = a & 0x7FF; return ReadCHRBank(bankIndex, offset);
             }
         }
+    }
+
+    void CHRWrite(uint16_t addr, uint8_t value) override {
+        if (!bus || !bus->chrIsRam) {
+            return;
+        }
+        uint32_t a = addr;
+        uint32_t bankIndex = 0;
+        uint32_t offset = 0;
+        if (!chrMode) {
+            if (a < 0x0800) {
+                uint32_t bank = bankRegs[0] & 0xFE;
+                uint32_t abs = bank * 0x400 + offset;
+                if (abs < bus->chrRom.size()) bus->chrRom[abs] = value;
+                return;
+            } else if (a < 0x1000) {
+                uint32_t bank = bankRegs[1] & 0xFE;
+                uint32_t abs = bank * 0x400 + offset;
+                if (abs < bus->chrRom.size()) bus->chrRom[abs] = value;
+                return;
+            } else if (a < 0x1400) {
+                bankIndex = bankRegs[2] & 0xFF;
+                offset = a & 0x3FF;
+            } else if (a < 0x1800) {
+                bankIndex = bankRegs[3] & 0xFF;
+                offset = a & 0x3FF;
+            } else if (a < 0x1C00) {
+                bankIndex = bankRegs[4] & 0xFF;
+                offset = a & 0x3FF;
+            } else {
+                bankIndex = bankRegs[5] & 0xFF;
+                offset = a & 0x3FF;
+            }
+        } else {
+            if (a < 0x0400) {
+                bankIndex = bankRegs[2] & 0xFF; offset = a & 0x3FF;
+            } else if (a < 0x0800) {
+                bankIndex = bankRegs[3] & 0xFF; offset = a & 0x3FF;
+            } else if (a < 0x0C00) {
+                bankIndex = bankRegs[4] & 0xFF; offset = a & 0x3FF;
+            } else if (a < 0x1000) {
+                bankIndex = bankRegs[5] & 0xFF; offset = a & 0x3FF;
+            } else if (a < 0x1800) {
+                bankIndex = bankRegs[0] & 0xFF; offset = a & 0x7FF;
+                uint32_t abs = bankIndex * 0x400 + offset;
+                if (abs < bus->chrRom.size()) bus->chrRom[abs] = value;
+                return;
+            } else {
+                bankIndex = bankRegs[1] & 0xFF; offset = a & 0x7FF;
+                uint32_t abs = bankIndex * 0x400 + offset;
+                if (abs < bus->chrRom.size()) bus->chrRom[abs] = value;
+                return;
+            }
+        }
+        uint32_t abs = bankIndex * 0x400 + offset;
+        if (abs < bus->chrRom.size()) bus->chrRom[abs] = value;
     }
 
     uint8_t ReadPRG(uint16_t addr) {
@@ -267,12 +324,12 @@ uint8_t ReadCHRBank(uint32_t bankIndex, uint32_t offset) {
 class Mapper0 : public Mapper {
 
 public:
-    Mirroring mirroring;
     size_t prgBanks = 0;
 
     Mapper0(Bus* b, size_t prgSize) {
         bus = b;
         prgBanks = prgSize / 0x4000;
+        mirroring = (bus && bus->mirrorVertical) ? Mirroring::Vertical : Mirroring::Horizontal;
     }
 
     uint8_t CPURead(uint16_t addr) override {
@@ -292,6 +349,20 @@ public:
 
     uint8_t CHRRead(uint16_t addr) override {
         return bus->chrRom[addr & 0x1FFF];
+    }
+
+    void CHRWrite(uint16_t addr, uint8_t value) override {
+        if (!bus || !bus->chrIsRam) {
+            return;
+        }
+        uint32_t idx = addr & 0x1FFF;
+        if (idx < bus->chrRom.size()) {
+            bus->chrRom[idx] = value;
+        }
+    }
+
+    Mirroring GetMirroring() const override {
+        return mirroring;
     }
 };
 

@@ -224,7 +224,14 @@ void RunGUI(CPU& cpu, Bus& bus) {
         ImGui::Text("A: %02X", cpu.A);
         ImGui::Text("X: %02X", cpu.X);
         ImGui::Text("Y: %02X", cpu.Y);
-        ImGui::Text("Flags: N=%d V=%d B=%d D=%d I=%d Z=%d C=%d", cpu.N, cpu.V, cpu.B, cpu.D, cpu.I, cpu.Z, cpu.C);
+        ImGui::Text("Flags: N=%d V=%d B=%d D=%d I=%d Z=%d C=%d",
+            cpu.GetFlag(CPU::FLAG_N),
+            cpu.GetFlag(CPU::FLAG_V),
+            cpu.GetFlag(CPU::FLAG_B),
+            cpu.GetFlag(CPU::FLAG_D),
+            cpu.GetFlag(CPU::FLAG_I),
+            cpu.GetFlag(CPU::FLAG_Z),
+            cpu.GetFlag(CPU::FLAG_C));
         ImGui::End();
 
         // Memory view
