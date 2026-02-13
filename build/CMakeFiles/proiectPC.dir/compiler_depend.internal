@@ -86,9 +86,11 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/bits/wchar.h
  /usr/include/bits/wctype-wchar.h
  /usr/include/bits/wordsize.h
+ /usr/include/c++/15.2.1/algorithm
  /usr/include/c++/15.2.1/array
  /usr/include/c++/15.2.1/backward/binders.h
  /usr/include/c++/15.2.1/bit
+ /usr/include/c++/15.2.1/bits/algorithmfwd.h
  /usr/include/c++/15.2.1/bits/alloc_traits.h
  /usr/include/c++/15.2.1/bits/allocator.h
  /usr/include/c++/15.2.1/bits/basic_ios.h
@@ -146,14 +148,17 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/c++/15.2.1/bits/std_abs.h
  /usr/include/c++/15.2.1/bits/std_function.h
  /usr/include/c++/15.2.1/bits/std_thread.h
+ /usr/include/c++/15.2.1/bits/stl_algo.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_bvector.h
  /usr/include/c++/15.2.1/bits/stl_construct.h
  /usr/include/c++/15.2.1/bits/stl_function.h
+ /usr/include/c++/15.2.1/bits/stl_heap.h
  /usr/include/c++/15.2.1/bits/stl_iterator.h
  /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h
  /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h
  /usr/include/c++/15.2.1/bits/stl_pair.h
+ /usr/include/c++/15.2.1/bits/stl_tempbuf.h
  /usr/include/c++/15.2.1/bits/stl_uninitialized.h
  /usr/include/c++/15.2.1/bits/stl_vector.h
  /usr/include/c++/15.2.1/bits/streambuf.tcc
@@ -161,6 +166,7 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
  /usr/include/c++/15.2.1/bits/this_thread_sleep.h
+ /usr/include/c++/15.2.1/bits/uniform_int_dist.h
  /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/unordered_map.h
  /usr/include/c++/15.2.1/bits/uses_allocator.h
@@ -177,6 +183,7 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/c++/15.2.1/cstdint
  /usr/include/c++/15.2.1/cstdio
  /usr/include/c++/15.2.1/cstdlib
+ /usr/include/c++/15.2.1/cstring
  /usr/include/c++/15.2.1/ctime
  /usr/include/c++/15.2.1/cwchar
  /usr/include/c++/15.2.1/cwctype
@@ -201,6 +208,8 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/c++/15.2.1/locale
  /usr/include/c++/15.2.1/new
  /usr/include/c++/15.2.1/ostream
+ /usr/include/c++/15.2.1/pstl/execution_defs.h
+ /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h
  /usr/include/c++/15.2.1/pstl/pstl_config.h
  /usr/include/c++/15.2.1/ratio
  /usr/include/c++/15.2.1/sstream
@@ -251,6 +260,8 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o
  /usr/include/stdint.h
  /usr/include/stdio.h
  /usr/include/stdlib.h
+ /usr/include/string.h
+ /usr/include/strings.h
  /usr/include/sys/cdefs.h
  /usr/include/sys/select.h
  /usr/include/sys/single_threaded.h

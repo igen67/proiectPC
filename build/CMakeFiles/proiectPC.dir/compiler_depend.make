@@ -85,9 +85,11 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/bits/wchar.h \
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/15.2.1/algorithm \
   /usr/include/c++/15.2.1/array \
   /usr/include/c++/15.2.1/backward/binders.h \
   /usr/include/c++/15.2.1/bit \
+  /usr/include/c++/15.2.1/bits/algorithmfwd.h \
   /usr/include/c++/15.2.1/bits/alloc_traits.h \
   /usr/include/c++/15.2.1/bits/allocator.h \
   /usr/include/c++/15.2.1/bits/basic_ios.h \
@@ -145,14 +147,17 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/std_function.h \
   /usr/include/c++/15.2.1/bits/std_thread.h \
+  /usr/include/c++/15.2.1/bits/stl_algo.h \
   /usr/include/c++/15.2.1/bits/stl_algobase.h \
   /usr/include/c++/15.2.1/bits/stl_bvector.h \
   /usr/include/c++/15.2.1/bits/stl_construct.h \
   /usr/include/c++/15.2.1/bits/stl_function.h \
+  /usr/include/c++/15.2.1/bits/stl_heap.h \
   /usr/include/c++/15.2.1/bits/stl_iterator.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h \
   /usr/include/c++/15.2.1/bits/stl_pair.h \
+  /usr/include/c++/15.2.1/bits/stl_tempbuf.h \
   /usr/include/c++/15.2.1/bits/stl_uninitialized.h \
   /usr/include/c++/15.2.1/bits/stl_vector.h \
   /usr/include/c++/15.2.1/bits/streambuf.tcc \
@@ -160,6 +165,7 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/c++/15.2.1/bits/string_view.tcc \
   /usr/include/c++/15.2.1/bits/stringfwd.h \
   /usr/include/c++/15.2.1/bits/this_thread_sleep.h \
+  /usr/include/c++/15.2.1/bits/uniform_int_dist.h \
   /usr/include/c++/15.2.1/bits/unique_ptr.h \
   /usr/include/c++/15.2.1/bits/unordered_map.h \
   /usr/include/c++/15.2.1/bits/uses_allocator.h \
@@ -176,6 +182,7 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/c++/15.2.1/cstdint \
   /usr/include/c++/15.2.1/cstdio \
   /usr/include/c++/15.2.1/cstdlib \
+  /usr/include/c++/15.2.1/cstring \
   /usr/include/c++/15.2.1/ctime \
   /usr/include/c++/15.2.1/cwchar \
   /usr/include/c++/15.2.1/cwctype \
@@ -200,6 +207,8 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/c++/15.2.1/locale \
   /usr/include/c++/15.2.1/new \
   /usr/include/c++/15.2.1/ostream \
+  /usr/include/c++/15.2.1/pstl/execution_defs.h \
+  /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15.2.1/pstl/pstl_config.h \
   /usr/include/c++/15.2.1/ratio \
   /usr/include/c++/15.2.1/sstream \
@@ -250,6 +259,8 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: /home/preda/Documents/proiectPC/s
   /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
   /usr/include/sys/single_threaded.h \
@@ -2149,23 +2160,11 @@ CMakeFiles/proiectPC.dir/solutions/gui.cpp.o:
 
 /usr/lib/Scrt1.o:
 
-/usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
-
-/usr/include/c++/15.2.1/pstl/execution_defs.h:
-
-/usr/include/c++/15.2.1/algorithm:
-
 /home/preda/Documents/proiectPC/solutions/ppu.cpp:
 
 /home/preda/Documents/proiectPC/solutions/memory.cpp:
 
-/usr/include/c++/15.2.1/cstring:
-
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h:
-
-/usr/include/strings.h:
-
-/usr/include/string.h:
 
 /usr/include/assert.h:
 
@@ -2195,7 +2194,19 @@ _deps/glfw-src/include/GLFW/glfw3.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h:
 
-/usr/include/c++/15.2.1/bits/nested_exception.h:
+/usr/include/wchar.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/sys/single_threaded.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/strings.h:
+
+/usr/include/string.h:
+
+/usr/include/stdlib.h:
 
 /usr/include/c++/15.2.1/bits/memoryfwd.h:
 
@@ -2239,11 +2250,7 @@ _deps/glfw-src/include/GLFW/glfw3.h:
 
 /usr/include/c++/15.2.1/bits/erase_if.h:
 
-/usr/lib/librt.a:
-
-/usr/include/c++/15.2.1/bits/algorithmfwd.h:
-
-/usr/include/c++/15.2.1/array:
+/usr/include/c++/15.2.1/algorithm:
 
 /usr/include/c++/15.2.1/bits/stl_bvector.h:
 
@@ -2251,7 +2258,11 @@ _deps/glfw-src/include/GLFW/glfw3.h:
 
 /usr/include/bits/wctype-wchar.h:
 
-/usr/include/sys/types.h:
+/usr/lib/librt.a:
+
+/usr/include/c++/15.2.1/array:
+
+/usr/include/c++/15.2.1/bits/algorithmfwd.h:
 
 /usr/include/bits/timesize.h:
 
@@ -2260,10 +2271,6 @@ _deps/glfw-src/include/GLFW/glfw3.h:
 /usr/include/c++/15.2.1/chrono:
 
 /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h:
-
-/usr/include/c++/15.2.1/bits/stringfwd.h:
-
-/usr/include/c++/15.2.1/bits/enable_special_members.h:
 
 /usr/include/c++/15.2.1/stdexcept:
 
@@ -2325,6 +2332,8 @@ _deps/imgui-src/imconfig.h:
 
 /usr/include/bits/atomic_wide_counter.h:
 
+/usr/include/c++/15.2.1/pstl/execution_defs.h:
+
 /usr/include/bits/locale.h:
 
 /usr/include/c++/15.2.1/bits/locale_facets_nonio.h:
@@ -2348,6 +2357,10 @@ _deps/imgui-src/imconfig.h:
 /usr/include/bits/types/locale_t.h:
 
 /home/preda/Documents/proiectPC/solutions/headers/types.h:
+
+/usr/include/features-time64.h:
+
+/usr/include/c++/15.2.1/bits/quoted_string.h:
 
 /usr/include/asm-generic/errno-base.h:
 
@@ -2433,9 +2446,9 @@ _deps/imgui-src/imconfig.h:
 
 /usr/include/bits/struct_mutex.h:
 
-/usr/include/c++/15.2.1/bits/uniform_int_dist.h:
-
 /usr/include/c++/15.2.1/cwchar:
+
+/usr/include/c++/15.2.1/bits/uniform_int_dist.h:
 
 /home/preda/Documents/proiectPC/solutions/headers/libraries.h:
 
@@ -2448,6 +2461,10 @@ _deps/imgui-src/imconfig.h:
 /usr/include/bits/endian.h:
 
 /usr/include/c++/15.2.1/bits/stl_function.h:
+
+/usr/include/sys/cdefs.h:
+
+/home/preda/Documents/proiectPC/solutions/headers/instructions.h:
 
 /usr/include/bits/pthread_stack_min-dynamic.h:
 
@@ -2525,15 +2542,21 @@ CMakeFiles/proiectPC.dir/solutions/input.cpp.o:
 
 /home/preda/Documents/proiectPC/solutions/headers/memory.h:
 
-/usr/include/c++/15.2.1/bits/move.h:
-
-/usr/include/bits/types.h:
-
 /usr/include/features.h:
 
 /usr/include/bits/sched.h:
 
 /usr/include/bits/types/__FILE.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/c++/15.2.1/bits/move.h:
+
+/usr/include/c++/15.2.1/bits/nested_exception.h:
+
+/usr/include/c++/15.2.1/bits/enable_special_members.h:
+
+/usr/include/c++/15.2.1/bits/stringfwd.h:
 
 /usr/include/c++/15.2.1/bits/new_allocator.h:
 
@@ -2554,6 +2577,10 @@ CMakeFiles/proiectPC.dir/solutions/input.cpp.o:
 /usr/include/c++/15.2.1/bits/streambuf.tcc:
 
 /usr/include/c++/15.2.1/unordered_map:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
+
+/usr/include/c++/15.2.1/bits/ostream.tcc:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
@@ -2587,13 +2614,15 @@ CMakeFiles/proiectPC.dir/solutions/input.cpp.o:
 
 /usr/include/c++/15.2.1/bits/stl_vector.h:
 
-/usr/include/c++/15.2.1/bits/stl_heap.h:
-
 /usr/include/asm-generic/bitsperlong.h:
 
 /usr/include/asm-generic/types.h:
 
+/usr/include/c++/15.2.1/bits/stl_heap.h:
+
 /usr/include/c++/15.2.1/exception:
+
+/usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h:
 
 /usr/include/c++/15.2.1/tuple:
 
@@ -2625,23 +2654,19 @@ libimgui.a:
 
 /usr/include/c++/15.2.1/bits/vector.tcc:
 
-/usr/include/c++/15.2.1/bits/ostream.tcc:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h:
-
 /usr/include/c++/15.2.1/bits/version.h:
 
 /usr/include/c++/15.2.1/clocale:
 
 /usr/include/c++/15.2.1/concepts:
 
-/usr/include/wchar.h:
-
 /usr/lib/libgcc_s.so:
 
 /usr/include/c++/15.2.1/cstddef:
 
 /usr/include/c++/15.2.1/cstdint:
+
+/usr/include/c++/15.2.1/cstring:
 
 /usr/include/bits/timex.h:
 
@@ -2695,10 +2720,6 @@ libimgui.a:
 
 /usr/include/c++/15.2.1/string:
 
-/home/preda/Documents/proiectPC/solutions/headers/instructions.h:
-
-/usr/include/sys/cdefs.h:
-
 /usr/include/c++/15.2.1/string_view:
 
 /usr/include/c++/15.2.1/unordered_set:
@@ -2706,8 +2727,6 @@ libimgui.a:
 /usr/include/c++/15.2.1/thread:
 
 /usr/include/c++/15.2.1/typeinfo:
-
-/usr/include/stdlib.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/basic_file.h:
 
@@ -2728,10 +2747,6 @@ CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o:
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/messages_members.h:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
-
-/usr/include/c++/15.2.1/bits/quoted_string.h:
-
-/usr/include/features-time64.h:
 
 /usr/include/bits/endianness.h:
 
@@ -2760,7 +2775,3 @@ CMakeFiles/proiectPC.dir/solutions/cpu.cpp.o:
 /usr/include/bits/wordsize.h:
 
 /usr/include/stdio.h:
-
-/usr/include/sys/select.h:
-
-/usr/include/sys/single_threaded.h:

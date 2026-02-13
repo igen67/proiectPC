@@ -4,6 +4,29 @@
 #include "headers/mapper.h"
 #include <cstring>
 #include <algorithm>
+#include <cstdio>
+bool nmiOccurred = false;
+
+namespace {
+void LogPPUStatus(const char* label, uint8_t value, int scanline, int cycle, int pc, bool force) {
+    static uint8_t lastValue = 0xFF;
+    if (!force && value == lastValue) return;
+    lastValue = value;
+    if (scanline >= 0 && cycle >= 0) {
+        if (pc >= 0) {
+            std::fprintf(stderr, "[PPU] %s: PPUSTATUS=0x%02X (s=%d c=%d pc=0x%04X)\n", label, value, scanline, cycle, pc);
+        } else {
+            std::fprintf(stderr, "[PPU] %s: PPUSTATUS=0x%02X (s=%d c=%d)\n", label, value, scanline, cycle);
+        }
+    } else {
+        if (pc >= 0) {
+            std::fprintf(stderr, "[PPU] %s: PPUSTATUS=0x%02X (pc=0x%04X)\n", label, value, pc);
+        } else {
+            std::fprintf(stderr, "[PPU] %s: PPUSTATUS=0x%02X\n", label, value);
+        }
+    }
+}
+}
 const uint32_t NES_COLORS[64] = {
     0xFF757575, 0xFF271B8F, 0xFF0000AB, 0xFF47009F, 0xFF8F0077, 0xFFAB0013, 0xFFA70000, 0xFF7F0B00,
     0xFF432F00, 0xFF004700, 0xFF005100, 0xFF003F17, 0xFF1B3F5F, 0xFF000000, 0xFF000000, 0xFF000000,
@@ -26,6 +49,7 @@ void PPU::Reset() {
     std::fill(vram.begin(), vram.end(), 0);
     std::fill(std::begin(paletteRam), std::end(paletteRam), 0);
     std::fill(std::begin(oam), std::end(oam), 0);
+    LogPPUStatus("Reset (before)", PPUSTATUS, -1, -1, -1, true);
     PPUMASK = PPUSTATUS = OAMADDR = 0;
     vramAddr = vramAddrTemp = 0;
     writeToggle = false;
@@ -72,66 +96,118 @@ uint16_t PPU::MapNametable(uint16_t addr) const {
     }
 }
 uint32_t PPU::RenderPixel(int x, int y) {
-    // --- Nametable ---
-    uint16_t coarseX = renderAddr & 0x001F;
-    uint16_t coarseY = (renderAddr >> 5) & 0x001F;
-    uint16_t fineY = (renderAddr >> 12) & 0x0007;
+    bool bgEnabled = (PPUMASK & 0x08) != 0;
+    bool sprEnabled = (PPUMASK & 0x10) != 0;
 
-    uint16_t ntIndex = (renderAddr >> 10) & 0x0003;
-    uint16_t baseNametableAddr = 0x2000 + (ntIndex * 0x0400);
-    uint16_t tileIndexAddr =
-        baseNametableAddr + coarseY * 32 + coarseX;
+    uint8_t bgColorIndex = 0;
+    uint8_t bgPaletteIndex = 0;
+    if (bgEnabled && !(x < 8 && (PPUMASK & 0x02) == 0)) {
+        uint16_t coarseX = renderAddr & 0x001F;
+        uint16_t coarseY = (renderAddr >> 5) & 0x001F;
+        uint16_t fineY = (renderAddr >> 12) & 0x0007;
 
-    uint16_t ntAddr = MapNametable(tileIndexAddr);
-    uint8_t tileIndex = vram[ntAddr];
+        uint16_t ntIndex = (renderAddr >> 10) & 0x0003;
+        uint16_t baseNametableAddr = 0x2000 + (ntIndex * 0x0400);
+        uint16_t tileIndexAddr =
+            baseNametableAddr + coarseY * 32 + coarseX;
 
-    // --- Pattern table ---
-    uint16_t patternTableAddr = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
-    uint16_t tileDataAddr =
-        patternTableAddr + tileIndex * 16 + fineY;
+        uint16_t ntAddr = MapNametable(tileIndexAddr);
+        uint8_t tileIndex = vram[ntAddr];
 
-    // Notify mapper of PPU address accesses (full address) for A12 edge detection
-    bus.NotifyPPUAddr(tileDataAddr);
-    bus.NotifyPPUAddr(tileDataAddr + 8);
-    uint8_t lowByte  = bus.ReadCHR(tileDataAddr);
-    uint8_t highByte = bus.ReadCHR(tileDataAddr + 8);
+        uint16_t patternTableAddr = (PPUCTRL & 0x10) ? 0x1000 : 0x0000;
+        uint16_t tileDataAddr =
+            patternTableAddr + tileIndex * 16 + fineY;
 
-    static int patternLog = 0;
-    if (patternLog < 32) {
-        std::cout << "PPU: pattern fetch addr=$" << std::hex << int(tileDataAddr)
-                  << " low=$" << int(lowByte) << " high=$" << int(highByte)
-                  << " x=" << std::dec << x << " y=" << y << std::endl;
-        ++patternLog;
+        bus.NotifyPPUAddr(tileDataAddr);
+        bus.NotifyPPUAddr(tileDataAddr + 8);
+        uint8_t lowByte  = bus.ReadCHR(tileDataAddr);
+        uint8_t highByte = bus.ReadCHR(tileDataAddr + 8);
+
+
+        int bit = 7 - ((x + fineX) & 7);
+        bgColorIndex =
+            ((highByte >> bit) & 1) << 1 |
+            ((lowByte >> bit) & 1);
+
+        uint16_t attrAddr =
+            baseNametableAddr + 0x3C0 +
+            ((coarseY >> 2) * 8) + (coarseX >> 2);
+
+        uint16_t attrNt = MapNametable(attrAddr);
+        uint8_t attr = vram[attrNt];
+
+
+        int quadrantY = (coarseY & 0x02) ? 1 : 0;
+        int quadrantX = (coarseX & 0x02) ? 1 : 0;
+        int shift = (quadrantY * 2 + quadrantX) * 2;
+
+        bgPaletteIndex = (attr >> shift) & 0x03;
     }
 
-    int bit = 7 - ((x + fineX) & 7);
-    int colorIndex =
-        ((highByte >> bit) & 1) << 1 |
-        ((lowByte >> bit) & 1);
+    bool spritePixel = false;
+    uint8_t spriteColorIndex = 0;
+    uint8_t spritePaletteIndex = 0;
+    bool spriteBehind = false;
 
-    // --- Attribute table ---
-    uint16_t attrAddr =
-        baseNametableAddr + 0x3C0 +
-        ((coarseY >> 2) * 8) + (coarseX >> 2);
+    if (sprEnabled && !(x < 8 && (PPUMASK & 0x04) == 0)) {
+        int spriteHeight = (PPUCTRL & 0x20) ? 16 : 8;
+        uint16_t spriteTable = (PPUCTRL & 0x08) ? 0x1000 : 0x0000;
+        for (int i = 0; i < 64; ++i) {
+            uint8_t sy = oam[i * 4 + 0];
+            uint8_t tile = oam[i * 4 + 1];
+            uint8_t attr = oam[i * 4 + 2];
+            uint8_t sx = oam[i * 4 + 3];
 
-    uint16_t attrNt = MapNametable(attrAddr);
-    uint8_t attr = vram[attrNt];
+            int spriteY = int(sy) + 1;
+            if (y < spriteY || y >= spriteY + spriteHeight) continue;
+            if (x < sx || x >= sx + 8) continue;
 
-    int quadrantY = (coarseY & 0x02) ? 1 : 0;
-    int quadrantX = (coarseX & 0x02) ? 1 : 0;
-    int shift = (quadrantY * 2 + quadrantX) * 2;
+            int row = y - spriteY;
+            bool flipV = (attr & 0x80) != 0;
+            bool flipH = (attr & 0x40) != 0;
+            spriteBehind = (attr & 0x20) != 0;
+            if (flipV) row = spriteHeight - 1 - row;
 
-    uint8_t paletteIndex = (attr >> shift) & 0x03;
+            uint16_t tileAddr = 0;
+            if (spriteHeight == 16) {
+                uint16_t table = (tile & 0x01) ? 0x1000 : 0x0000;
+                uint8_t tileIndex = tile & 0xFE;
+                if (row >= 8) {
+                    tileIndex += 1;
+                    row -= 8;
+                }
+                tileAddr = table + tileIndex * 16 + row;
+            } else {
+                tileAddr = spriteTable + tile * 16 + row;
+            }
 
-    // --- Final color: map through palette RAM then to NES_COLORS ---
-    int palRamIndex;
-    if (colorIndex == 0) {
-        palRamIndex = 0;
+            int col = x - sx;
+            if (flipH) col = 7 - col;
+            int bit = 7 - col;
+
+            bus.NotifyPPUAddr(tileAddr);
+            bus.NotifyPPUAddr(tileAddr + 8);
+            uint8_t low = bus.ReadCHR(tileAddr);
+            uint8_t high = bus.ReadCHR(tileAddr + 8);
+            uint8_t color = ((high >> bit) & 1) << 1 | ((low >> bit) & 1);
+            if (color == 0) continue;
+
+            spritePixel = true;
+            spriteColorIndex = color;
+            spritePaletteIndex = attr & 0x03;
+            break;
+        }
+    }
+
+    uint8_t palEntry = 0;
+    if (spritePixel && (bgColorIndex == 0 || !spriteBehind)) {
+        int palIndex = 0x10 + spritePaletteIndex * 4 + spriteColorIndex;
+        palEntry = paletteRam[palIndex & 0x1F] & 0x3F;
     } else {
-        palRamIndex = paletteIndex * 4 + colorIndex;
+        int palIndex = (bgColorIndex == 0) ? 0 : (bgPaletteIndex * 4 + bgColorIndex);
+        palEntry = paletteRam[palIndex & 0x1F] & 0x3F;
     }
-    palRamIndex &= 0x1F;
-    uint8_t palEntry = paletteRam[palRamIndex] & 0x3F;
+
     uint32_t finalColor = NES_COLORS[palEntry % 64];
     return finalColor;
 
@@ -174,13 +250,13 @@ void PPU::StepCycles(uint32_t cycles) {
             renderAddr = (renderAddr & ~0x7BE0) | (vramAddrTemp & 0x7BE0);
         };
 
-        bool rendering = (PPUMASK & 0x08) != 0;
+        bool rendering = (PPUMASK & 0x18) != 0;
         if (scanline < 240 && cycle >= 1 && cycle <= 256) {
             int x = cycle - 1;
             int y = scanline;
             if (rendering) {
                 lastFrame[y * 256 + x] = RenderPixel(x, y);
-                if ((cycle % 8) == 0) {
+                if ((cycle % 8) == 0 && cycle != 256) {
                     incrementX();
                 }
                 if (cycle == 256) {
@@ -202,24 +278,31 @@ void PPU::StepCycles(uint32_t cycles) {
 
         // VBlank start
         if (scanline == 241 && cycle == 1) {
+    int pc = bus.cpu ? static_cast<int>(bus.cpu->PC) : -1;
+    LogPPUStatus("VBlank start (before)", PPUSTATUS, scanline, cycle, pc, false);
+    PPUSTATUS |= 0x80;
 
-            PPUSTATUS |= 0x80;
-            if (PPUCTRL & 0x80)
-                bus.nmiLine = true;
-            
-        }
+    if ((PPUCTRL & 0x80) && !nmiOccurred) {
+        bus.nmiLine = true;
+        nmiOccurred = true;
+        std::cout << "NMI at s=" << scanline
+          << " c=" << cycle << "\n";
+    }
+}
 
         // Pre-render line
         if (scanline == 261 && cycle == 1) {
             // pre-render line: clear VBlank and secondary flags
-            PPUSTATUS &= ~0x80;
-            PPUSTATUS &= ~0x40;
-            PPUSTATUS &= ~0x20;
-            bus.nmiLine = false;
+                    int pc = bus.cpu ? static_cast<int>(bus.cpu->PC) : -1;
+                    LogPPUStatus("Pre-render clear (before)", PPUSTATUS, scanline, cycle, pc, false);
+                    PPUSTATUS &= ~0x80;
+                     PPUSTATUS &= ~0x40;
+                 PPUSTATUS &= ~0x20;
+               nmiOccurred = false;
         }
 
         // Frame finished
-        if (scanline == 240 && cycle == 0) {
+        if (scanline == 241 && cycle == 0) {
             frameReady = true;
         }
         cycle++;
@@ -239,12 +322,12 @@ uint8_t PPU::ReadRegister(uint16_t reg) {
     reg &= 7;
     switch (reg) {
         case 2: { // PPUSTATUS
-            uint8_t val = PPUSTATUS;
-
-            // reading PPUSTATUS clears VBlank flag and latch
-            PPUSTATUS &= ~0x80u;
-                writeToggle = false;
-            return val;
+            uint8_t ret = PPUSTATUS;
+            int pc = bus.cpu ? static_cast<int>(bus.cpu->PC) : -1;
+            LogPPUStatus("Read $2002 (before)", PPUSTATUS, scanline, cycle, pc, false);
+            PPUSTATUS &= ~0x80;
+            writeToggle = false;
+            return ret;
         }
         case 4: { // OAMDATA
             return oam[OAMADDR];
@@ -290,15 +373,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
         {
             PPUCTRL = val;
             vramAddrTemp = (vramAddrTemp & 0xF3FF) | ((val & 0x03) << 10);
-            static int ctrlLog = 0;
-            if (ctrlLog < 8) {
-                std::cout << "PPU: PPUCTRL=$" << std::hex << int(val)
-                          << " nt=$" << int(val & 0x03)
-                          << " bgPT=" << ((val & 0x10) ? 1 : 0)
-                          << " inc=" << ((val & 0x04) ? 32 : 1)
-                          << std::dec << std::endl;
-                ++ctrlLog;
-            }
         }
         break;
         case 1: // PPUMASK
@@ -315,12 +389,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 // first write: coarse X (t: bits 0-4) and fine X (x)
                 fineX = val & 0x07;
                 scrollCoarseX = (val >> 3) & 0x1F;
-                static int scrollLog = 0;
-                if (scrollLog < 8) {
-                    std::cout << "PPU: PPUSCROLL X coarse=" << int(scrollCoarseX)
-                              << " fine=" << int(fineX) << std::endl;
-                    ++scrollLog;
-                }
                 vramAddrTemp = (vramAddrTemp & 0xFFE0) | (uint16_t)(val >> 3);
                 writeToggle = true;
             } else {
@@ -329,12 +397,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 uint16_t fineY = (uint16_t)(val & 0x07);
                 scrollCoarseY = coarseY;
                 scrollFineY = fineY;
-                static int scrollLogY = 0;
-                if (scrollLogY < 8) {
-                    std::cout << "PPU: PPUSCROLL Y coarse=" << int(scrollCoarseY)
-                              << " fine=" << int(scrollFineY) << std::endl;
-                    ++scrollLogY;
-                }
                 vramAddrTemp = (vramAddrTemp & 0x8C1F) | (coarseY << 5) | (fineY << 12);
                 writeToggle = false;
             }
@@ -348,32 +410,11 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 // second write: low 8 bits, then copy t -> v
                 vramAddrTemp |= val;
                 vramAddr = vramAddrTemp & 0x3FFF;
-                static int addrLog = 0;
-                if (addrLog < 8) {
-                    std::cout << "PPU: PPUADDR set v=$" << std::hex << int(vramAddr)
-                              << std::dec << std::endl;
-                    ++addrLog;
-                }
                 writeToggle = false;
             }
             break;
         case 7: { // PPUDATA
             uint16_t addr = vramAddr & 0x3FFF;
-            if (addr < 0x2000) {
-                static int chrWriteLog = 0;
-                if (chrWriteLog < 16) {
-                    std::cout << "PPU: PPUDATA write to CHR $" << std::hex << int(addr)
-                              << " val=$" << int(val) << std::dec << std::endl;
-                    ++chrWriteLog;
-                }
-            } else {
-                static int vramWriteLog = 0;
-                if (vramWriteLog < 16) {
-                    std::cout << "PPU: PPUDATA write to VRAM $" << std::hex << int(addr)
-                              << " val=$" << int(val) << std::dec << std::endl;
-                    ++vramWriteLog;
-                }
-            }
             if (addr < 0x2000) {
                 // writing to CHR RAM (if present)
                 bus.WriteCHR(addr, val);
@@ -381,24 +422,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                 // $3000-$3EFF mirrors $2000-$2EFF
                 uint16_t ntAddr = addr & 0x2FFF;
                 uint16_t nt = MapNametable(ntAddr);
-                static int ntLog = 0;
-                if (ntLog < 16) {
-                    Mirroring m = bus.mapper ? bus.mapper->GetMirroring()
-                                             : (bus.mirrorVertical ? Mirroring::Vertical : Mirroring::Horizontal);
-                    const char* mName = (m == Mirroring::Vertical) ? "V" :
-                                        (m == Mirroring::Horizontal) ? "H" :
-                                        (m == Mirroring::FourScreen) ? "4" : "S";
-                    std::cout << "PPU: NT write $" << std::hex << int(ntAddr)
-                              << " -> " << int(nt) << " mir=" << mName
-                              << std::dec << std::endl;
-                    ++ntLog;
-                }
-                static int ntVarLog = 0;
-                if (val != 0x24 && ntVarLog < 16) {
-                    std::cout << "PPU: NT write val=$" << std::hex << int(val)
-                              << " addr=$" << int(ntAddr) << std::dec << std::endl;
-                    ++ntVarLog;
-                }
                 vram[nt] = val;
             } else if (addr >= 0x3F00 && addr <= 0x3FFF) {
                 uint16_t palAddr = addr & 0x1F;
@@ -406,21 +429,6 @@ void PPU::WriteRegister(uint16_t reg, uint8_t val) {
                         palAddr &= ~0x10;
                         }
                 paletteRam[palAddr] = val & 0x3F;
-                static int palWriteLog = 0;
-                if (palWriteLog < 16) {
-                    std::cout << "PPU: PAL write $" << std::hex << int(addr)
-                              << " -> " << int(palAddr)
-                              << " val=$" << int(val & 0x3F)
-                              << std::dec << std::endl;
-                    ++palWriteLog;
-                }
-                static int palLog = 0;
-                if (palLog < 32) {
-                   
-                    ++palLog;
-                } else if (palLog == 32) {
-                    ++palLog;
-                }
             }
             uint16_t inc = (PPUCTRL & 0x04) ? 32 : 1;
             vramAddr = (vramAddr + inc) & 0x3FFF;

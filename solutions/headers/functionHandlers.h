@@ -513,7 +513,7 @@ static void ORA_ABSY_Handler(CPU& cpu, u32& Cycles, Bus& bus)
     {
         cpu.A = cpu.A | bus.read(cpu.indirectAddrModeY(Cycles, bus));
         cpu.AndSetStatus();
-        Cycles += 1;
+        Cycles += 0;
     }
 
     static void EOR_IM_Handler(CPU& cpu, u32& Cycles, Bus& bus)

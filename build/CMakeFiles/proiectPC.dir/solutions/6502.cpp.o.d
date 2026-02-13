@@ -191,4 +191,14 @@ CMakeFiles/proiectPC.dir/solutions/6502.cpp.o: \
  /home/preda/Documents/proiectPC/solutions/headers/input.h \
  /home/preda/Documents/proiectPC/solutions/headers/table.h \
  /home/preda/Documents/proiectPC/solutions/headers/functionHandlers.h \
+ /usr/include/c++/15.2.1/algorithm \
+ /usr/include/c++/15.2.1/bits/stl_algo.h \
+ /usr/include/c++/15.2.1/bits/algorithmfwd.h \
+ /usr/include/c++/15.2.1/bits/stl_heap.h \
+ /usr/include/c++/15.2.1/bits/uniform_int_dist.h \
+ /usr/include/c++/15.2.1/bits/stl_tempbuf.h \
+ /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/15.2.1/pstl/execution_defs.h \
+ /usr/include/c++/15.2.1/cstring /usr/include/string.h \
+ /usr/include/strings.h \
  /home/preda/Documents/proiectPC/solutions/headers/gui.h

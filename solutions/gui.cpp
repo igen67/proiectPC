@@ -32,6 +32,29 @@ static void DrawMemoryView(Bus& bus, uint32_t baseAddr, int rows = 16, int cols 
     ImGui::End();
 }
 
+static void WriteFramePPM(const std::string& path, const std::vector<uint32_t>& pixels, int w, int h) {
+    if (w <= 0 || h <= 0 || pixels.empty()) return;
+    std::ofstream out(path, std::ios::binary);
+    if (!out) return;
+    out << "P6\n" << w << " " << h << "\n255\n";
+    for (int i = 0; i < w * h; ++i) {
+        uint32_t c = pixels[i];
+        unsigned char r = (c >> 16) & 0xFF;
+        unsigned char g = (c >> 8) & 0xFF;
+        unsigned char b = (c >> 0) & 0xFF;
+        out.put(r);
+        out.put(g);
+        out.put(b);
+    }
+}
+
+static bool HasNonBlackPixel(const std::vector<uint32_t>& pixels) {
+    for (uint32_t c : pixels) {
+        if ((c & 0x00FFFFFFu) != 0) return true;
+    }
+    return false;
+}
+
 void RunGUI(CPU& cpu, Bus& bus) {
     // Setup GLFW
     if (!glfwInit()) {
@@ -244,6 +267,14 @@ void RunGUI(CPU& cpu, Bus& bus) {
 
             // PPU: render a full frame (256x240) and display it
         if (liveRender && ppu.PopFrame(ppuPixels, ppuW, ppuH)) {
+            static bool capturedFrame = false;
+            static int frameCount = 0;
+            frameCount++;
+            if (!capturedFrame && frameCount >= 10 && HasNonBlackPixel(ppuPixels)) {
+                WriteFramePPM("ppu_out.ppm", ppuPixels, ppuW, ppuH);
+                std::cout << "Wrote ppu_out.ppm (" << ppuW << "x" << ppuH << ")\n";
+                capturedFrame = true;
+            }
 
             glBindTexture(GL_TEXTURE_2D, ppuTex);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ppuW, ppuH, 0, GL_RGBA, GL_UNSIGNED_BYTE, ppuPixels.data());

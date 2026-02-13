@@ -292,16 +292,16 @@ void CPU::HandleNMI(u32& Cycles, Bus& bus) {
 
     bus.write(0x0100 | SP, (PC >> 8) & 0xFF);
     SP--;
-    modifySP();;
+
     bus.write(0x0100 | SP, PC & 0xFF);
     SP--;
-    modifySP();
     Byte status = GetStatus(false);
+    status |= 0x20; 
 
 
     bus.write(0x0100 | SP, status);
     SP--;
-    modifySP();
+
 
     SetFlag(FLAG_I, true);
 
@@ -315,14 +315,14 @@ void CPU::HandleNMI(u32& Cycles, Bus& bus) {
 
 
 
-void CPU::Execute(u32& Cycles, Bus& bus) {
+/*void CPU::Execute(u32& Cycles, Bus& bus) {
+    static int pcLogCount = 0;
         u32 before = Cycles;
         // Handle pending OAM DMA per-byte transfer
         while (bus.oamDmaActive) {
             if (bus.oamDmaDummy) {
                 // initial dummy cycle before bytes are transferred
                 Cycles += 1;
-                if (bus.ppu) bus.ppu->StepCycles(3);
                 bus.oamDmaDummy = false;
             } else if (bus.oamDmaIndex < 256) {
                 // transfer one byte per CPU cycle: read from CPU memory, write to PPU OAM
@@ -331,7 +331,6 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
                 if (bus.ppu) bus.ppu->WriteOAMByte(bus.oamDmaIndex, val);
                 bus.oamDmaIndex++;
                 Cycles += 1;
-                if (bus.ppu) bus.ppu->StepCycles(3);
             }
             if (bus.oamDmaIndex >= 256) {
                 // DMA finished
@@ -345,10 +344,18 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
         }
 
 
-        if (bus.nmiLine) {
-            bus.nmiLine = false;
-            HandleNMI(Cycles, bus);
-        }    
+if (bus.nmiLine) {
+    bus.nmiLine = false;
+
+    u32 beforeNmi = Cycles;
+
+    HandleNMI(Cycles, bus);
+
+    u32 delta = Cycles - beforeNmi;
+    if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+
+   // return;
+} 
         else if (bus.cpu && bus.cpu->Interrupt && !GetFlag(FLAG_I)) {
             IRQ_Handler(Cycles, bus, true);
             if (bus.cpu) bus.cpu->Interrupt = false;
@@ -360,6 +367,13 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
         }
 
         else{
+        if (pcLogCount < 500) {
+            uint8_t opcode = bus.read(PC);
+            std::cout << "[PC-LOG] PC=0x" << std::hex << int(PC)
+                      << " OPCODE=0x" << int(opcode) << std::dec << "\n";
+            pcLogCount++;
+        }
+
         int Instruction = FetchByte(Cycles, bus);
 
         if (traceInstructionsRemaining > 0) {
@@ -367,8 +381,6 @@ void CPU::Execute(u32& Cycles, Bus& bus) {
             traceInstructionsRemaining--;
         }
         
-debugger.CheckBreakpoint(PC);
-CPUTrace trace = CaptureTrace(bus);
 //PrintTrace(trace);
 
         InvokeInstruction(Instruction, Cycles, bus);
@@ -379,6 +391,65 @@ CPUTrace trace = CaptureTrace(bus);
         // Advance PPU based on cycles used by this instruction
         u32 delta = Cycles - before;
        if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+    }*/
+
+    void CPU::Execute(u32& Cycles, Bus& bus) {
+        u32 before = Cycles;
+
+        if (bus.oamDmaActive) {
+            // OAM DMA stalls the CPU; no instruction executes.
+            while (bus.oamDmaActive) {
+                if (bus.oamDmaDummy) {
+                    Cycles += 1;
+                    bus.oamDmaDummy = false;
+                } else if (bus.oamDmaIndex < 256) {
+                    uint16_t src = (uint16_t(bus.oamDmaPage) << 8) | (bus.oamDmaIndex & 0xFF);
+                    uint8_t val = bus.read(src);
+                    if (bus.ppu) bus.ppu->WriteOAMByte(bus.oamDmaIndex, val);
+                    bus.oamDmaIndex++;
+                    Cycles += 1;
+                }
+                if (bus.oamDmaIndex >= 256) {
+                    bus.oamDmaActive = false;
+                    bus.oamDmaIndex = 0;
+                    bus.oamDmaDummy = true;
+                    break;
+                }
+            }
+            u32 delta = Cycles - before;
+            if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+            return;
+        }
+
+        if (bus.nmiLine) {
+            bus.nmiLine = false;
+            HandleNMI(Cycles, bus);
+            u32 delta = Cycles - before;
+            if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+            return;
+        }
+
+        if (bus.cpu && bus.cpu->Interrupt && !GetFlag(FLAG_I)) {
+            IRQ_Handler(Cycles, bus, true);
+            bus.cpu->Interrupt = false;
+            u32 delta = Cycles - before;
+            if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+            return;
+        }
+
+        if (bus.irqEnable && !GetFlag(FLAG_I)) {
+            IRQ_Handler(Cycles, bus, true);
+            bus.irqEnable = false;
+            u32 delta = Cycles - before;
+            if (bus.ppu) bus.ppu->StepCycles(delta * 3);
+            return;
+        }
+
+        int opcode = FetchByte(Cycles, bus);
+        InvokeInstruction(opcode, Cycles, bus);
+
+        u32 delta = Cycles - before;
+        if (bus.ppu) bus.ppu->StepCycles(delta * 3);
     }
 
 
